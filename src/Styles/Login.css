@@ -1,0 +1,30 @@
+.LoginDiv {
+    background-color: #e9eaec;
+    font-family: "Poppins", sans-serif;
+    height: 100vh;
+}
+
+.card {
+    box-shadow: 0 2px 10px rgb(0 0 0 / 10%) !important;
+    border: none !important;
+    background-color: #ffffff !important;
+    max-width: 26rem;
+}
+.ForgotPwd{
+    text-decoration: none;
+    color: gray;
+    font-size: 13px;
+}
+.loginBtn{
+    border: none;
+    background: #3bbba4;
+    color: white;
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 5px 20px 5px 20px;
+    font-weight: bold;
+}
+.signuplink{
+    text-decoration: none;
+    color: #3bbba4;
+}
