@@ -1,20 +1,34 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import GoogleLogin from "react-google-login";
 import '../Styles/Login.css';
-import { CheckValidation } from "../JS/Connector";
+import axios from "axios";
 export function Login() {
     const [state, setState] = useState({});
-    const [Email,setEmail] = useState("");
-    const [Password,setPassword] = useState("");
+    const clientId = "646628515848-m5a6l1kqaqb8pvqih00omv1mjr11iq4v.apps.googleusercontent.com";
     useEffect(() => {
         return () => {
             setState({});
         };
     }, []);
-    const Login = async () =>{
-        // var checkvalidation = CheckValidation("LoginForm");
-        const TestData = await axios.get("http://127.0.0.1:8000/api/test");
-        console.log(TestData.data);
+    const onSuccess = async (res) => {
+        var response = res.profileObj;
+        await axios.post('http://127.0.0.1:8000/api/addUser', {
+            Name: response.name,
+            Email: response.email,
+        })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+        // const TestData = await axios.get("http://127.0.0.1:8000/api/test");
+        // console.log(TestData.data);
+        // console.log("Login Success!", res.profileObj);
+        // window.location = "/test";
+    }
+    const onFailure = (res) => {
+        console.log("Login Failed!", res);
     }
     return (
         <>
@@ -27,26 +41,14 @@ export function Login() {
                                     <div className="mb-5">
                                         <img src="/Images/Logo.png" className="img-fluid" alt="Logo" />
                                     </div>
-                                    <div className="mb-4 text-center">
-                                        <h5>SIGN IN</h5>
-                                    </div>
-                                    <div className="mb-4">
-                                        <input type="email" className="form-control" value={Email} onChange={e => setEmail(e.target.value)} placeholder="Email Id" required/>
-                                        <div className="invalid-feedback">
-                                            *required
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <input type="password" className="form-control" value={Password} onChange={e => setPassword(e.target.value)} placeholder="Password" required/>
-                                        <div className="invalid-feedback">
-                                            *required
-                                        </div>
-                                    </div>
-                                    <div className="col-12 text-end">
-                                        <a href="#" className="ForgotPwd">Forgot Password?</a>
-                                    </div>
-                                    <div className="col-12 text-center mt-3">
-                                        <button type="submit" className="loginBtn btnhover" onClick={Login}>LOGIN</button>
+                                    <div id="signInButton" className="col-12 text-center">
+                                        <GoogleLogin clientId={clientId}
+                                            buttonText="Login With google"
+                                            onSuccess={onSuccess}
+                                            onFailure={onFailure}
+                                            cookiePolicy={'single_host_origin'}
+                                            isSignedIn={true}
+                                        />
                                     </div>
                                     <div className="col-12 text-center ForgotPwd mt-5 mb-2">
                                         Don't have an account? <a href="#" className="signuplink">Sign Up</a>
