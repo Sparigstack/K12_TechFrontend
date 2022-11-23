@@ -5,3 +5,24 @@ body {
     overflow-x: hidden;
     font-family: "Poppins", sans-serif !important;
 }
+
+#Overlay {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(211 209 209 / 50%);
+    z-index: 4999;
+}
+
+.LoderImg {
+    width: 5%;
+    position: fixed;
+    top: 45%;
+    z-index: 1000;
+    display: none;
+}

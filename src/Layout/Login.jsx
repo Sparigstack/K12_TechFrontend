@@ -1,31 +1,43 @@
 import { useState, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import '../Styles/Login.css';
-import axios from "axios";
+import { ApiPostCall } from "../JS/Connector";
+import $ from 'jquery';
+import { Cookies } from 'react-cookie'
 export function Login() {
     const [state, setState] = useState({});
-    const clientId = "646628515848-m5a6l1kqaqb8pvqih00omv1mjr11iq4v.apps.googleusercontent.com";
+    const cookies = new Cookies();
+    const clientId = process.env.REACT_APP_ClientId;
     useEffect(() => {
         return () => {
             setState({});
         };
     }, []);
     const onSuccess = async (res) => {
+        $("#Overlay").show();
+        $("#LoderId").show();
         var response = res.profileObj;
-        await axios.post('http://127.0.0.1:8000/api/addUser', {
+        var accessToken = res.accessToken;
+        var raw = JSON.stringify({
             Name: response.name,
-            Email: response.email,
-        })
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
+            Email: response.email
         });
-        // const TestData = await axios.get("http://127.0.0.1:8000/api/test");
-        // console.log(TestData.data);
-        // console.log("Login Success!", res.profileObj);
-        // window.location = "/test";
+        await ApiPostCall("/addUser", raw).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                console.log(result);
+                cookies.set('accesstoken', accessToken, {path: '/', maxAge: 1200}); //30 minutes
+                // cookies.set('accesstoken', accessToken);
+                // const responseRs = JSON.parse(result);
+                // if (responseRs.status == "Success") {
+                //     window.location = "/test";
+                // } else {
+                // }
+            }
+            $("#Overlay").hide();
+            $("#LoderId").hide();
+        });
     }
     const onFailure = (res) => {
         console.log("Login Failed!", res);
@@ -47,7 +59,7 @@ export function Login() {
                                             onSuccess={onSuccess}
                                             onFailure={onFailure}
                                             cookiePolicy={'single_host_origin'}
-                                            isSignedIn={true}
+                                            // isSignedIn={true}
                                         />
                                     </div>
                                     <div className="col-12 text-center ForgotPwd mt-5 mb-2">

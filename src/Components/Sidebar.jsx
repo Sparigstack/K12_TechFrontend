@@ -1,7 +1,7 @@
 export function Sidebar() {
     return (
         <>
-            <div class="wrapper">
+            <div className="wrapper">
                
             </div>
         </>

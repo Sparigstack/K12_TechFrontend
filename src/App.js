@@ -8,9 +8,10 @@ import { useEffect } from 'react';
 import { gapi } from 'gapi-script';
 import { Temp } from './Layout/Temp';
 import Layout from './Components/Layout';
-
+import Cookies from 'js-cookie';
 function App() {
-  const clientId = "646628515848-m5a6l1kqaqb8pvqih00omv1mjr11iq4v.apps.googleusercontent.com";
+  const clientId = process.env.REACT_APP_ClientId;
+  var token = Cookies.get('accesstoken');
   useEffect(() => {
     function start() {
       gapi.client.init({
@@ -20,14 +21,21 @@ function App() {
     };
     gapi.load('client:auth2', start);
   });
+
   return (
     <Router>
-      <Layout>
+      {token != null ?
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/test" element={<Temp />} />
+          </Routes>
+        </Layout>
+        :
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/test" element={<Temp />} />
+          <Route path="*" element={<Login />} />
         </Routes>
-      </Layout>
+      }
     </Router>
   );
 }
