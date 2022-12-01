@@ -1,15 +1,29 @@
 import React from "react";
-import { Sidebar } from "./Sidebar";
+import { Sidemenu } from "./Sidemenu";
+import { VerifyToken } from "../JS/Connector";
+import { useState, useEffect } from "react";
 const Layout = ({ children }) => {
-  return (
-    <>
-      <div className="container-fluid px-0">
-        <Sidebar />
-        <div className="container-fluid px-0">
-          <main className="LayoutMainDiv">{children}</main>
-        </div>
-      </div>
-    </>
-  );
+    const [TempCheck, setTempCheck] = useState(false);
+    useEffect(() => {
+        window.scroll(0, 0);
+        VerifyToken(MyFunction);
+    }, []);
+    const MyFunction = () => {
+        setTempCheck(true);
+    }
+    return (
+        <>
+            {TempCheck == true ?
+                <div className="wrapper">
+                    <Sidemenu />
+                    <main className="page-content">
+                        {children}
+                    </main>
+                </div>
+                :
+                <></>
+            }
+        </>
+    );
 };
 export default Layout;

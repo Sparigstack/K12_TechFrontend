@@ -1,9 +1,36 @@
+html,
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     overflow-x: hidden;
     font-family: "Poppins", sans-serif !important;
+    height: 100%;
+    background-color: #F5F5F5 !important;
+    letter-spacing: .5px;
+    font-size: 14px;
+}
+
+body {
+    font-size: 14px;
+    color: #4c5258;
+    letter-spacing: .5px;
+    font-family: Roboto, sans-serif;
+    background-color: #F5F5F5 !important;
+    overflow-x: hidden;
+}
+
+.wrapper {
+    width: auto;
+    position: relative
+}
+
+a {
+    text-decoration: none;
+}
+
+::placeholder {
+    opacity: 0.4 !important;
 }
 
 #Overlay {
@@ -25,4 +52,142 @@ body {
     top: 45%;
     z-index: 1000;
     display: none;
+}
+
+.alert-success {
+    color: #0a5632 !important;
+    background-color: #c6dfd4 !important;
+    border-color: #badbcc;
+    bottom: 1%;
+    right: 1%;
+    display: none;
+    text-align: center;
+    position: fixed;
+    z-index: 2147483642;
+    padding: 1rem 3rem 1rem 3rem !important;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    bottom: 1%;
+    right: 1%;
+    z-index: 100;
+    display: none;
+    text-align: center;
+    position: fixed;
+    z-index: 2147483642;
+    padding: 1rem 3rem 1rem 3rem !important;
+}
+
+.w3-animate-right {
+    animation: animateright 0.4s;
+    position: fixed !important;
+}
+
+/* Page Content */
+
+.page-content {
+    margin-left: 250px;
+    margin-top: 50px;
+    padding: 1.5rem;
+    transition: all .2s;
+}
+
+.PageHeading {
+    font-weight: 600;
+    font-size: 24px;
+    color: #030E20;
+}
+
+.GridBox {
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.innerGridBox {
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.gridsearchbar {
+    position: relative;
+
+}
+
+.gridsearchbar .form-control {
+    border-radius: 30px;
+    box-shadow: none;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    border: 1px solid #e2e3e4;
+    background: #f9fafb;
+    /* width: 30%; */
+}
+
+.searchIcon {
+    opacity: 0.5 !important;
+}
+
+.form-check-input:checked {
+    background-color: #3CBBA5 !important;
+    border-color: #3CBBA5 !important;
+}
+
+.form-check-input {
+    width: 1.2em !important;
+    height: 1.2em !important;
+    margin-top: .10em !important;
+}
+
+select {
+    background: #F9FAFB !important;
+    border: 1px solid #E2E3E4 !important;
+    border-radius: 10px !important;
+    padding: 5px !important;
+}
+
+.greyBox {
+    background: #F7F8FA;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.innerGridBox tr td {
+    cursor: pointer;
+    position: relative;
+}
+
+.SaveBtn {
+    background: #3CBBA5;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 8%);
+    border-radius: 4px;
+    border: none;
+    color: white;
+    padding: 6px 15px 6px 15px;
+}
+
+.innerGridBox tr:hover {
+    background-color: #F7FFFE;
+}
+
+.RocketImage {
+    position: absolute;
+    animation: fly 1s linear 0s infinite;
+}
+@keyframes fly {
+    0% {
+        top: 0%;
+        left: 0%;
+    }
+    100% {
+        top: 0%;
+        left: 100%;
+    }
 }

@@ -1,17 +1,22 @@
 import './App.css';
 import { Login } from './Layout/Login';
 import './Styles/Common.css';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import './JS/Common.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useEffect } from 'react';
 import { gapi } from 'gapi-script';
 import { Temp } from './Layout/Temp';
 import Layout from './Components/Layout';
 import Cookies from 'js-cookie';
-function App() {
+import { Grid } from './Components/Grid';
+import { ManageInventory } from './Layout/ManageInventory';
+import { Logout } from './Layout/Logout';
+import { MsalProvider } from "@azure/msal-react";
+function App({ msalInstance }) {
+  var accesstoken = Cookies.get('accesstoken');
   const clientId = process.env.REACT_APP_ClientId;
-  var token = Cookies.get('accesstoken');
   useEffect(() => {
     function start() {
       gapi.client.init({
@@ -20,24 +25,27 @@ function App() {
       })
     };
     gapi.load('client:auth2', start);
-  });
 
+  }, []);
   return (
-    <Router>
-      {token != null ?
-        <Layout>
+    <MsalProvider instance={msalInstance}>
+        {accesstoken != null ?
+          <Layout>
+            <Routes>
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/dashboard" element={<Temp />} />
+              <Route path="/manage-inventory" element={<Grid PageHeading="Manage Inventory" GridBoxContent={<ManageInventory />} />} />
+            </Routes>
+          </Layout>
+          :
           <Routes>
+            <Route path="/logout" element={<Logout />} />
             <Route path="/" element={<Login />} />
-            <Route path="/test" element={<Temp />} />
           </Routes>
-        </Layout>
-        :
-        <Routes>
-          <Route path="*" element={<Login />} />
-        </Routes>
-      }
-    </Router>
-  );
+        }
+    </MsalProvider>
+  )
 }
+
 
 export default App;

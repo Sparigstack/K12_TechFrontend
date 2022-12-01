@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import Cookies from 'js-cookie';
 const BaseUrl = process.env.REACT_APP_Base_URL;
 var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -110,4 +111,34 @@ export function ApiPostCall(endpoint, payload) {
         .then((response) => response.text())
         .then((result) => { return result })
         .catch((error) => { return error });
+}
+export function VerifyToken(endpoint){
+    var accesstoken = Cookies.get('accesstoken');
+    var emailid = Cookies.get('emailid');
+    $("#Overlay").show();
+    $("#LoderId").show();
+    var raw = JSON.stringify({
+      email: emailid,
+      accessToken: accesstoken
+    });
+    ApiPostCall("/loginValidation", raw).then((result) => {
+      if (result == undefined || result == "") {
+          $(".alert-danger").show();
+          $("#AlertDangerMsg").text('Login Failed!');
+          setTimeout(function () {
+              $(".alert-danger").hide();
+              $("#AlertDangerMsg").text();
+          }, 1500);
+      } else {
+          const responseRs = JSON.parse(result);
+          if (responseRs.status == "success") {
+            endpoint();
+          }else{
+            window.location = "/";
+          }
+      }
+     
+  });
+  $("#Overlay").hide();
+  $("#LoderId").hide();
 }

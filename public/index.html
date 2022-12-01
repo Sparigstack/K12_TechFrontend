@@ -3,24 +3,30 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="icon" href="%PUBLIC_URL%/FeviconIcon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta charset="utf-8">
   <meta name="description" content="Web site created using create-react-app" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <title>K-12 Tech</title>
 </head>
 
-<body>
+<body class="pace-done">
   <div id="root"></div>
   <div id="Overlay"></div>
-  <div class="justify-content-center d-flex">
+  <div class="text-center">
     <img src="https://tablepadscdn.azureedge.net/Localimages/loder.svg" class="m-auto LoderImg" id="LoderId"
       alt="Loader" />
+  </div>
+  <div class="alert-success w3-animate-right" role="alert">
+    <span id="AlertMsg"></span>
+  </div>
+  <div class="alert-danger w3-animate-right" role="alert">
+    <span id="AlertDangerMsg"></span>
   </div>
 </body>
 

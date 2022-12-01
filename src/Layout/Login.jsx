@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Component } from "react";
 import GoogleLogin from "react-google-login";
 import '../Styles/Login.css';
 import { ApiPostCall } from "../JS/Connector";
+import { Cookies } from 'react-cookie';
 import $ from 'jquery';
-import { Cookies } from 'react-cookie'
+import { SignInMicrosoft } from "../Components/SignInMicrosoft";
 export function Login() {
     const [state, setState] = useState({});
     const cookies = new Cookies();
-    const clientId = process.env.REACT_APP_ClientId;
+    const clientId = process.env.REACT_APP_GoogleClientId;
     useEffect(() => {
         return () => {
             setState({});
@@ -16,57 +17,64 @@ export function Login() {
     const onSuccess = async (res) => {
         $("#Overlay").show();
         $("#LoderId").show();
-        var response = res.profileObj;
         var accessToken = res.accessToken;
         var raw = JSON.stringify({
-            Name: response.name,
-            Email: response.email
+            name: res.profileObj.name,
+            email: res.profileObj.email,
+            googleId: res.googleId,
+            microsoftId: null,
+            accessToken: accessToken,
+            flag: 1
         });
-        await ApiPostCall("/addUser", raw).then((result) => {
+        await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {
-                alert("Something went wrong");
+                $(".alert-danger").show();
+                $("#AlertDangerMsg").text('Login Failed!');
+                setTimeout(function () {
+                    $(".alert-danger").hide();
+                    $("#AlertDangerMsg").text();
+                }, 1500);
             } else {
-                console.log(result);
-                cookies.set('accesstoken', accessToken, {path: '/', maxAge: 1200}); //30 minutes
-                // cookies.set('accesstoken', accessToken);
-                // const responseRs = JSON.parse(result);
-                // if (responseRs.status == "Success") {
-                //     window.location = "/test";
-                // } else {
-                // }
+                const responseRs = JSON.parse(result);
+                cookies.set('accesstoken', accessToken);
+                cookies.set('emailid', res.profileObj.email);
+                if (responseRs.status == "success") {
+                    $(".alert-success").show();
+                    $("#AlertMsg").text("Login Successfully.");
+                    setTimeout(function () {
+                        window.location = "/dashboard";
+                    }, 1500);
+                }
+                // cookies.set('accesstoken', accessToken, { path: '/', maxAge: 1200 }); //30 minutes
             }
             $("#Overlay").hide();
             $("#LoderId").hide();
         });
     }
-    const onFailure = (res) => {
-        console.log("Login Failed!", res);
-    }
     return (
         <>
-            <div className="LoginDiv" id="LoginForm">
-                <div className="container py-5 h-100">
-                    <div className="row d-flex justify-content-center align-items-center h-100">
-                        <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-                            <div className="card shadow-2-strong mx-auto">
-                                <div className=" px-5 pt-5">
-                                    <div className="mb-5">
-                                        <img src="/Images/Logo.png" className="img-fluid" alt="Logo" />
+            <div className="position-relative MainDiv">
+                <div className="card mx-auto">
+                    <div className="p-5">
+                        <div className="mb-5">
+                            <img src="/Images/LoginLogo.png" className="img-fluid" alt="Logo" />
+                        </div>
+                        <div className="col-12 text-center mt-4">
+                            <GoogleLogin clientId={clientId}
+                                buttonText=""
+                                onSuccess={onSuccess}
+                                render={renderProps => (
+                                    <div onClick={renderProps.onClick} className="MicrosoftGoogleBtn">
+                                        <img src="/images/GoogleBtn.svg" className="img-fluid pe-2" /> Login With Google
                                     </div>
-                                    <div id="signInButton" className="col-12 text-center">
-                                        <GoogleLogin clientId={clientId}
-                                            buttonText="Login With google"
-                                            onSuccess={onSuccess}
-                                            onFailure={onFailure}
-                                            cookiePolicy={'single_host_origin'}
-                                            // isSignedIn={true}
-                                        />
-                                    </div>
-                                    <div className="col-12 text-center ForgotPwd mt-5 mb-2">
-                                        Don't have an account? <a href="#" className="signuplink">Sign Up</a>
-                                    </div>
-                                </div>
-                            </div>
+                                )}
+                            />
+                        </div>
+                        <div className="col-12 text-center py-3">
+                            <img src="/images/LoginOr.png" className="img-fluid" />
+                        </div>
+                        <div className="col-12 text-center">
+                            <SignInMicrosoft />
                         </div>
                     </div>
                 </div>
