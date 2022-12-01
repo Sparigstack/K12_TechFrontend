@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import '../Styles/SideMenu/Sidemenu.css';
 import '../Styles/SideMenu/semi-dark.css';
 export function Sidemenu() {
-    const [state, setState] = useState({});
     useEffect(() => {
         return () => {
             $(".nav-toggle-icon").on("click", function () {
@@ -26,16 +25,16 @@ export function Sidemenu() {
                 $wrapper.classList.toggle('toggled');
                 if (WindowWidth >= 1025) {
                     $("#LeftMenuLogo").attr('src', '');
-                    $("#LeftMenuLogo").attr('src', '/ImagesSideMenu/SmallLogoIcon.svg');
+                    $("#LeftMenuLogo").attr('src', '/Images/SideMenu/SmallLogoIcon.svg');
                     $("#LeftMenuLogo").attr('SmallScreen', 'Yes');
                 } else {
                     if ($("#LeftMenuLogo").attr('SmallScreen') == 'Yes') {
                         $("#LeftMenuLogo").attr('src', '');
-                        $("#LeftMenuLogo").attr('src', '/ImagesSideMenu/SmallLogoIcon.svg');
+                        $("#LeftMenuLogo").attr('src', '/Images/SideMenu/SmallLogoIcon.svg');
                         $("#LeftMenuLogo").attr('SmallScreen', 'No');
                     } else {
                         $("#LeftMenuLogo").attr('src', '');
-                        $("#LeftMenuLogo").attr('src', '/ImagesSideMenu/logo-icon.svg');
+                        $("#LeftMenuLogo").attr('src', '/Images/SideMenu/logo-icon.svg');
                         $("#LeftMenuLogo").attr('SmallScreen', 'Yes');
                     }
                 }
@@ -45,11 +44,11 @@ export function Sidemenu() {
                 $wrapper.classList.toggle('toggled');
                 if ($("#LeftMenuLogo").attr('SmallScreen') == 'Yes') {
                     $("#LeftMenuLogo").attr('src', '');
-                    $("#LeftMenuLogo").attr('src', '/ImagesSideMenu/logo-icon.svg');
+                    $("#LeftMenuLogo").attr('src', '/Images/SideMenu/logo-icon.svg');
                     $("#LeftMenuLogo").attr('SmallScreen', 'No');
                 } else {
                     $("#LeftMenuLogo").attr('src', '');
-                    $("#LeftMenuLogo").attr('src', '/ImagesSideMenu/SmallLogoIcon.svg');
+                    $("#LeftMenuLogo").attr('src', '/Images/SideMenu/SmallLogoIcon.svg');
                     $("#LeftMenuLogo").attr('SmallScreen', 'Yes');
                 }
             });
@@ -77,7 +76,7 @@ export function Sidemenu() {
                     $(this).find(".ChangeImage").attr('src', changeImage);
                 }
             });
-            setState({});
+           
         };
     }, []);
     return (
@@ -106,7 +105,7 @@ export function Sidemenu() {
                                 <a className="nav-link dropdown-toggle dropdown-toggle-nocaret px-4" href="#" data-bs-toggle="dropdown">
                                     <div className="notifications">
                                         <span className="notify-badge">4</span>
-                                        <img src='/ImagesSideMenu/NotifyIcon.png' className='img-fluid' />
+                                        <img src='/Images/SideMenu/NotifyIcon.png' className='img-fluid' />
                                     </div>
                                 </a>
                                 <div className="dropdown-menu dropdown-menu-end p-0">
@@ -162,21 +161,21 @@ export function Sidemenu() {
                             <li className="nav-item dropdown dropdown-large">
                                 <a className="nav-link dropdown-toggle dropdown-toggle-nocaret px-4" href="#" data-bs-toggle="dropdown">
                                     <div className="messages">
-                                        <img src='/ImagesSideMenu/ChatIcon.png' className='img-fluid' />
+                                        <img src='/Images/SideMenu/ChatIcon.png' className='img-fluid' />
                                     </div>
                                 </a>
                             </li>
                             <li className="nav-item dropdown dropdown-user-setting">
                                 <a className="nav-link dropdown-toggle dropdown-toggle-nocaret ps-4" href="#" data-bs-toggle="dropdown">
                                     <div className="user-setting d-flex align-items-center">
-                                        <img src="/ImagesSideMenu/UserImage.png" className="user-img" alt="" />
+                                        <img src="/Images/SideMenu/UserImage.png" className="user-img" alt="" />
                                     </div>
                                 </a>
                                 <ul className="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a className="dropdown-item" href="#">
                                             <div className="d-flex align-items-center">
-                                                <img src="/ImagesSideMenu/UserImage.png" alt="" className="rounded-circle" width="54" height="54" />
+                                                <img src="/Images/SideMenu/UserImage.png" alt="" className="rounded-circle" width="54" height="54" />
                                                 <div className="ms-3">
                                                     <h6 className="mb-0 dropdown-user-name">Jhon Deo</h6>
                                                     <small className="mb-0 dropdown-user-designation text-secondary">HR Manager</small>
@@ -253,87 +252,87 @@ export function Sidemenu() {
                             <div className="simplebar-content-wrapper" style={{ height: "100%", overflow: "hidden" }}>
                                 <div className="simplebar-content mm-active" style={{ padding: "0px" }}>
                                     <div className="sidebar-header cursor-pointer">
-                                        <img src="/ImagesSideMenu/logo-icon.svg" id="LeftMenuLogo" className="logo-icon" alt="logo icon" />
+                                        <img src="/Images/SideMenu/logo-icon.svg" id="LeftMenuLogo" className="logo-icon" alt="logo icon" />
                                         <div className="toggle-icon ms-auto" id="sidebar-toggle"> <i className="bi bi-list"></i>
                                         </div>
                                     </div>
                                     <ul className="metismenu mm-show" id="menu">
                                         <li>
-                                            <a href="/dashboard" changeimg="/ImagesSideMenu/Icons/DashboardWhite.svg" originalimg="/ImagesSideMenu/Icons/Dashboard.svg">
+                                            <a href="/dashboard" changeimg="/Images/SideMenu/Icons/DashboardWhite.svg" originalimg="/Images/SideMenu/Icons/Dashboard.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/Dashboard.svg' className='img-fluid ChangeImage' title='Create Ticket' />
+                                                    <img src='/Images/SideMenu/Icons/Dashboard.svg' className='img-fluid ChangeImage' title='Create Ticket' />
                                                 </div>
                                                 <div className="menu-title">Dashboard</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/CreateTicketWhite.svg" originalimg="/ImagesSideMenu/Icons/CreateTicket.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/CreateTicketWhite.svg" originalimg="/Images/SideMenu/Icons/CreateTicket.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/CreateTicket.svg' className='img-fluid ChangeImage' title='Create Ticket' />
+                                                    <img src='/Images/SideMenu/Icons/CreateTicket.svg' className='img-fluid ChangeImage' title='Create Ticket' />
                                                 </div>
                                                 <div className="menu-title">Create Ticket</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/ManageTicketWhite.svg" originalimg="/ImagesSideMenu/Icons/ManageTicket.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/ManageTicketWhite.svg" originalimg="/Images/SideMenu/Icons/ManageTicket.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/ManageTicket.svg' className='img-fluid ChangeImage' title='Manage Ticket' />
+                                                    <img src='/Images/SideMenu/Icons/ManageTicket.svg' className='img-fluid ChangeImage' title='Manage Ticket' />
                                                 </div>
                                                 <div className="menu-title">Manage Ticket</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/ReportWhite.svg" originalimg="/ImagesSideMenu/Icons/Report.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/ReportWhite.svg" originalimg="/Images/SideMenu/Icons/Report.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/Report.svg' className='img-fluid ChangeImage' title='Report' />
+                                                    <img src='/Images/SideMenu/Icons/Report.svg' className='img-fluid ChangeImage' title='Report' />
                                                 </div>
                                                 <div className="menu-title">Report</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/ReportPortalWhite.svg" originalimg="/ImagesSideMenu/Icons/ReportPortal.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/ReportPortalWhite.svg" originalimg="/Images/SideMenu/Icons/ReportPortal.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/ReportPortal.svg' className='img-fluid ChangeImage' title='Report Portal' />
+                                                    <img src='/Images/SideMenu/Icons/ReportPortal.svg' className='img-fluid ChangeImage' title='Report Portal' />
                                                 </div>
                                                 <div className="menu-title">Report Portal</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/AssignDeviceWhite.svg" originalimg="/ImagesSideMenu/Icons/AssignDevice.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/AssignDeviceWhite.svg" originalimg="/Images/SideMenu/Icons/AssignDevice.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/AssignDevice.svg' className='img-fluid ChangeImage' title='Assign a Device' />
+                                                    <img src='/Images/SideMenu/Icons/AssignDevice.svg' className='img-fluid ChangeImage' title='Assign a Device' />
                                                 </div>
                                                 <div className="menu-title">Assign a Device</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/manage-inventory" changeimg="/ImagesSideMenu/Icons/ManageInventoryWhite.svg" originalimg="/ImagesSideMenu/Icons/ManageInventory.svg">
+                                            <a href="/manage-inventory" changeimg="/Images/SideMenu/Icons/ManageInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ManageInventory.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/ManageInventory.svg' className='img-fluid ChangeImage' title='Manage Inventory' />
+                                                    <img src='/Images/SideMenu/Icons/ManageInventory.svg' className='img-fluid ChangeImage' title='Manage Inventory' />
                                                 </div>
                                                 <div className="menu-title">Manage Inventory</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/ImportExportInventoryWhite.svg" originalimg="/ImagesSideMenu/Icons/ImportExportInventory.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/ImportExportInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ImportExportInventory.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/ImportExportInventory.svg' className='img-fluid ChangeImage' title='Import / Export Inventory' />
+                                                    <img src='/Images/SideMenu/Icons/ImportExportInventory.svg' className='img-fluid ChangeImage' title='Import / Export Inventory' />
                                                 </div>
                                                 <div className="menu-title">Import / Export Inventory</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/PurchasePartsWhite.svg" originalimg="/ImagesSideMenu/Icons/PurchaseParts.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/PurchasePartsWhite.svg" originalimg="/Images/SideMenu/Icons/PurchaseParts.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/PurchaseParts.svg' className='img-fluid ChangeImage' title='Purchase Parts' />
+                                                    <img src='/Images/SideMenu/Icons/PurchaseParts.svg' className='img-fluid ChangeImage' title='Purchase Parts' />
                                                 </div>
                                                 <div className="menu-title">Purchase Parts</div>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/ImagesSideMenu/Icons/UsersWhite.svg" originalimg="/ImagesSideMenu/Icons/Users.svg">
+                                            <a href="#" changeimg="/Images/SideMenu/Icons/UsersWhite.svg" originalimg="/Images/SideMenu/Icons/Users.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/ImagesSideMenu/Icons/Users.svg' className='img-fluid ChangeImage' title='Users' />
+                                                    <img src='/Images/SideMenu/Icons/Users.svg' className='img-fluid ChangeImage' title='Users' />
                                                 </div>
                                                 <div className="menu-title">Users</div>
                                             </a>

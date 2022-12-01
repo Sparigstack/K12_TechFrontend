@@ -10,7 +10,6 @@ import { gapi } from 'gapi-script';
 import { Temp } from './Layout/Temp';
 import Layout from './Components/Layout';
 import Cookies from 'js-cookie';
-import { Grid } from './Components/Grid';
 import { ManageInventory } from './Layout/ManageInventory';
 import { Logout } from './Layout/Logout';
 import { MsalProvider } from "@azure/msal-react";
@@ -34,9 +33,10 @@ function App({ msalInstance }) {
           <Layout>
             <Routes>
               <Route path="*" element={<ErrorPage />} />
+              <Route path="/" element={<Temp />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/dashboard" element={<Temp />} />
-              <Route path="/manage-inventory" element={<Grid PageHeading="Manage Inventory" GridBoxContent={<ManageInventory />} />} />
+              <Route path="/manage-inventory" element={<ManageInventory />} />
             </Routes>
           </Layout>
           :
