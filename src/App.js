@@ -1,7 +1,7 @@
+import './index.js';
 import './App.css';
 import { Login } from './Layout/Login';
 import './Styles/Common.css';
-import './JS/Common.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -14,6 +14,7 @@ import { Grid } from './Components/Grid';
 import { ManageInventory } from './Layout/ManageInventory';
 import { Logout } from './Layout/Logout';
 import { MsalProvider } from "@azure/msal-react";
+import { ErrorPage } from './Layout/404.jsx';
 function App({ msalInstance }) {
   var accesstoken = Cookies.get('accesstoken');
   const clientId = process.env.REACT_APP_ClientId;
@@ -32,6 +33,7 @@ function App({ msalInstance }) {
         {accesstoken != null ?
           <Layout>
             <Routes>
+              <Route path="*" element={<ErrorPage />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/dashboard" element={<Temp />} />
               <Route path="/manage-inventory" element={<Grid PageHeading="Manage Inventory" GridBoxContent={<ManageInventory />} />} />
@@ -39,6 +41,7 @@ function App({ msalInstance }) {
           </Layout>
           :
           <Routes>
+            <Route path="*" element={<ErrorPage />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/" element={<Login />} />
           </Routes>

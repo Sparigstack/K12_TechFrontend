@@ -65,13 +65,13 @@ export function Login() {
                                 onSuccess={onSuccess}
                                 render={renderProps => (
                                     <div onClick={renderProps.onClick} className="MicrosoftGoogleBtn">
-                                        <img src="/images/GoogleBtn.svg" className="img-fluid pe-2" /> Login With Google
+                                        <img src="/Images/GoogleBtn.svg" className="img-fluid pe-2" /> Login With Google
                                     </div>
                                 )}
                             />
                         </div>
                         <div className="col-12 text-center py-3">
-                            <img src="/images/LoginOr.png" className="img-fluid" />
+                            <img src="/Images/LoginOr.png" className="img-fluid" />
                         </div>
                         <div className="col-12 text-center">
                             <SignInMicrosoft />

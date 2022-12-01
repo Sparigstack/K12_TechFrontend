@@ -11,7 +11,7 @@ export function SignInMicrosoft() {
     return (
         <>
             <Button onClick={handleLogin} className="MicrosoftGoogleBtn">
-                <img src="/images/MicrosoftBtn.svg" className="img-fluid pe-2" /> Login With Microsoft
+                <img src="/Images/MicrosoftBtn.svg" className="img-fluid pe-2" /> Login With Microsoft
             </Button>
         </>
     );

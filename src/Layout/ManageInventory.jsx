@@ -44,7 +44,7 @@ export function ManageInventory() {
                         <div className='col-12 greyBox'>
                             <div className='Header'>
                                 <b className='font-16'>list of Devices</b><br />
-                                <img src='/images/HorizontalLine.png' className='img-fluid w-100' />
+                                <img src='/Images/HorizontalLine.png' className='img-fluid w-100' />
                             </div>
                             <table className="table innerGridBox mt-2">
                                 <tbody>
@@ -53,7 +53,7 @@ export function ManageInventory() {
                                         <td>#6598 9256</td>
                                         <td>iPad</td>
                                         <td className='p-0'>
-                                            <img src='/images/RocketPng.svg' id="RocketImg_1" className='img-fluid RocketImgClass' />
+                                            <img src='/Images/RocketPng.svg' id="RocketImg_1" className='img-fluid RocketImgClass' />
                                         </td>
                                     </tr>
                                     <tr onClick={(e) => ShowDeviceDetailsDiv(2)}>
@@ -61,7 +61,7 @@ export function ManageInventory() {
                                         <td>#6598 9256</td>
                                         <td>Laminators</td>
                                         <td className='p-0'>
-                                            <img src='/images/RocketPng.svg' id="RocketImg_2" className='img-fluid RocketImgClass' />
+                                            <img src='/Images/RocketPng.svg' id="RocketImg_2" className='img-fluid RocketImgClass' />
                                         </td>
                                     </tr>
                                     <tr onClick={(e) => ShowDeviceDetailsDiv(3)}>
@@ -69,7 +69,7 @@ export function ManageInventory() {
                                         <td>#6598 9256</td>
                                         <td>Projectors</td>
                                         <td className='p-0'>
-                                            <img src='/images/RocketPng.svg' id="RocketImg_3" className='img-fluid RocketImgClass' />
+                                            <img src='/Images/RocketPng.svg' id="RocketImg_3" className='img-fluid RocketImgClass' />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -80,7 +80,7 @@ export function ManageInventory() {
                         <div className='col-12 greyBox'>
                             <div className='Header'>
                                 <b className='font-16'>Devices Details</b><br />
-                                <img src='/images/HorizontalLine.png' className='img-fluid w-100' />
+                                <img src='/Images/HorizontalLine.png' className='img-fluid w-100' />
                             </div>
                             <table className="table mt-2">
                                 <tbody>
