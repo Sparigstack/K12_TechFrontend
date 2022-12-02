@@ -28,6 +28,8 @@ export function Login() {
         });
         await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {
+                $("#Overlay").hide();
+                $("#LoderId").hide();
                 $(".alert-danger").show();
                 $("#AlertDangerMsg").text('Login Failed!');
                 setTimeout(function () {
@@ -45,10 +47,11 @@ export function Login() {
                         window.location = "/dashboard";
                     }, 1500);
                 }
+                $("#Overlay").hide();
+                $("#LoderId").hide();
                 // cookies.set('accesstoken', accessToken, { path: '/', maxAge: 1200 }); //30 minutes
             }
-            $("#Overlay").hide();
-            $("#LoderId").hide();
+           
         });
     }
     return (

@@ -2,6 +2,7 @@ import '../Styles/SideMenu/Sidemenu.css';
 import '../Styles/SideMenu/semi-dark.css';
 import $ from 'jquery';
 import { useEffect } from 'react';
+import { ApiPostCall } from '../JS/Connector';
 export function ManageInventory() {
     const width = $(window).width();
     useEffect(() => {
@@ -22,11 +23,90 @@ export function ManageInventory() {
             $("#RocketImg_" + currentObj).addClass('RocketImage');
         }
     }
+    const ImportInventory = async () => {
+        let fileInput = document.querySelector(".default-file-input");
+        fileInput.addEventListener("change", e => {
+            var fileInputValue = fileInput.value;
+            var extension = fileInputValue.split('.').pop();
+            if (extension == "csv") {
+                $("#ImportInventoryText").text(fileInput.value);
+            } else {
+                $("#ImportInventoryText").text('Upload only csv file.');
+            }
+            var raw = JSON.stringify({
+                upload_file: fileInputValue
+            });
+            ApiPostCall("/upload", raw).then((result) => {
+                if (result == undefined || result == "") {
+                    $("#Overlay").hide();
+                    $("#LoderId").hide();
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text('Login Failed!');
+                    setTimeout(function () {
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
+                    }, 1500);
+                } else {
+                    const responseRs = JSON.parse(result);
+                    console.log(responseRs)
+                    // if (responseRs.status == "success") {
+                    //     $(".alert-success").show();
+                    //     $("#AlertMsg").text("Login Successfully.");
+                    //     setTimeout(function () {
+                    //         window.location = "/dashboard";
+                    //     }, 1500);
+                    // }
+                    $("#Overlay").hide();
+                    $("#LoderId").hide();
+                }
+
+            });
+        });
+    }
+    function uploadAction(e) {
+        var data = new FormData();
+        var imagedata = document.querySelector('input[type="file"]').files[0];
+        data.append("upload_file", imagedata);
+        ApiPostCall("/upload", data).then((result) => {
+            if (result == undefined || result == "") {
+                $("#Overlay").hide();
+                $("#LoderId").hide();
+                $(".alert-danger").show();
+                $("#AlertDangerMsg").text('Login Failed!');
+                setTimeout(function () {
+                    $(".alert-danger").hide();
+                    $("#AlertDangerMsg").text();
+                }, 1500);
+            } else {
+                // const responseRs = JSON.parse(result);
+                alert(result)
+                $("#Overlay").hide();
+                $("#LoderId").hide();
+            }
+
+        });
+    }
+
 
     return (
         <>
-            <h1 className="PageHeading">Manage Inventory</h1>
-            <div className="container-fluid px-0 pt-2">
+            <div className='col-12 row'>
+                <div className='col-md-6'>
+                    <h1 className="PageHeading">Manage Inventory</h1>
+                </div>
+                <div className='col-md-6 text-end'>
+                    <input type="file" name="upload_file"></input>
+                    <input type="button" value="upload" onClick={uploadAction}></input>
+                    {/* <div>
+                        <label className='BorderBtn' onClick={ImportInventory}> Import Inventory
+                            <img src='/images/ImportInventory.svg' className='img-fluid ps-2' />
+                            <input type="file" name='upload_file' accept=".csv" className='default-file-input' />
+                        </label><br />
+                        <label id="ImportInventoryText" style={{ color: "red" }}></label>
+                    </div> */}
+                </div>
+            </div>
+            <div className="container-fluid px-0">
                 <div className="GridBox">
                     <div className="container  ps-3">
                         <div className='row pt-4 d-flex align-items-center'>

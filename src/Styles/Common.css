@@ -179,15 +179,28 @@ select {
 
 .RocketImage {
     position: absolute;
-    animation: fly 1s linear 0s infinite;
+    animation: fly 2s linear 0s infinite;
 }
+
 @keyframes fly {
     0% {
         top: 0%;
         left: 0%;
     }
+
     100% {
         top: 0%;
         left: 100%;
     }
 }
+
+.BorderBtn {
+    background: #F9FAFB;
+    border: 1px solid #E2E3E4;
+    border-radius: 15px;
+    padding: 7px 25px;
+}
+
+/* input[type="file"] {
+    display: none;
+} */
