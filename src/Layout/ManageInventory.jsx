@@ -1,10 +1,11 @@
 import '../Styles/SideMenu/Sidemenu.css';
 import '../Styles/SideMenu/semi-dark.css';
 import $ from 'jquery';
-import { useEffect } from 'react';
-import { ApiPostCall } from '../JS/Connector';
+import { useEffect, useRef } from 'react';
 export function ManageInventory() {
     const width = $(window).width();
+    const BaseUrl = process.env.REACT_APP_Base_URL;
+    const fileRef = useRef();
     useEffect(() => {
         return () => {
             const height = window.innerHeight;
@@ -23,87 +24,51 @@ export function ManageInventory() {
             $("#RocketImg_" + currentObj).addClass('RocketImage');
         }
     }
-    const ImportInventory = async () => {
-        let fileInput = document.querySelector(".default-file-input");
-        fileInput.addEventListener("change", e => {
-            var fileInputValue = fileInput.value;
-            var extension = fileInputValue.split('.').pop();
-            if (extension == "csv") {
-                $("#ImportInventoryText").text(fileInput.value);
-            } else {
-                $("#ImportInventoryText").text('Upload only csv file.');
-            }
-            var raw = JSON.stringify({
-                upload_file: fileInputValue
-            });
-            ApiPostCall("/upload", raw).then((result) => {
-                if (result == undefined || result == "") {
-                    $("#Overlay").hide();
-                    $("#LoderId").hide();
-                    $(".alert-danger").show();
-                    $("#AlertDangerMsg").text('Login Failed!');
-                    setTimeout(function () {
-                        $(".alert-danger").hide();
-                        $("#AlertDangerMsg").text();
-                    }, 1500);
-                } else {
-                    const responseRs = JSON.parse(result);
-                    console.log(responseRs)
-                    // if (responseRs.status == "success") {
-                    //     $(".alert-success").show();
-                    //     $("#AlertMsg").text("Login Successfully.");
-                    //     setTimeout(function () {
-                    //         window.location = "/dashboard";
-                    //     }, 1500);
-                    // }
-                    $("#Overlay").hide();
-                    $("#LoderId").hide();
-                }
+    function handleForm(e) {
+        e.preventDefault();
+        const fileInput = fileRef.current;
+        const files = fileInput.files[0];
+        const filename = files.name;
+        var extension = filename.split('.').pop();
+        if (extension == "csv") {
+            $("#ImportInventoryText").text(filename);
+        } else {
+            $("#ImportInventoryText").text('Upload only csv file.');
+        }
+        var formdata = new FormData();
+        formdata.append("file", files);
+        var requestOptions = {
+            method: 'POST',
+            body: formdata,
+            redirect: 'follow'
+        };
+        fetch(`${BaseUrl}/upload`, requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
 
-            });
-        });
     }
-    function uploadAction(e) {
-        var data = new FormData();
-        var imagedata = document.querySelector('input[type="file"]').files[0];
-        data.append("upload_file", imagedata);
-        ApiPostCall("/upload", data).then((result) => {
-            if (result == undefined || result == "") {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
-                $(".alert-danger").show();
-                $("#AlertDangerMsg").text('Login Failed!');
-                setTimeout(function () {
-                    $(".alert-danger").hide();
-                    $("#AlertDangerMsg").text();
-                }, 1500);
-            } else {
-                // const responseRs = JSON.parse(result);
-                alert(result)
-                $("#Overlay").hide();
-                $("#LoderId").hide();
-            }
-
-        });
-    }
-
-
     return (
         <>
-            <div className='col-12 row'>
+            <div className='row col-12'>
                 <div className='col-md-6'>
                     <h1 className="PageHeading">Manage Inventory</h1>
                 </div>
-                <div className='col-md-6 text-end'>
-                    <input type="file" name="upload_file"></input>
-                    <input type="button" value="upload" onClick={uploadAction}></input>
-                    {/* <div>
-                        <label className='BorderBtn' onClick={ImportInventory}> Import Inventory
+                <div className='col-md-6 text-end d-flex justify-content-end align-items-center'>
+                    <form onSubmit={handleForm}>
+                        <input type="file" ref={fileRef} name="upload_file" id="UploadFileId" accept='.csv'/>
+                        <label className='ImportInventoryBtn' for="UploadFileId"> Import Inventory
                             <img src='/images/ImportInventory.svg' className='img-fluid ps-2' />
-                            <input type="file" name='upload_file' accept=".csv" className='default-file-input' />
-                        </label><br />
+                        </label>
+                        <input type="submit" value="Upload" className='UploadBtn' /><br />
                         <label id="ImportInventoryText" style={{ color: "red" }}></label>
-                    </div> */}
+                    </form>
+                    <form>
+                        <label className='BorderBtn ms-3' for="UploadFileId"> Add Inventory
+                            <img src='/images/AddInventory.svg' className='img-fluid ps-2' />
+                        </label><br />
+                        <label></label>
+                    </form>
                 </div>
             </div>
             <div className="container-fluid px-0">
@@ -141,7 +106,7 @@ export function ManageInventory() {
                                     </div>
                                     <table className="table innerGridBox mt-2">
                                         <tbody>
-                                            <tr onClick={(e) => ShowDeviceDetailsDiv(1)} id="GridId_1">
+                                            <tr onClick={(e) => ShowDeviceDetailsDiv(1)}>
                                                 <td>Priyam Maheta</td>
                                                 <td>#6598 9256</td>
                                                 <td>iPad</td>

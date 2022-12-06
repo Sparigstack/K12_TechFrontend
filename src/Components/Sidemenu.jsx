@@ -1,8 +1,10 @@
 import $ from 'jquery';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import '../Styles/SideMenu/Sidemenu.css';
 import '../Styles/SideMenu/semi-dark.css';
 export function Sidemenu() {
+    const firstPath = window.location.pathname.split('/')[1];
+    const FinalPath = "/" + firstPath;
     useEffect(() => {
         return () => {
             $(".nav-toggle-icon").on("click", function () {
@@ -53,7 +55,7 @@ export function Sidemenu() {
                 }
             });
             $('.metismenu li a').each(function (e) {
-                if ($(this).attr('href') == window.location.pathname) {
+                if ($(this).attr('href') == FinalPath) {
                     var changeImage = $(this).attr('changeimg');
                     $(this).parent().addClass('mm-active');
                     $(this).parent().find(".ChangeImage").attr('src', changeImage);
@@ -76,7 +78,7 @@ export function Sidemenu() {
                     $(this).find(".ChangeImage").attr('src', changeImage);
                 }
             });
-           
+
         };
     }, []);
     return (
@@ -242,7 +244,7 @@ export function Sidemenu() {
             {/* end top header */}
 
             {/* start sidebar */}
-            <aside className="sidebar-wrapper" data-simplebar="init">
+            <aside className="sidebar-wrapper" data-simplebar="init" style={{ overflowY: "scroll" }}>
                 <div className="simplebar-wrapper" style={{ margin: "0px" }}>
                     <div className="simplebar-height-auto-observer-wrapper">
                         <div className="simplebar-height-auto-observer"></div>
@@ -260,9 +262,17 @@ export function Sidemenu() {
                                         <li>
                                             <a href="/dashboard" changeimg="/Images/SideMenu/Icons/DashboardWhite.svg" originalimg="/Images/SideMenu/Icons/Dashboard.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/Images/SideMenu/Icons/Dashboard.svg' className='img-fluid ChangeImage' title='Create Ticket' />
+                                                    <img src='/Images/SideMenu/Icons/Dashboard.svg' className='img-fluid ChangeImage' title='Dashboard' />
                                                 </div>
                                                 <div className="menu-title">Dashboard</div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/device-model" changeimg="/Images/SideMenu/Icons/DeviceModelWhite.svg" originalimg="/Images/SideMenu/Icons/DeviceModel.svg">
+                                                <div className="parent-icon">
+                                                    <img src='/Images/SideMenu/Icons/DeviceModel.svg' className='img-fluid ChangeImage' title='Device Model' />
+                                                </div>
+                                                <div className="menu-title">Device Model</div>
                                             </a>
                                         </li>
                                         <li>
@@ -342,13 +352,6 @@ export function Sidemenu() {
                             </div>
                         </div>
                     </div>
-                    <div className="simplebar-placeholder" style={{ width: "auto", height: "1906px" }}></div>
-                </div>
-                <div className="simplebar-track simplebar-horizontal" style={{ visibility: "hidden" }}>
-                    <div className="simplebar-scrollbar" style={{ width: "0px", display: "none" }}></div>
-                </div>
-                <div className="simplebar-track simplebar-vertical" style={{ visibility: "visible" }}>
-                    <div className="simplebar-scrollbar" style={{ height: "69px", transform: "translate3d(0px, 0px, 0px)", display: "block" }}></div>
                 </div>
             </aside>
             {/* end sidebar */}

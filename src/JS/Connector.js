@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 const BaseUrl = process.env.REACT_APP_Base_URL;
 var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
+
 myHeaders.append("Access-Control-Allow-Origin", "*");
 export function CheckValidation(formID) {
     var isValid = true;
@@ -14,10 +15,10 @@ export function CheckValidation(formID) {
 
                 if (!isValidValue($(this).val())) {
 
-                    $(this).parent().find(".invalid-feedback").css('display', 'block');
+                    $(this).parent().parent().find(".invalid-feedback").css('display', 'block');
                     isValid = false;
                 } else {
-                    $(this).parent().find(".invalid-feedback").css('display', '');
+                    $(this).parent().parent().find(".invalid-feedback").css('display', '');
                 }
             }
         }
@@ -142,3 +143,18 @@ export function VerifyToken(endpoint){
   $("#Overlay").hide();
   $("#LoderId").hide();
 }
+export var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
