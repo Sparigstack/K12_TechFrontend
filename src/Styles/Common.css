@@ -117,28 +117,27 @@ a {
 
 .gridsearchbar {
     position: relative;
+}
 
-}
-.GridHeader{
-    background-color: #989c9f;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 7px;
-}
-.grid{
-    border-bottom: 1px solid #dee2e6;
-    padding: 0.7rem 0.5rem;
+.GridHeader {
+    color: black;
+    font-weight: 600;
 }
 
 .gridsearchbar .form-control {
-    border-radius: 30px;
+    border-radius: 10px;
     box-shadow: none;
     padding-left: 2.5rem;
     padding-right: 2.5rem;
     border: 1px solid #e2e3e4;
     background: #f9fafb;
     /* width: 30%; */
+}
+
+.GridTitle {
+    font-weight: bold;
+    font-size: 18px;
+    color: #030E20 !important;
 }
 
 .searchIcon {
@@ -180,13 +179,14 @@ select {
     border-radius: 4px;
     border: none;
     color: white;
-    padding: 6px 15px 6px 15px;
+    padding: 6px 10px 6px 10px;
 }
 
 .innerGridBox tr:hover {
     background-color: #F7FFFE;
 }
-.grid:hover{
+
+.grid:hover {
     background-color: #F7FFFE;
 }
 
@@ -247,7 +247,31 @@ input[type="file"] {
 ::-webkit-scrollbar-thumb:hover {
     background: #151821;
 }
-.GridNoRecord{
+
+.GridNoRecord {
     padding: 10px;
     border-bottom: 1px solid #efe4e4;
+}
+
+.ActionBox {
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 8%);
+    border-radius: 5px;
+    padding: 10px;
+    text-align: start;
+    position: absolute;
+    z-index: 1;
+}
+.modal{
+    top: 14% !important;
+    left: 10% !important;
+}
+.ModalHeader{
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+.modal-content{
+    padding-left: 15px;
+    padding-right: 20px;
 }

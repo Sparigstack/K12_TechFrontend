@@ -268,11 +268,19 @@ export function Sidemenu() {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/device-model" changeimg="/Images/SideMenu/Icons/DeviceModelWhite.svg" originalimg="/Images/SideMenu/Icons/DeviceModel.svg">
+                                            <a href="/device-type" changeimg="/Images/SideMenu/Icons/DeviceModelWhite.svg" originalimg="/Images/SideMenu/Icons/DeviceModel.svg">
                                                 <div className="parent-icon">
-                                                    <img src='/Images/SideMenu/Icons/DeviceModel.svg' className='img-fluid ChangeImage' title='Device Model' />
+                                                    <img src='/Images/SideMenu/Icons/DeviceModel.svg' className='img-fluid ChangeImage' title='Device Type' />
                                                 </div>
-                                                <div className="menu-title">Device Model</div>
+                                                <div className="menu-title">Device Type</div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/os-model" changeimg="/Images/SideMenu/Icons/OsModelWhite.svg" originalimg="/Images/SideMenu/Icons/OsModel.svg">
+                                                <div className="parent-icon">
+                                                    <img src='/Images/SideMenu/Icons/OsModel.svg' className='img-fluid ChangeImage' title='OS Model' />
+                                                </div>
+                                                <div className="menu-title">OS Model</div>
                                             </a>
                                         </li>
                                         <li>

@@ -14,7 +14,8 @@ import { ManageInventory } from './Layout/ManageInventory';
 import { Logout } from './Layout/Logout';
 import { MsalProvider } from "@azure/msal-react";
 import { ErrorPage } from './Layout/404.jsx';
-import { DeviceModel } from './Layout/DeviceModel.jsx';
+import { DeviceType } from './Layout/DeviceType.jsx';
+import { OsModel } from './Layout/OsModel.jsx';
 function App({ msalInstance }) {
   var accesstoken = Cookies.get('accesstoken');
   const clientId = process.env.REACT_APP_ClientId;
@@ -38,7 +39,8 @@ function App({ msalInstance }) {
               <Route path="/logout" element={<Logout />} />
               <Route path="/dashboard" element={<Temp />} />
               <Route path="/manage-inventory" element={<ManageInventory />} />
-              <Route path="/device-model/*" element={<DeviceModel />} />
+              <Route path="/device-type/*" element={<DeviceType />} />
+              <Route path="/os-model/*" element={<OsModel />} />
             </Routes>
           </Layout>
           :
