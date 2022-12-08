@@ -133,6 +133,7 @@ export function VerifyToken(endpoint){
       } else {
           const responseRs = JSON.parse(result);
           if (responseRs.status == "success") {
+            Cookies.set('CsvUserId', responseRs.msg.id);
             endpoint();
           }else{
             window.location = "/";

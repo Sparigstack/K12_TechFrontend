@@ -3,23 +3,28 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { CheckValidation } from '../JS/Connector';
 import { ApiPostCall } from '../JS/Connector';
-import { ApiGetCall,ApiDeleteCall } from '../JS/Connector';
+import { ApiGetCall, ApiDeleteCall } from '../JS/Connector';
 export function OsModel() {
     const [Name, setName] = useState("");
     const [AllOS, setAllOS] = useState([]);
     const [norecord, setNorecord] = useState("");
+    const [AddUpdateFlag, setAddUpdateFlag] = useState(0);
     useEffect(() => {
         return () => {
             const height = window.innerHeight;
             const navbarheight = $(".navbar").height();
             var finalHeight = height - navbarheight - 90;
             $(".GridBox").css('height', finalHeight);
-            $(".greyBox").css('height', finalHeight - 90);
+            $("#GreyBoxId").css('height', finalHeight - 90);
             GetOSAllData();
         };
     }, []);
     const AddOsModel = () => {
-        $("#AddOsDiv").removeClass('d-none');
+        $("#OSModelImage").addClass('d-none');
+        $("#AddOSModelID").removeClass('d-none');
+        setAddUpdateFlag(0);
+        $("#OsName").val("");
+        $("#OsName").focus();
     }
     const GetOSAllData = async () => {
         $("#Overlay").show();
@@ -73,7 +78,8 @@ export function OsModel() {
                 $("#Overlay").hide();
                 $("#LoderId").hide();
                 if (result == "success") {
-                    $("#AddOsDiv").addClass('d-none');
+                    $("#AddOSModelID").addClass('d-none');
+                    $("#OSModelImage").removeClass('d-none');
                     $(".alert-success").show();
                     $("#AlertMsg").text("OS Model Added Successfully.");
                     setTimeout(function () {
@@ -90,20 +96,41 @@ export function OsModel() {
             }
         });
     }
-    const ShowInputOsName = (UserId) =>{
-        $("#OsNameSpan_" + UserId).addClass('d-none');
-        $("#OsNameInput_" + UserId).removeClass('d-none');
-        $("#OsNameInput_" + UserId).focus();
-        $("#EditIcon_" + UserId).addClass('d-none');
-        $("#UpdateSaveIcon_" + UserId).removeClass('d-none');
+    const ShowInputOsName = async (UserId) => {
+        setAddUpdateFlag(1);
+        $("#HdnUserId").val(UserId);
+
+        await ApiGetCall("/fetchOs/" + UserId).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                $("#Overlay").hide();
+                $("#LoderId").hide();
+                var sugData = responseRs.msg;
+                if (responseRs.response == "success") {
+                    $("#OSModelImage").addClass('d-none');
+                    $("#AddOSModelID").removeClass('d-none');
+                    $("#OsName").focus();
+                    setName(sugData.os);
+                } else {
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text(responseRs.message);
+                    setTimeout(function () {
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
+                    }, 1500);
+                }
+            }
+        });
     }
-    const UpdateOsName = async(UserId) => {
+    const UpdateOsName = async () => {
+        var UserId = parseInt($("#HdnUserId").val());
         $("#Overlay").show();
         $("#LoderId").show();
-        var UpdatedName = $("#OsNameInput_" + UserId).val();
         var raw = JSON.stringify({
-            ID:UserId,
-            name: UpdatedName,
+            ID: UserId,
+            name: Name,
         });
         await ApiPostCall("/addNdUpdateOs", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -112,7 +139,8 @@ export function OsModel() {
                 $("#Overlay").hide();
                 $("#LoderId").hide();
                 if (result == "success") {
-                    $("#AddOsDiv").addClass('d-none');
+                    $("#OSModelImage").removeClass('d-none');
+                    $("#AddOSModelID").addClass('d-none');
                     $(".alert-success").show();
                     $("#AlertMsg").text("OS Model Updated Successfully.");
                     setTimeout(function () {
@@ -129,7 +157,7 @@ export function OsModel() {
             }
         });
     }
-    const DeleteOs = async(UserId) =>{
+    const DeleteOs = async (UserId) => {
         $("#Overlay").show();
         $("#LoderId").show();
         var raw = JSON.stringify({
@@ -158,11 +186,14 @@ export function OsModel() {
             }
         });
     }
+    const handleClose = () => {
+        window.location.reload();
+    }
     return (
         <>
-            {/* Grid */}
+            <input type="hidden" id="HdnUserId" />
             <div>
-                <div className='row col-12'>
+                <div className='row col-12 d-flex align-items-center'>
                     <div className='col-md-6'>
                         <h1 className="PageHeading">Operating System Model</h1>
                     </div>
@@ -171,77 +202,97 @@ export function OsModel() {
                             Add Operating System <img src='/images/AddInventory.svg' className='img-fluid ps-2' />
                         </label>
                     </div>
-                    <div className='col-md-6'></div>
-                    <div className='col-md-6 mt-3 d-none' id="AddOsDiv">
-                        <div className="row align-items-center">
-                            <div className="col-md-2 text-center">
-                                <label className="col-form-label">Name</label>
-                            </div>
-                            <div className="col-md-8">
-                                <input type="text" id="OsName" className="form-control" required value={Name}
-                                    onChange={(e) => setName(e.target.value)} />
-                            </div>
-                            <div className='col-md-2'>
-                                <button className='SaveBtn' onClick={SaveOsName}>Save</button>
-                            </div>
-                            <div className="col-md-12">
-                                <span className="form-text invalid-feedback">
-                                    *required
-                                </span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div className="container-fluid px-0 pt-3" id='GridDiv'>
-                    <div className="GridBox" style={{ height: "78vh" }}>
-                        <div className="m-4">
-                            <div className="row GridHeader">
-                                <div className="col-md-5">Name</div>
-                                <div className="col-md-4">Created At</div>
-                                <div className="col-md-3 text-center">Action</div>
+                <div className='GridBox mt-2 p-4' id='GridDiv'>
+                    <div className='row'>
+                        <div className='greyBox col-md-8' id="GreyBoxId">
+                            <div className='row d-flex align-items-center p-1'>
+                                <div className='col-md-7'>
+                                    <span className='GridTitle'>Operating System Model List</span>
+                                </div>
+                                <div className='col-md-5 text-end'>
+                                    <form className="gridsearchbar">
+                                        <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
+                                        <input className="form-control" type="text" placeholder="Search OS Model" />
+                                    </form>
+                                </div>
                             </div>
-                            <div className="GridDataDiv" style={{ overflowY: "scroll", overflowX: "hidden" }}>
-                                {AllOS.map((item, i) => {
-                                    var returData;
-                                    var date = new Date(item.created_at),
-                                        yr = date.getFullYear(),
-                                        month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
-                                        day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-                                        newDate = yr + '-' + month + '-' + day;
-                                    returData = (<div className="col-12 grid" key={i}>
-                                        <div className="row" key={i}>
-                                            <div className="col-5">
-                                                <input type="text" id={`OsNameInput_${item.ID}`} className="form-control d-none" required defaultValue={item.os}
-                                                    />
-                                                <span id={`OsNameSpan_${item.ID}`}>{item.os}</span>
-                                            </div>
-                                            <div className="col-4">
-                                                {newDate}
-                                            </div>
-                                            <div className="col-3 text-center">
-                                                <span>
-                                                    <img src="/images/EditIcon.svg" title="Edit Operating System" className="cursor-pointer me-1" id={`EditIcon_${item.ID}`}
-                                                        alt="Edit" onClick={(e) => ShowInputOsName(item.ID)}
-                                                    />
-                                                </span>
-                                                <span>
-                                                    <img src='/images/SaveIcon.svg' title='Update Opeating System' className="cursor-pointer me-1 d-none" id={`UpdateSaveIcon_${item.ID}`}
-                                                        alt="Update" height="20px" onClick={(e) => UpdateOsName(item.ID)}
-                                                    />
-                                                </span>
-                                                <span>
-                                                    <img src="/images/DeleteIcon.svg" title="Delete Operating System" className="cursor-pointer me-1"
-                                                        alt="Delete" onClick={(e) => DeleteOs(item.ID)}
-                                                    />
-                                                </span>
-                                            </div>
+                            <div className='col-12'>
+                                <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                            </div>
+                            <div>
+                                <div className="mx-4">
+                                    <div className="row GridHeader">
+                                        <div className="col-md-5">OS Name</div>
+                                        <div className="col-md-4">Create Date</div>
+                                        <div className="col-md-3 text-center">Action</div>
+                                        <div className='col-12 p-0'>
+                                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                         </div>
                                     </div>
-                                    );
-                                    return returData;
-                                })}
-                                {norecord}
+                                    <div className="GridDataDiv row" style={{ overflowY: "scroll", overflowX: "hidden" }}>
+                                        {AllOS.map((item, i) => {
+                                            var returData;
+                                            var date = new Date(item.created_at),
+                                                yr = date.getFullYear(),
+                                                month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
+                                                day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+                                                newDate = day + '-' + month + '-' + yr;
+                                            returData = (<div className="col-12" key={i}>
+                                                <div className="row" key={i}>
+                                                    <div className="col-5">
+                                                        {item.os}
+                                                    </div>
+                                                    <div className="col-4">
+                                                        {newDate}
+                                                    </div>
+                                                    <div className="col-3 text-center">
+                                                        <img src="/images/EditIcon.svg" title="Edit OS Model" className="cursor-pointer me-1"
+                                                            alt="Edit" onClick={(e) => ShowInputOsName(item.ID)}
+                                                        />
+                                                        <img src="/images/DeleteIcon.svg" title="Delete OS Model" className="cursor-pointer me-1" userid={item.ID}
+                                                            alt="Delete" onClick={(e) => DeleteOs(item.ID)}
+                                                        />
+                                                    </div>
+                                                    <div className='col-12 p-0 m-0'>
+                                                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            );
+                                            return returData;
+                                        })}
+                                        {norecord}
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div className='col-md-4 pe-0'>
+                            <div className='greyBox d-none' id="AddOSModelID">
+                                <div className='col-12'>
+                                    <span className='GridTitle'>Operatin System Model</span>
+                                </div>
+                                <div className='col-12'>
+                                    <img src='/images/SmallHRLine.svg' className='img-fluid w-100' />
+                                </div>
+                                <div className='col-12 mt-4' id="AddOsDiv">
+                                    <label>Operating System Name*</label>
+                                    <input type="text" autoComplete='off' id="OsName" className="form-control mt-2" required value={Name}
+                                        onChange={(e) => setName(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                                <div className='col-12 text-center my-4'>
+                                    {AddUpdateFlag == 0 ?
+                                        <button className='SaveBtn' onClick={SaveOsName}>Save OS Model</button>
+                                        :
+                                        <button className='SaveBtn' onClick={UpdateOsName}>Update OS Model</button>
+                                    }
+                                    <label className='ms-2 cursor-pointer' onClick={handleClose}>Cancel</label>
+                                </div>
+                            </div>
+                            <img src='/images/OsModelImage.svg' className='img-fluid' id="OSModelImage" />
                         </div>
                     </div>
                 </div>

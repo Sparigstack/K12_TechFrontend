@@ -4,16 +4,10 @@ import { useEffect } from 'react';
 import { ApiDeleteCall, CheckValidation } from '../JS/Connector';
 import { ApiPostCall } from '../JS/Connector';
 import { ApiGetCall } from '../JS/Connector';
-import Modal from 'react-bootstrap/Modal';
 export function DeviceType() {
-    const [Name, setName] = useState("");
     const [Type, setType] = useState("");
-    const [Number, setNumber] = useState("");
     const [AllDevices, setAllDevices] = useState([]);
     const [norecord, setNorecord] = useState("");
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    
     const [AddUpdateFlag, setAddUpdateFlag] = useState(0);
     useEffect(() => {
         return () => {
@@ -25,15 +19,45 @@ export function DeviceType() {
             GetDeviceAllData();
         };
     }, []);
-    
-    const handleShow = (UserId) => {
-        setShow(true);
+
+    const AddDeviceType = () => {
+        $("#DeviceTypeModelImage").addClass('d-none');
+        $("#AddDeviceTypeModelID").removeClass('d-none');
+        setAddUpdateFlag(0);
+        $("#DeviceTypeName").val("");
+    }
+
+    const handleClose = () => {
+        window.location.reload();
+    }
+
+    const handleShow = async (UserId) => {
+        setAddUpdateFlag(1);
         $("#HdnUserId").val(UserId);
-        if(UserId != 0){
-            $(".ActionBox").addClass('d-none');
-            setAddUpdateFlag(1);
-            GetDeviceDataById();
-        }
+
+        await ApiGetCall("/fetchDevice/" + UserId).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                $("#Overlay").hide();
+                $("#LoderId").hide();
+                var sugData = responseRs.msg;
+                if (responseRs.response == "success") {
+                    $("#DeviceTypeModelImage").addClass('d-none');
+                    $("#AddDeviceTypeModelID").removeClass('d-none');
+                    $("#DeviceTypeName").focus();
+                    setType(sugData.type);
+                } else {
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text(responseRs.msg);
+                    setTimeout(function () {
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
+                    }, 1500);
+                }
+            }
+        });
     };
 
     // Grid Get call
@@ -74,35 +98,6 @@ export function DeviceType() {
         });
     }
 
-    // Get Data By Id
-    const GetDeviceDataById = async () => {
-        var vId = parseInt($("#HdnUserId").val());
-        $("#Overlay").show();
-        $("#LoderId").show();
-        await ApiGetCall("/fetchDevice/" + vId).then((result) => {
-            if (result == undefined || result == "") {
-                alert("Something went wrong");
-            } else {
-                const responseRs = JSON.parse(result);
-                $("#Overlay").hide();
-                $("#LoderId").hide();
-                var sugData = responseRs.msg;
-                if (responseRs.response == "success") {
-                    setName(sugData.name);
-                    setType(sugData.type);
-                    setNumber(sugData.device_num);
-                } else {
-                    $(".alert-danger").show();
-                    $("#AlertDangerMsg").text(responseRs.msg);
-                    setTimeout(function () {
-                        $(".alert-danger").hide();
-                        $("#AlertDangerMsg").text();
-                    }, 1500);
-                }
-            }
-        });
-    }
-
     // Add Device Model Save
     const SaveDevice = async () => {
         var isFormValid = CheckValidation("AddUpdateForm");
@@ -111,9 +106,7 @@ export function DeviceType() {
         $("#Overlay").show();
         $("#LoderId").show();
         var raw = JSON.stringify({
-            name: Name,
-            type: Type,
-            device_num: Number
+            type: Type
         });
         await ApiPostCall("/addNdUpdateDevice", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -122,9 +115,10 @@ export function DeviceType() {
                 $("#Overlay").hide();
                 $("#LoderId").hide();
                 if (result == "success") {
-                    setShow(false);
+                    $("#DeviceTypeModelImage").removeClass('d-none');
+                    $("#AddDeviceTypeModelID").addClass('d-none');
                     $(".alert-success").show();
-                    $("#AlertMsg").text("Device Model Added Successfully.");
+                    $("#AlertMsg").text("Device Type Added Successfully.");
                     setTimeout(function () {
                         window.location = "/device-type";
                     }, 1500);
@@ -149,9 +143,7 @@ export function DeviceType() {
         $("#LoderId").show();
         var raw = JSON.stringify({
             ID: vId,
-            name: Name,
-            type: Type,
-            device_num: Number
+            type: Type
         });
         await ApiPostCall("/addNdUpdateDevice", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -160,9 +152,10 @@ export function DeviceType() {
                 $("#Overlay").hide();
                 $("#LoderId").hide();
                 if (result == "success") {
-                    setShow(false);
+                    $("#DeviceTypeModelImage").removeClass('d-none');
+                    $("#AddDeviceTypeModelID").addClass('d-none');
                     $(".alert-success").show();
-                    $("#AlertMsg").text("Device Model Updated Successfully.");
+                    $("#AlertMsg").text("Device Type Updated Successfully.");
                     setTimeout(function () {
                         window.location = "/device-type";
                     }, 1500);
@@ -194,7 +187,7 @@ export function DeviceType() {
                 if (result == "success") {
                     $(".ActionBox").addClass('d-none');
                     $(".alert-success").show();
-                    $("#AlertMsg").text("Device Model Deleted Successfully.");
+                    $("#AlertMsg").text("Device Type Deleted Successfully.");
                     setTimeout(function () {
                         window.location.reload();
                     }, 1500);
@@ -209,16 +202,6 @@ export function DeviceType() {
             }
         });
     }
-
-    const ShowActionBox = (UserId) => {
-        if ($("#ActionBoxId_" + UserId).hasClass('d-none')) {
-            $(".ActionBox").addClass('d-none');
-            $("#ActionBoxId_" + UserId).removeClass('d-none');
-        } else {
-            $(".ActionBox").addClass('d-none');
-            $("#ActionBoxId_" + UserId).addClass('d-none');
-        }
-    }
     return (
         <>
             <input type="hidden" id="HdnUserId" />
@@ -229,131 +212,105 @@ export function DeviceType() {
                         <h1 className="PageHeading">Device Type</h1>
                     </div>
                     <div className='col-md-6 text-end d-flex justify-content-end align-items-center'>
-                        <label className='BorderBtn ms-3 cursor-pointer' onClick={(e) => handleShow(0)}>
-                            Add Device <img src='/images/AddInventory.svg' className='img-fluid ps-2' />
+                        <label className='BorderBtn ms-3 cursor-pointer' onClick={AddDeviceType}>
+                            Add Device Type <img src='/images/AddInventory.svg' className='img-fluid ps-2' />
                         </label>
                     </div>
                 </div>
                 <div className='GridBox mt-2 p-4' id='GridDiv'>
-                    <div className='greyBox' id="GreyBoxId">
-                        <div className='row d-flex align-items-center p-1'>
-                            <div className='col-md-9'>
-                                <span className='GridTitle'>Device Type List</span>
-                            </div>
-                            <div className='col-md-3 text-end'>
-                                <form className="gridsearchbar">
-                                    <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                    <input className="form-control" type="text" placeholder="Search Device Type" />
-                                </form>
-                            </div>
-                        </div>
-                        <div className='col-12'>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
-                        </div>
-                        <div>
-                            <div className="mx-4">
-                                <div className="row GridHeader">
-                                    <div className="col-md-4">Device Name</div>
-                                    <div className="col-md-3">Device Type</div>
-                                    <div className="col-md-3">Serial Number</div>
-                                    <div className="col-md-2 text-end">Action</div>
-                                    <div className='col-12 p-0'>
-                                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
-                                    </div>
+                    <div className='row'>
+                        <div className='greyBox col-md-8' id="GreyBoxId">
+                            <div className='row d-flex align-items-center p-1'>
+                                <div className='col-md-7'>
+                                    <span className='GridTitle'>Device Type List</span>
                                 </div>
-                                <div className="GridDataDiv row" style={{ overflowY: "scroll", overflowX: "hidden" }}>
-                                    {AllDevices.map((item, i) => {
-                                        var returData;
-                                        returData = (<div className="col-12" key={i}>
-                                            <div className="row" key={i}>
-                                                <div className="col-4">
-                                                    {item.name}
-                                                </div>
-                                                <div className="col-3">
-                                                    {item.type}
-                                                </div>
-                                                <div className="col-3">
-                                                    {item.device_num}
-                                                </div>
-                                                <div className="col-2 text-end">
-                                                    <div className=''>
-                                                        <img src='/images/ActionIcon.svg' className='img-fluid cursor-pointer ActionBoxImage' alt="Action" onClick={(e) => ShowActionBox(item.ID)} />
-                                                        <div className='ActionBox d-none' id={`ActionBoxId_${item.ID}`}>
-                                                            <div className="cursor-pointer grid p-1" onClick={(e) => handleShow(item.ID)}>
-                                                                <img src="/images/EditIcon.svg" title="Edit Device" className="me-1"
-                                                                    alt="Edit"
-                                                                />Edit Device
-                                                            </div>
-                                                            <div className='pt-2 cursor-pointer grid p-1' onClick={(e) => DeleteDevice(item.ID)}>
-                                                                <img src="/images/DeleteIcon.svg" title="Delete Device" className="cursor-pointer me-1" userid={item.ID}
-                                                                    alt="Delete"
-                                                                />Remove
-                                                            </div>
-                                                        </div>
+                                <div className='col-md-5 text-end'>
+                                    <form className="gridsearchbar">
+                                        <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
+                                        <input className="form-control" type="text" placeholder="Search Device Type" />
+                                    </form>
+                                </div>
+                            </div>
+                            <div className='col-12'>
+                                <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                            </div>
+                            <div>
+                                <div className="mx-4">
+                                    <div className="row GridHeader">
+                                        <div className="col-md-6">Device Type Name</div>
+                                        <div className="col-md-3">Create Date</div>
+                                        <div className="col-md-3 text-center">Action</div>
+                                        <div className='col-12 p-0'>
+                                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                                        </div>
+                                    </div>
+                                    <div className="GridDataDiv row" style={{ overflowY: "scroll", overflowX: "hidden" }}>
+                                        {AllDevices.map((item, i) => {
+                                            var returData;
+                                            var date = new Date(item.created_at),
+                                                yr = date.getFullYear(),
+                                                month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
+                                                day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+                                                newDate = day + '-' + month + '-' + yr;
+                                            returData = (<div className="col-12" key={i}>
+                                                <div className="row" key={i}>
+                                                    <div className="col-6">
+                                                        {item.type}
+                                                    </div>
+                                                    <div className="col-3">
+                                                        {newDate}
+                                                    </div>
+                                                    <div className="col-3 text-center">
+                                                        <img src="/images/EditIcon.svg" title="Edit OS Model" className="cursor-pointer me-1"
+                                                            alt="Edit" onClick={(e) => handleShow(item.ID)}
+                                                        />
+                                                        <img src="/images/DeleteIcon.svg" title="Delete OS Model" className="cursor-pointer me-1" userid={item.ID}
+                                                            alt="Delete" onClick={(e) => DeleteDevice(item.ID)}
+                                                        />
+                                                    </div>
+                                                    <div className='col-12 p-0 m-0'>
+                                                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                                     </div>
                                                 </div>
-                                                <div className='col-12 p-0 m-0'>
-                                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
-                                                </div>
                                             </div>
-                                        </div>
-                                        );
-                                        return returData;
-                                    })}
-                                    {norecord}
+                                            );
+                                            return returData;
+                                        })}
+                                        {norecord}
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className='col-md-4 pe-0'>
+                            <div className='greyBox d-none p-4' id="AddDeviceTypeModelID">
+                                <div className='col-12'>
+                                    <span className='GridTitle'>Device Type</span>
+                                </div>
+                                <div className='col-12'>
+                                    <img src='/images/SmallHRLine.svg' className='img-fluid w-100' />
+                                </div>
+                                <div className='col-12 mt-4' id="AddUpdateForm">
+                                    <label>Device Type Name*</label>
+                                    <input type="text" autoComplete='off' id="DeviceTypeName" className="form-control mt-2" required value={Type}
+                                        onChange={(e) => setType(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                                <div className='col-12 text-center my-4'>
+                                    {AddUpdateFlag == 0 ?
+                                        <button className='SaveBtn' onClick={SaveDevice}>Save Device Type</button>
+                                        :
+                                        <button className='SaveBtn' onClick={UpdateDevice}>Update Device Type</button>
+                                    }
+                                    <label className='ms-2 cursor-pointer' onClick={handleClose}>Cancel</label>
+                                </div>
+                            </div>
+                            <img src='/images/OsModelImage.svg' className='img-fluid' id="DeviceTypeModelImage" />
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Modal */}
-            <Modal size="lg" show={show} onHide={handleClose} keyboard={true}>
-                <div className='row ModalHeader'>
-                    <div className='col-md-11'>
-                        <h4>Device Type</h4>
-                    </div>
-                    <div className='col-md-1 text-end' onClick={handleClose}><img src='/images/CloseIcon.svg' className='img-fluid' /></div>
-                    <div className='col-12 px-0'>
-                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
-                    </div>
-                </div>
-                <div className='col-12 row mx-1 mb-3' id="AddUpdateForm">
-                    <div className='col-md-4'>
-                        <label>Device Name</label>
-                        <input type="text" id="DeviceName" autoComplete='off' className="form-control" required value={Name}
-                            onChange={(e) => setName(e.target.value)} />
-                        <span className="invalid-feedback">
-                            *required
-                        </span>
-                    </div>
-                    <div className='col-md-4'>
-                        <label>Device Type</label>
-                        <input type="text" id="DeviceType" autoComplete='off' className="form-control" required value={Type}
-                            onChange={(e) => setType(e.target.value)} />
-                        <span className="invalid-feedback">
-                            *required
-                        </span>
-                    </div>
-                    <div className='col-md-4'>
-                        <label>Serial Number</label>
-                        <input type="text" id="DeviceNumber" autoComplete='off' className="form-control" required value={Number}
-                            onChange={(e) => setNumber(e.target.value)} />
-                        <span className="invalid-feedback">
-                            *required
-                        </span>
-                    </div>
-                </div>
-                <div className='text-center mt-4 mb-4'>
-                    {AddUpdateFlag == 0 ?
-                        <button className='SaveBtn' onClick={SaveDevice}>Save Device Model</button>
-                        :
-                        <button className='SaveBtn' onClick={UpdateDevice}>Update Device Model</button>
-                    }
-                    <label className='ms-2 cursor-pointer' onClick={handleClose}>Cancel</label>
-                </div>
-            </Modal>
         </>
     )
 }

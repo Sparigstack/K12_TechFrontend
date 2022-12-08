@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import '../Styles/SideMenu/Sidemenu.css';
 import '../Styles/SideMenu/semi-dark.css';
 export function Sidemenu() {
-    const firstPath = window.location.pathname.split('/')[1];
-    const FinalPath = "/" + firstPath;
+    // const firstPath = window.location.pathname.split('/')[1];
+    // const FinalPath = "/" + firstPath;
     useEffect(() => {
         return () => {
             $(".nav-toggle-icon").on("click", function () {
@@ -55,7 +55,7 @@ export function Sidemenu() {
                 }
             });
             $('.metismenu li a').each(function (e) {
-                if ($(this).attr('href') == FinalPath) {
+                if ($(this).attr('href') == window.location.pathname) {
                     var changeImage = $(this).attr('changeimg');
                     $(this).parent().addClass('mm-active');
                     $(this).parent().find(".ChangeImage").attr('src', changeImage);
@@ -332,7 +332,7 @@ export function Sidemenu() {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/Images/SideMenu/Icons/ImportExportInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ImportExportInventory.svg">
+                                            <a href="/importexport-inventory" changeimg="/Images/SideMenu/Icons/ImportExportInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ImportExportInventory.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/ImportExportInventory.svg' className='img-fluid ChangeImage' title='Import / Export Inventory' />
                                                 </div>

@@ -122,6 +122,7 @@ a {
 .GridHeader {
     color: black;
     font-weight: 600;
+    font-size: 15px;
 }
 
 .gridsearchbar .form-control {
@@ -190,15 +191,19 @@ select {
     background-color: #F7FFFE;
 }
 
+.GridBgColor {
+    background-color: #F7FFFE;
+}
+
 .RocketImage {
-    position: absolute;
+    position: absolute !important;
     animation: fly 2s linear 0s infinite;
 }
 
 @keyframes fly {
     0% {
         top: 0%;
-        left: 0%;
+        left: 85%;
     }
 
     100% {
@@ -262,16 +267,46 @@ input[type="file"] {
     position: absolute;
     z-index: 1;
 }
-.modal{
+
+.modal {
     top: 14% !important;
     left: 10% !important;
 }
-.ModalHeader{
+
+.ModalHeader {
     display: flex;
     align-items: center;
     padding: 15px;
 }
-.modal-content{
+
+.modal-content {
     padding-left: 15px;
     padding-right: 20px;
+}
+
+.form-check-input:focus {
+    border-color: #3CBBA5;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgb(217 227 225) !important;
+}
+
+.PaginationClass {
+    background: #FFFFFF;
+    border: 0.5px solid #030E20;
+    color: #030E20;
+    border-radius: 50%;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    top: 5%;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    cursor: pointer;
+}
+
+.ActivePagination {
+    background: #030E20;
+    color: white;
 }
