@@ -1,9 +1,11 @@
 import $ from 'jquery';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { ApiDeleteCall, CheckValidation } from '../JS/Connector';
+import { ApiDeleteCall } from '../JS/Connector';
 import { ApiPostCall } from '../JS/Connector';
 import { ApiGetCall } from '../JS/Connector';
+import { DateFormat } from '../JS/Common';
+import { CheckValidation } from '../JS/Common';
 export function DeviceType() {
     const [Type, setType] = useState("");
     const [AllDevices, setAllDevices] = useState([]);
@@ -247,18 +249,13 @@ export function DeviceType() {
                                     <div className="GridDataDiv row" style={{ overflowY: "scroll", overflowX: "hidden" }}>
                                         {AllDevices.map((item, i) => {
                                             var returData;
-                                            var date = new Date(item.created_at),
-                                                yr = date.getFullYear(),
-                                                month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
-                                                day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-                                                newDate = day + '-' + month + '-' + yr;
                                             returData = (<div className="col-12" key={i}>
                                                 <div className="row" key={i}>
                                                     <div className="col-6">
                                                         {item.type}
                                                     </div>
                                                     <div className="col-3">
-                                                        {newDate}
+                                                        {DateFormat(item.created_at)}
                                                     </div>
                                                     <div className="col-3 text-center">
                                                         <img src="/images/EditIcon.svg" title="Edit OS Model" className="cursor-pointer me-1"

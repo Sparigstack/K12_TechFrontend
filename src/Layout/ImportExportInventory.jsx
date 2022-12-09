@@ -16,7 +16,7 @@ export function ImportExportInventory() {
             $(".GridBox").css('height', finalHeight);
         };
     }, []);
-    function handleForm(e) {
+    function ImportCSV(e) {
         e.preventDefault();
         const fileInput = fileRef.current;
         const files = fileInput.files[0];
@@ -24,13 +24,15 @@ export function ImportExportInventory() {
         var extension = filename.split('.').pop();
         if (extension == "csv") {
             $("#ImportInventoryText").text(filename);
+            $("#ImportInventoryText").css('color', 'green');
         } else {
             $("#ImportInventoryText").text('Upload only csv file.');
+            $("#ImportInventoryText").css('color', 'red');
         }
         var formdata = new FormData();
         formdata.append("file", files);
-        formdata.append("userid",CsvUserId);
-        formdata.append("updateflag",UpdateFlag);
+        formdata.append("userid", CsvUserId);
+        formdata.append("updateflag", UpdateFlag);
         var requestOptions = {
             method: 'POST',
             body: formdata,
@@ -38,7 +40,23 @@ export function ImportExportInventory() {
         };
         fetch(`${BaseUrl}/upload`, requestOptions)
             .then(response => response.text())
-            .then(result => console.log(result))
+            .then(result => {
+                console.log(result);
+                if (result == "success") {
+                    $(".alert-success").show();
+                    $("#AlertMsg").text("CSV imported Successfully.");
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1500);
+                }else{
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text(result);
+                    setTimeout(function () {
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
+                    }, 1500);
+                }
+            })
             .catch(error => console.log('error', error));
 
     }
@@ -55,10 +73,10 @@ export function ImportExportInventory() {
             }
         });
     }
-    const UpdateCsvFlag = () =>{
-        if($("#UpdateCsv").is(":checked")){
+    const UpdateCsvFlag = () => {
+        if ($("#UpdateCsv").is(":checked")) {
             setUpdateFlag(1);
-        }else{
+        } else {
             setUpdateFlag(0);
         }
     }
@@ -84,13 +102,13 @@ export function ImportExportInventory() {
                                     </p>
                                     <div className="row pt-4">
                                         <div className="col-md-7 px-0">
-                                            <form onSubmit={handleForm}>
+                                            <form onSubmit={ImportCSV}>
                                                 <input type="file" ref={fileRef} name="upload_file" id="UploadFileId" accept='.csv' />
                                                 <label className='ImportInventoryBtn' for="UploadFileId"> Import Inventory
                                                     <img src='/images/ImportInventory.svg' className='img-fluid ps-2' />
                                                 </label>
                                                 <input type="submit" value="Upload" className='UploadBtn' />
-                                                <label id="ImportInventoryText" style={{ color: "red" }}></label>
+                                                <label id="ImportInventoryText" ></label>
                                             </form>
                                         </div>
                                         <div className='col-md-5 pt-2'>

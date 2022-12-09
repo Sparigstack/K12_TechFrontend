@@ -161,6 +161,7 @@ select {
     border: 1px solid #E2E3E4 !important;
     border-radius: 10px !important;
     padding: 5px !important;
+    width: 100% !important;
 }
 
 .greyBox {
@@ -192,7 +193,7 @@ select {
 }
 
 .GridBgColor {
-    background-color: #F7FFFE;
+    background-color: #ebebeb;
 }
 
 .RocketImage {
@@ -224,6 +225,7 @@ select {
     border: 1px solid #E2E3E4;
     border-radius: 15px;
     padding: 8px 13px 8px 13px;
+    cursor: pointer;
 }
 
 .UploadBtn {
@@ -309,4 +311,16 @@ input[type="file"] {
 .ActivePagination {
     background: #030E20;
     color: white;
+}
+
+.BlackFont {
+    color: black !important;
+}
+
+.FormLabel {
+    font-size: 14px;
+    color: #4C5258;
+}
+.form-control{
+    border: 1px solid #E2E3E4 !important;
 }

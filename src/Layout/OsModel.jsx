@@ -1,9 +1,10 @@
 import $ from 'jquery';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { CheckValidation } from '../JS/Connector';
 import { ApiPostCall } from '../JS/Connector';
 import { ApiGetCall, ApiDeleteCall } from '../JS/Connector';
+import { CheckValidation } from '../JS/Common';
+import { DateFormat } from '../JS/Common';
 export function OsModel() {
     const [Name, setName] = useState("");
     const [AllOS, setAllOS] = useState([]);
@@ -233,18 +234,13 @@ export function OsModel() {
                                     <div className="GridDataDiv row" style={{ overflowY: "scroll", overflowX: "hidden" }}>
                                         {AllOS.map((item, i) => {
                                             var returData;
-                                            var date = new Date(item.created_at),
-                                                yr = date.getFullYear(),
-                                                month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
-                                                day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-                                                newDate = day + '-' + month + '-' + yr;
                                             returData = (<div className="col-12" key={i}>
                                                 <div className="row" key={i}>
                                                     <div className="col-5">
                                                         {item.os}
                                                     </div>
                                                     <div className="col-4">
-                                                        {newDate}
+                                                        {DateFormat(item.created_at)}
                                                     </div>
                                                     <div className="col-3 text-center">
                                                         <img src="/images/EditIcon.svg" title="Edit OS Model" className="cursor-pointer me-1"
