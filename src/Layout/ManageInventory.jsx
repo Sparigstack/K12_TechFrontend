@@ -97,7 +97,7 @@ export function ManageInventory() {
         if (searchString == "") {
             searchString = null;
         }
-        await ApiGetCall("/getInventories/"+schoolid+"&" + searchString + "?page=" + page).then((result) => {
+        await ApiGetCall("/getInventories/" + schoolid + "&" + searchString + "?page=" + page).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -315,22 +315,15 @@ export function ManageInventory() {
     const CancelClick = () => {
         window.location.href = "/manage-inventory";
     }
-    const SortByName = async() => {
+    const SortByName = async () => {
         ShowLoder();
-        await ApiGetCall("/search/"+schoolid+"&name").then((result) => {
-            console.log("/search/"+schoolid+"&name")
+        await ApiGetCall("/search/" + schoolid + "&name").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                console.log(responseRs)
                 if (responseRs.response == "success") {
-                    if (responseRs.msg.length != 0) {
-                        $(".RocketImgClass").addClass('d-none');
-                        $("#DeviceDetailsDiv").addClass('d-none');
-                        $("#PaginationID").removeClass('d-none');
-                        setAllDevices(responseRs.msg);
-                    } 
+                    setAllDevices(responseRs.msg);
                 }
                 HideLoder();
             }
@@ -412,13 +405,13 @@ export function ManageInventory() {
                                         </tbody>
                                     </table>
                                     <div className="d-flex justify-content-center align-items-center" id="PaginationID">
-                                        <div><i class="bi bi-caret-left-fill"></i></div>
+                                        <div><i className="bi bi-caret-left-fill"></i></div>
                                         <div className="mx-3 d-flex justify-content-center align-items-center">
                                             {[...Array(TotalPages)].map((x, i) =>
                                                 <span className="PaginationClass" id={`ActiveId_${i + 1}`} key={i} onClick={(e) => GetListOfDevices(i + 1)}>{i + 1}</span>
                                             )}
                                         </div>
-                                        <div><i class="bi bi-caret-right-fill"></i></div>
+                                        <div><i className="bi bi-caret-right-fill"></i></div>
                                     </div>
                                 </div>
                             </div>
