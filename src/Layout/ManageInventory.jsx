@@ -324,11 +324,13 @@ export function ManageInventory() {
                 const responseRs = JSON.parse(result);
                 if (responseRs.response == "success") {
                     setAllDevices(responseRs.msg);
+                    $(".RowClass").removeClass("GridBgColor");
+                    $(".RocketImgClass").addClass('d-none');
+                    $("#DeviceDetailsDiv").addClass('d-none');
                 }
                 HideLoder();
             }
         });
-
     }
     return (
         <>
