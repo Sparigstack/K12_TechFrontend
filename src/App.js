@@ -17,6 +17,7 @@ import { ErrorPage } from './Layout/404.jsx';
 import { DeviceType } from './Layout/DeviceType.jsx';
 import { OsModel } from './Layout/OsModel.jsx';
 import { ImportExportInventory } from './Layout/ImportExportInventory.jsx';
+import { CreateTicket } from './Layout/CreateTicket.jsx';
 import './JS/Connector.js';
 import './JS/Common.js';
 function App({ msalInstance }) {
@@ -42,9 +43,10 @@ function App({ msalInstance }) {
               <Route path="/logout" element={<Logout />} />
               <Route path="/dashboard" element={<Temp />} />
               <Route path="/manage-inventory/*" element={<ManageInventory />} />
-              <Route path="/device-type" element={<DeviceType />} />
-              <Route path="/os-model" element={<OsModel />} />
+              {/* <Route path="/device-type" element={<DeviceType />} /> */}
+              {/* <Route path="/os-model" element={<OsModel />} /> */}
               <Route path="/importexport-inventory" element={<ImportExportInventory />} />
+              <Route path="/create-ticket" element={<CreateTicket />} />
             </Routes>
           </Layout>
           :

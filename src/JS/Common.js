@@ -1,12 +1,19 @@
 import $ from 'jquery';
-export function DateFormat(date) {
-    var date = new Date(date),
+export function DateFormat(today) {
+    var date = new Date(today),
         yr = date.getFullYear(),
-        month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
+        month = date.getMonth() < 10 ? '0' + date.getMonth() + 1 : date.getMonth() + 1,
         day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
         newDate = month + '-' + day + '-' + yr;
-    
-        return newDate;
+    return newDate;
+}
+export function ChangeJsonDateFormat(date) {
+    var d = new Date(date);
+    var curr_date = d.getDate();
+    var curr_month = d.getMonth() < 12 ? d.getMonth() + 1 : 1;
+    var curr_year = d.getFullYear();
+    var newDate = curr_year + "-" + curr_month + "-" + curr_date;
+    return newDate;
 }
 export function CheckValidation(formID) {
     var isValid = true;
@@ -65,4 +72,36 @@ function findParent(element) {
             parentElement = $(parentElement).parent();
         }
     }
+}
+export function ShowSuggestionBox(BoxId) {
+    if ($("#" + BoxId).val() != "") {
+        $(".SuggestionBox").css('visibility', 'visible');
+        $(".SuggestionBox").css('opacity', '1');
+    } else {
+        $(".SuggestionBox").css('visibility', 'hidden');
+        $(".SuggestionBox").css('opacity', '0');
+    }
+}
+export var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+export function ShowLoder() {
+    $("#Overlay").show();
+    $("#LoderId").show();
+}
+export function HideLoder(){
+    $("#Overlay").hide();
+    $("#LoderId").hide();
 }

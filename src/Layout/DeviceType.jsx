@@ -6,6 +6,7 @@ import { ApiPostCall } from '../JS/Connector';
 import { ApiGetCall } from '../JS/Connector';
 import { DateFormat } from '../JS/Common';
 import { CheckValidation } from '../JS/Common';
+import { ShowLoder, HideLoder } from '../JS/Common';
 export function DeviceType() {
     const [Type, setType] = useState("");
     const [AllDevices, setAllDevices] = useState([]);
@@ -42,8 +43,7 @@ export function DeviceType() {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 var sugData = responseRs.msg;
                 if (responseRs.response == "success") {
                     $("#DeviceTypeModelImage").addClass('d-none');
@@ -64,15 +64,13 @@ export function DeviceType() {
 
     // Grid Get call
     const GetDeviceAllData = async () => {
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         await ApiGetCall("/allDevice").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 var sugData = responseRs.msg;
                 var sugArray = [];
                 var i = 1;
@@ -105,8 +103,7 @@ export function DeviceType() {
         var isFormValid = CheckValidation("AddUpdateForm");
         if (!isFormValid) return;
 
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         var raw = JSON.stringify({
             type: Type
         });
@@ -114,8 +111,7 @@ export function DeviceType() {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 if (result == "success") {
                     $("#DeviceTypeModelImage").removeClass('d-none');
                     $("#AddDeviceTypeModelID").addClass('d-none');
@@ -141,8 +137,7 @@ export function DeviceType() {
         var vId = parseInt($("#HdnUserId").val());
         var isFormValid = CheckValidation("AddUpdateForm");
         if (!isFormValid) return;
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         var raw = JSON.stringify({
             ID: vId,
             type: Type
@@ -151,8 +146,7 @@ export function DeviceType() {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 if (result == "success") {
                     $("#DeviceTypeModelImage").removeClass('d-none');
                     $("#AddDeviceTypeModelID").addClass('d-none');
@@ -175,8 +169,7 @@ export function DeviceType() {
 
     //Delete Device Model
     const DeleteDevice = async (UserId) => {
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         var raw = JSON.stringify({
             ID: UserId
         });
@@ -184,8 +177,7 @@ export function DeviceType() {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 if (result == "success") {
                     $(".ActionBox").addClass('d-none');
                     $(".alert-success").show();

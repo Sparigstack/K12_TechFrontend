@@ -5,6 +5,7 @@ import { ApiPostCall } from '../JS/Connector';
 import { ApiGetCall, ApiDeleteCall } from '../JS/Connector';
 import { CheckValidation } from '../JS/Common';
 import { DateFormat } from '../JS/Common';
+import { ShowLoder, HideLoder } from '../JS/Common';
 export function OsModel() {
     const [Name, setName] = useState("");
     const [AllOS, setAllOS] = useState([]);
@@ -28,15 +29,13 @@ export function OsModel() {
         $("#OsName").focus();
     }
     const GetOSAllData = async () => {
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         await ApiGetCall("/allOs").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 var sugData = responseRs.msg;
                 var sugArray = [];
                 var i = 1;
@@ -67,8 +66,7 @@ export function OsModel() {
         var isFormValid = CheckValidation("AddOsDiv");
         if (!isFormValid) return;
 
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         var raw = JSON.stringify({
             name: Name,
         });
@@ -76,8 +74,7 @@ export function OsModel() {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 if (result == "success") {
                     $("#AddOSModelID").addClass('d-none');
                     $("#OSModelImage").removeClass('d-none');
@@ -106,8 +103,7 @@ export function OsModel() {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 var sugData = responseRs.msg;
                 if (responseRs.response == "success") {
                     $("#OSModelImage").addClass('d-none');
@@ -127,8 +123,7 @@ export function OsModel() {
     }
     const UpdateOsName = async () => {
         var UserId = parseInt($("#HdnUserId").val());
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         var raw = JSON.stringify({
             ID: UserId,
             name: Name,
@@ -137,8 +132,7 @@ export function OsModel() {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 if (result == "success") {
                     $("#OSModelImage").removeClass('d-none');
                     $("#AddOSModelID").addClass('d-none');
@@ -159,8 +153,7 @@ export function OsModel() {
         });
     }
     const DeleteOs = async (UserId) => {
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         var raw = JSON.stringify({
             ID: UserId
         });
@@ -168,8 +161,7 @@ export function OsModel() {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 if (result == "success") {
                     $(".alert-success").show();
                     $("#AlertMsg").text("OS Model Deleted Successfully.");

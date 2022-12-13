@@ -5,6 +5,7 @@ import { ApiPostCall } from "../JS/Connector";
 import { Cookies } from 'react-cookie';
 import $ from 'jquery';
 import { SignInMicrosoft } from "../Components/SignInMicrosoft";
+import { ShowLoder, HideLoder } from "../JS/Common";
 export function Login() {
     const [state, setState] = useState({});
     const cookies = new Cookies();
@@ -15,8 +16,7 @@ export function Login() {
         };
     }, []);
     const onSuccess = async (res) => {
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         var accessToken = res.accessToken;
         var raw = JSON.stringify({
             name: res.profileObj.name,
@@ -28,8 +28,7 @@ export function Login() {
         });
         await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 $(".alert-danger").show();
                 $("#AlertDangerMsg").text('Login Failed!');
                 setTimeout(function () {
@@ -47,8 +46,7 @@ export function Login() {
                         window.location = "/dashboard";
                     }, 1500);
                 }
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
                 // cookies.set('accesstoken', accessToken, { path: '/', maxAge: 1200 }); //30 minutes
             }
            

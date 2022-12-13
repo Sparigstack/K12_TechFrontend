@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { ApiGetCall } from '../JS/Connector';
 import { useState } from "react";
 import Cookies from 'js-cookie';
+import { ShowLoder, HideLoder } from "../JS/Common";
 export function ImportExportInventory() {
     const BaseUrl = process.env.REACT_APP_Base_URL;
     const [UpdateFlag, setUpdateFlag] = useState(0);
@@ -61,15 +62,13 @@ export function ImportExportInventory() {
 
     }
     const ExportInventory = async () => {
-        $("#Overlay").show();
-        $("#LoderId").show();
+        ShowLoder();
         await ApiGetCall("/getInventories").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 console.log(result);
-                $("#Overlay").hide();
-                $("#LoderId").hide();
+                HideLoder();
             }
         });
     }

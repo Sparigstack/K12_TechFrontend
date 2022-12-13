@@ -9,6 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ApiPostCall } from './JS/Connector';
 import $ from 'jquery';
 import { Cookies } from 'react-cookie';
+import { HideLoder } from './JS/Common';
 const cookies = new Cookies();
 const pca = new PublicClientApplication({
   auth: {
@@ -50,8 +51,7 @@ pca.addEventCallback(event => {
           }, 1500);
         }
       }
-      $("#Overlay").hide();
-      $("#LoderId").hide();
+      HideLoder();
     });
   }
 });

@@ -267,7 +267,7 @@ export function Sidemenu() {
                                                 <div className="menu-title">Dashboard</div>
                                             </a>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                             <a href="/device-type" changeimg="/Images/SideMenu/Icons/DeviceModelWhite.svg" originalimg="/Images/SideMenu/Icons/DeviceModel.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/DeviceModel.svg' className='img-fluid ChangeImage' title='Device Type' />
@@ -282,9 +282,9 @@ export function Sidemenu() {
                                                 </div>
                                                 <div className="menu-title">OS Model</div>
                                             </a>
-                                        </li>
+                                        </li> */}
                                         <li>
-                                            <a href="#" changeimg="/Images/SideMenu/Icons/CreateTicketWhite.svg" originalimg="/Images/SideMenu/Icons/CreateTicket.svg">
+                                            <a href="/create-ticket" changeimg="/Images/SideMenu/Icons/CreateTicketWhite.svg" originalimg="/Images/SideMenu/Icons/CreateTicket.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/CreateTicket.svg' className='img-fluid ChangeImage' title='Create Ticket' />
                                                 </div>

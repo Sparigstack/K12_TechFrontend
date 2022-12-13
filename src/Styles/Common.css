@@ -179,9 +179,16 @@ select {
     background: #3CBBA5;
     box-shadow: 0px 2px 4px rgb(0 0 0 / 8%);
     border-radius: 4px;
-    border: none;
+    border: 1px solid #3CBBA5;
     color: white;
     padding: 6px 10px 6px 10px;
+    transition: 0.3s;
+}
+
+.SaveBtn:hover {
+    background: white;
+    color: #3CBBA5;
+    font-weight: 600;
 }
 
 .innerGridBox tr:hover {
@@ -204,7 +211,7 @@ select {
 @keyframes fly {
     0% {
         top: 0%;
-        left: 85%;
+        left: 90%;
     }
 
     100% {
@@ -321,6 +328,37 @@ input[type="file"] {
     font-size: 14px;
     color: #4C5258;
 }
-.form-control{
+
+.form-control {
     border: 1px solid #E2E3E4 !important;
+}
+
+.SuggestionBox {
+    padding: 8px 15px;
+    background: #F9FAFB;
+    border: 1px solid #E2E3E4;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 8%);
+    border-radius: 15px;
+    font-weight: 400;
+    font-size: 14px;
+    color: #4C5258;
+    transition: 0.3s;
+    /* display: none; */
+    position: absolute;
+    width: 100%;
+    overflow-y: scroll;
+    height: 180px;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s linear;
+}
+
+.SuggestionBox div {
+    padding: 5px;
+}
+
+.SuggestionBox div:hover {
+    background: #FFFFFF;
+    border-radius: 3px;
+    cursor: pointer;
 }
