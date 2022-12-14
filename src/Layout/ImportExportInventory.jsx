@@ -4,7 +4,37 @@ import { ApiGetCall } from '../JS/Connector';
 import { useState } from "react";
 import Cookies from 'js-cookie';
 import { ShowLoder, HideLoder } from "../JS/Common";
+import { CSVLink } from "react-csv";
 export function ImportExportInventory() {
+    const [CsvData, setCsvData] = useState([]);
+    const headers = [
+        {label : "ID",key : "ID"},
+        {label : "Purchase_date",key : "Purchase_date"},
+        {label : "OEM_warranty_until",key : "OEM_warranty_until"},
+        {label : "Extended_warranty_until",key : "Extended_warranty_until"},
+        {label : "ADP_coverage",key : "ADP_coverage"},
+        {label : "OEM",key : "OEM"},
+        {label : "Device_model",key : "Device_model"},
+        {label : "OS",key : "OS"},
+        {label : "Serial_number",key : "Serial_number"},
+        {label : "Asset_tag",key : "Asset_tag"},
+        {label : "Building",key : "Building"},
+        {label : "Grade",key : "Grade"},
+        {label : "Student_name",key : "Student_name"},
+        {label : "Student_ID",key : "Student_ID"},
+        {label : "Parent_email",key : "Parent_email"},
+        {label : "Parent_phone_number",key : "Parent_phone_number"},
+        {label : "Parental_coverage",key : "Parental_coverage"},
+        {label : "Repair_cap",key : "Repair_cap"},
+        {label : "created_at",key : "created_at"},
+        {label : "updated_at",key : "updated_at"}
+    ];
+    const csvReport = {
+        filename: 'Inventory.csv',
+        headers: headers,
+        data: CsvData
+    };
+    var SchoolId = 1;
     const BaseUrl = process.env.REACT_APP_Base_URL;
     const [UpdateFlag, setUpdateFlag] = useState(0);
     var CsvUserId = Cookies.get('CsvUserId');
@@ -63,11 +93,15 @@ export function ImportExportInventory() {
     }
     const ExportInventory = async () => {
         ShowLoder();
-        await ApiGetCall("/getInventories").then((result) => {
+        await ApiGetCall("/getInventories/"+SchoolId+"&null").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
-                console.log(result);
+                const responseRs = JSON.parse(result);
+                console.log(responseRs);
+                var msgdata = responseRs.msg.data;
+                setCsvData(msgdata);
+                $("#ExportedFileDiv").removeClass('d-none');
                 HideLoder();
             }
         });
@@ -78,6 +112,10 @@ export function ImportExportInventory() {
         } else {
             setUpdateFlag(0);
         }
+    }
+    const RemoveCsv = () =>{
+        setCsvData([]);
+        $("#ExportedFileDiv").addClass('d-none');
     }
     return (
         <>
@@ -151,12 +189,12 @@ export function ImportExportInventory() {
                                         <div className='row align-items-center pe-0 pt-2 d-none' id="ExportedFileDiv">
                                             <div className="col-md-7">
                                                 <label style={{ fontSize: "12px", color: "#04ADFD" }} id="ExportedFileName">
-                                                    access-keyboard-recovery.csv
+                                                    Inventory.csv
                                                 </label>
                                             </div>
                                             <div className="text-end col-md-5 pe-0">
-                                                <button className='SaveBtn'>Download</button>
-                                                <img src="/images/CloseCsvIcon.svg" className="img-fluid ps-3" />
+                                                <button className='SaveBtn'><CSVLink {...csvReport} className="WhiteFont">Download</CSVLink></button>
+                                                <img src="/images/CloseCsvIcon.svg" className="cursor-pointer img-fluid ps-3" onClick={RemoveCsv}/>
                                             </div>
                                         </div>
                                     </div>

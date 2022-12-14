@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { ApiDeleteCall } from '../JS/Connector';
 import { ApiPostCall } from '../JS/Connector';
 import { ApiGetCall } from '../JS/Connector';
-import { DateFormat } from '../JS/Common';
+import { MMDDYYYY } from '../JS/Common';
 import { CheckValidation } from '../JS/Common';
 import { ShowLoder, HideLoder } from '../JS/Common';
 export function DeviceType() {
@@ -247,7 +247,7 @@ export function DeviceType() {
                                                         {item.type}
                                                     </div>
                                                     <div className="col-3">
-                                                        {DateFormat(item.created_at)}
+                                                        {MMDDYYYY(item.created_at)}
                                                     </div>
                                                     <div className="col-3 text-center">
                                                         <img src="/images/EditIcon.svg" title="Edit OS Model" className="cursor-pointer me-1"

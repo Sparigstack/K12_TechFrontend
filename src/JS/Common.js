@@ -1,17 +1,25 @@
 import $ from 'jquery';
-export function DateFormat(today) {
-    var date = new Date(today),
-        yr = date.getFullYear(),
-        month = date.getMonth() < 10 ? '0' + date.getMonth() + 1 : date.getMonth() + 1,
-        day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-        newDate = month + '-' + day + '-' + yr;
+export function MMDDYYYY(today) {
+    var date = new Date(today);
+    var yr = date.getFullYear();
+    var month = (date.getMonth() + 1).toString().padStart(2, "0");
+    var day = date.getDate().toString().padStart(2, "0");
+    var newDate = month + '-' + day + '-' + yr;
     return newDate;
 }
-export function ChangeJsonDateFormat(date) {
+export function DDMMYYYY(today) {
+    var date = new Date(today);
+    var yr = date.getFullYear();
+    var month = (date.getMonth() + 1).toString().padStart(2, "0");
+    var day = date.getDate().toString().padStart(2, "0");
+    var newDate = day + '-' + month + '-' + yr;
+    return newDate;
+}
+export function YYYYMMDD(date) {
     var d = new Date(date);
-    var curr_date = d.getDate();
-    var curr_month = d.getMonth() < 12 ? d.getMonth() + 1 : 1;
     var curr_year = d.getFullYear();
+    var curr_month = (d.getMonth() + 1).toString().padStart(2, "0");
+    var curr_date = d.getDate().toString().padStart(2, "0");
     var newDate = curr_year + "-" + curr_month + "-" + curr_date;
     return newDate;
 }
@@ -101,7 +109,7 @@ export function ShowLoder() {
     $("#Overlay").show();
     $("#LoderId").show();
 }
-export function HideLoder(){
+export function HideLoder() {
     $("#Overlay").hide();
     $("#LoderId").hide();
 }

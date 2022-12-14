@@ -187,7 +187,7 @@ select {
 
 .SaveBtn:hover {
     background: white;
-    color: #3CBBA5;
+    color: #3CBBA5 !important;
     font-weight: 600;
 }
 
@@ -322,6 +322,15 @@ input[type="file"] {
 
 .BlackFont {
     color: black !important;
+}
+.WhiteFont {
+    color: white ;
+}
+.SaveBtn a{
+    color: white;
+}
+.SaveBtn a:hover{
+    color: #3CBBA5;
 }
 
 .FormLabel {

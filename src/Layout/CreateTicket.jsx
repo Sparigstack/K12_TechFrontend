@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import $ from 'jquery';
-import { SearchBox } from "../Components/SearchBox";
+import { CheckValidation } from "../JS/Common";
+// import { SearchBox } from "../Components/SearchBox";
 export function CreateTicket() {
     useEffect(() => {
         return () => {
@@ -10,18 +11,23 @@ export function CreateTicket() {
             $(".GridBox").css('height', finalHeight);
         };
     }, []);
-    const SuggestionBoxArray = [
-        'Gulshan Martin',
-        'Ivor Quentin',
-        'Tilo Hedvig',
-        'Áron Oline',
-        'Petter Ibrahim',
-        'Gilleasbuig Agnes',
-        'Albert Shohreh',
-        'Jelka Rochus',
-        'Nanaia Klementina',
-        'Ligita Bernie'
-    ]
+
+    // const SuggestionBoxArray = [
+    //     'Gulshan Martin',
+    //     'Ivor Quentin',
+    //     'Tilo Hedvig',
+    //     'Áron Oline',
+    //     'Petter Ibrahim',
+    //     'Gilleasbuig Agnes',
+    //     'Albert Shohreh',
+    //     'Jelka Rochus',
+    //     'Nanaia Klementina',
+    //     'Ligita Bernie'
+    // ]
+    const CreateTicket = () =>{
+        var isFormValid = CheckValidation("AddDeviceIssues");
+        if (!isFormValid) return;
+    }
     return (
         <>
             <div className='row col-12'>
@@ -30,13 +36,19 @@ export function CreateTicket() {
             <div className="container-fluid px-0" id="GridDiv">
                 <div className="GridBox p-3">
                     <div className="container ps-3">
-                        <div className='row pt-4 d-flex align-items-center'>
+                        <div className='col-md-6 mt-2'>
+                            <form className="gridsearchbar">
+                                <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
+                                <input className="form-control" autoComplete='off' type="text" placeholder="Search Device (Student Name, Serial Number, Asset Tag*)" id="SearchInput" />
+                            </form>
+                        </div>
+                        {/* <div className='row pt-4 d-flex align-items-center'>
                             <div className='col-md-6 mt-2'>
                                 <SearchBox SuggestionData={SuggestionBoxArray}/>
                             </div>
-                        </div>
+                        </div> */}
                         <div className='mt-4'>
-                            <div className='col-12 greyBox'>
+                            <div className='col-12 greyBox' id="AddDeviceIssues">
                                 <div className='Header'>
                                     <b className='font-16'>Device Issue</b><br />
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
@@ -108,10 +120,13 @@ export function CreateTicket() {
                                     </div>
                                 </div>
                                 <div className="row p-4">
-                                    <textarea placeholder="Notes*" rows="3" className="form-control"></textarea>
+                                    <textarea placeholder="Notes*" rows="3" className="form-control" required></textarea>
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
                                 </div>
                                 <div className="col-12 text-center p-5">
-                                    <button className='SaveBtn'>Create Ticket</button>
+                                    <button className='SaveBtn' onClick={CreateTicket}>Create Ticket</button>
                                 </div>
                             </div>
                         </div>

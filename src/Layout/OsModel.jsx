@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { ApiPostCall } from '../JS/Connector';
 import { ApiGetCall, ApiDeleteCall } from '../JS/Connector';
 import { CheckValidation } from '../JS/Common';
-import { DateFormat } from '../JS/Common';
+import { MMDDYYYY } from '../JS/Common';
 import { ShowLoder, HideLoder } from '../JS/Common';
 export function OsModel() {
     const [Name, setName] = useState("");
@@ -232,7 +232,7 @@ export function OsModel() {
                                                         {item.os}
                                                     </div>
                                                     <div className="col-4">
-                                                        {DateFormat(item.created_at)}
+                                                        {MMDDYYYY(item.created_at)}
                                                     </div>
                                                     <div className="col-3 text-center">
                                                         <img src="/images/EditIcon.svg" title="Edit OS Model" className="cursor-pointer me-1"

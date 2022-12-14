@@ -5,11 +5,10 @@ import $ from 'jquery';
 import { useEffect } from 'react';
 import { ApiGetCall } from '../JS/Connector';
 import { useState } from 'react';
-import { DateFormat } from '../JS/Common';
+import { MMDDYYYY } from '../JS/Common';
 import { CheckValidation } from '../JS/Common';
 import { ApiPostCall } from '../JS/Connector';
 import { Cookies } from 'react-cookie';
-import { ChangeJsonDateFormat } from '../JS/Common';
 import { getUrlParameter } from '../JS/Common';
 import { ShowLoder, HideLoder } from '../JS/Common';
 export function ManageInventory() {
@@ -140,6 +139,7 @@ export function ManageInventory() {
                 const responseRs = JSON.parse(result);
                 HideLoder();
                 var sugData = responseRs.msg;
+                console.log(sugData)
                 if (responseRs.response == "success") {
                     setDeviceDetails(sugData);
                     if (flag == 1) {
@@ -211,10 +211,10 @@ export function ManageInventory() {
         }
         var raw = JSON.stringify({
             ID: Deviceid,
-            PurchaseDate: ChangeJsonDateFormat(PurchaseDate),
-            OemWarrantyUntil: ChangeJsonDateFormat(OEMWarrantyUntil),
-            ExtendedWarrantyUntil: ChangeJsonDateFormat(ExtendedWarrantyUntil),
-            ADPCoverage: ChangeJsonDateFormat(ADPCoverage),
+            PurchaseDate:PurchaseDate,
+            OemWarrantyUntil: OEMWarrantyUntil,
+            ExtendedWarrantyUntil: ExtendedWarrantyUntil,
+            ADPCoverage: ADPCoverage,
             StudentName: StudentName,
             StudentID: StudentID,
             ParentEmail: ParentEmail,
@@ -269,10 +269,10 @@ export function ManageInventory() {
             parentalCoverage = 1;
         }
         var raw = JSON.stringify({
-            PurchaseDate: ChangeJsonDateFormat(PurchaseDate),
-            OemWarrantyUntil: ChangeJsonDateFormat(OEMWarrantyUntil),
-            ExtendedWarrantyUntil: ChangeJsonDateFormat(ExtendedWarrantyUntil),
-            ADPCoverage: ChangeJsonDateFormat(ADPCoverage),
+            PurchaseDate: PurchaseDate,
+            OemWarrantyUntil: OEMWarrantyUntil,
+            ExtendedWarrantyUntil: ExtendedWarrantyUntil,
+            ADPCoverage: ADPCoverage,
             StudentName: StudentName,
             StudentID: StudentID,
             ParentEmail: ParentEmail,
@@ -340,10 +340,10 @@ export function ManageInventory() {
                     <h1 className="PageHeading">Manage Inventory</h1>
                 </div>
                 <div className='col-md-6 mb-2 pe-0 text-end d-flex justify-content-end align-items-center' id="AddImportBtnDiv">
-                    <a href='/importexport-inventory' className='BlackFont cursor-pointer'><label className='BorderBtn ms-3'> Import Inventory
+                    <a href='/importexport-inventory' className='BlackFont cursor-pointer'><label className='BorderBtn text-center'> Import Inventory
                         <img src='/images/ImportInventory.svg' className='img-fluid ps-2' />
                     </label></a>
-                    <label className='BorderBtn ms-3' onClick={(e) => AddUpdateInventory(0, "/add-inventory")}> Add Inventory
+                    <label className='BorderBtn ms-3 text-center' onClick={(e) => AddUpdateInventory(0, "/add-inventory")}> Add Inventory
                         <img src='/images/AddInventory.svg' className='img-fluid ps-2' />
                     </label>
                 </div>
@@ -355,7 +355,7 @@ export function ManageInventory() {
                             <div className='col-md-4 mt-2'>
                                 <form className="gridsearchbar">
                                     <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                    <input className="form-control" autoComplete='off' type="text" placeholder="Search A Specific Device" id="SearchInput" onKeyUp={(e) => GetListOfDevices(1)} />
+                                    <input className="form-control" autoComplete='off' type="text" placeholder="Search A Student Name" id="SearchInput" onKeyUp={(e) => GetListOfDevices(1)} />
                                 </form>
                             </div>
                             <div className='col-md-4 mt-2'>
@@ -437,19 +437,19 @@ export function ManageInventory() {
                                         </div>
                                         <div className='row p-2'>
                                             <div className='col-5'>Purchase Date </div>
-                                            <div className='col-7'>: {DateFormat(DeviceDetails.Purchase_date)}</div>
+                                            <div className='col-7'>: {MMDDYYYY(DeviceDetails.Purchase_date)}</div>
                                         </div>
                                         <div className='row p-2'>
                                             <div className='col-5'>OEM Warranty Until </div>
-                                            <div className='col-7'>: {DateFormat(DeviceDetails.OEM_warranty_until)}</div>
+                                            <div className='col-7'>: {MMDDYYYY(DeviceDetails.OEM_warranty_until)}</div>
                                         </div>
                                         <div className='row p-2'>
                                             <div className='col-5'>Extended Warranty Until </div>
-                                            <div className='col-7'>: {DateFormat(DeviceDetails.Extended_warranty_until)}</div>
+                                            <div className='col-7'>: {MMDDYYYY(DeviceDetails.Extended_warranty_until)}</div>
                                         </div>
                                         <div className='row p-2'>
                                             <div className='col-5'>ADP Coverage </div>
-                                            <div className='col-7'>: {DateFormat(DeviceDetails.ADP_coverage)}</div>
+                                            <div className='col-7'>: {MMDDYYYY(DeviceDetails.ADP_coverage)}</div>
                                         </div>
                                         <div className='row p-2'>
                                             <div className='col-5'>OEM </div>
@@ -502,11 +502,11 @@ export function ManageInventory() {
                                         </div>
                                         <div className='row p-2'>
                                             <div className='col-5'>Created At </div>
-                                            <div className='col-7'>: {DateFormat(DeviceDetails.created_at)}</div>
+                                            <div className='col-7'>: {MMDDYYYY(DeviceDetails.created_at)}</div>
                                         </div>
                                         <div className='row p-2'>
                                             <div className='col-5'>Updated At </div>
-                                            <div className='col-7'>: {DateFormat(DeviceDetails.updated_at)}</div>
+                                            <div className='col-7'>: {MMDDYYYY(DeviceDetails.updated_at)}</div>
                                         </div>
                                     </div>
                                     <div className='row text-center'>
