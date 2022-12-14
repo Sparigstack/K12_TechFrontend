@@ -132,6 +132,7 @@ export function ManageInventory() {
         });
     }
     const GetDeviceDetailById = async (UserId, flag) => {
+        $("#hdnDeviceId").val(UserId);
         await ApiGetCall("/fetchDeviceDetails/" + UserId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
@@ -332,6 +333,10 @@ export function ManageInventory() {
             }
         });
     }
+    const CreateTicket = () =>{
+        var userid = parseInt($("#hdnDeviceId").val());
+        window.location.href = '/create-ticket/?id=' +userid; 
+    }
     return (
         <>
             <input type="hidden" id="hdnDeviceId" />
@@ -511,7 +516,7 @@ export function ManageInventory() {
                                     </div>
                                     <div className='row text-center'>
                                         <div className='col-md-5 mt-2'>
-                                            <a href='/create-ticket'><button className='SaveBtn'>Create Ticket</button></a>
+                                            <button className='SaveBtn' onClick={CreateTicket}>Create Ticket</button>
                                         </div>
                                         <div className='col-md-6 mt-2'>
                                             <button className='SaveBtn'>Decommission Device</button>
