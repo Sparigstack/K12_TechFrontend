@@ -183,6 +183,7 @@ select {
     color: white;
     padding: 6px 10px 6px 10px;
     transition: 0.3s;
+    cursor: pointer;
 }
 
 .SaveBtn:hover {
@@ -232,6 +233,16 @@ select {
     border: 1px solid #E2E3E4;
     border-radius: 15px;
     padding: 8px 13px 8px 13px;
+    cursor: pointer;
+}
+.BorderColorBtn {
+    background: #F9FAFB;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 8%);
+    border-radius: 4px;
+    border: 1px solid #E2E3E4;
+    color: black;
+    padding: 6px 10px 6px 10px;
+    transition: 0.3s;
     cursor: pointer;
 }
 

@@ -14,10 +14,11 @@ import { ManageInventory } from './Layout/ManageInventory';
 import { Logout } from './Layout/Logout';
 import { MsalProvider } from "@azure/msal-react";
 import { ErrorPage } from './Layout/404.jsx';
-import { DeviceType } from './Layout/DeviceType.jsx';
-import { OsModel } from './Layout/OsModel.jsx';
+// import { DeviceType } from './Layout/DeviceType.jsx';
+// import { OsModel } from './Layout/OsModel.jsx';
 import { ImportExportInventory } from './Layout/ImportExportInventory.jsx';
 import { CreateTicket } from './Layout/CreateTicket.jsx';
+import { ManageTicket } from './Layout/ManageTicket.jsx';
 import './JS/Connector.js';
 import './JS/Common.js';
 function App({ msalInstance }) {
@@ -47,6 +48,7 @@ function App({ msalInstance }) {
               {/* <Route path="/os-model" element={<OsModel />} /> */}
               <Route path="/importexport-inventory" element={<ImportExportInventory />} />
               <Route path="/create-ticket" element={<CreateTicket />} />
+              <Route path="/manage-ticket/*" element={<ManageTicket />} />
             </Routes>
           </Layout>
           :
