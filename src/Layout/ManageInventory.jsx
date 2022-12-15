@@ -229,8 +229,7 @@ export function ManageInventory() {
             Building: Building,
             Grade: Grade,
             schoolId: 1,
-            userId: userid,
-            usercsvnum: "csv_10_2"
+            userId: userid
         });
         await ApiPostCall("/addeditmanualInventoy", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -287,8 +286,7 @@ export function ManageInventory() {
             Building: Building,
             Grade: Grade,
             schoolId: 1,
-            userId: userid,
-            usercsvnum: "csv_10_2"
+            userId: userid
         });
         await ApiPostCall("/addeditmanualInventoy", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -316,9 +314,9 @@ export function ManageInventory() {
     const CancelClick = () => {
         window.location.href = "/manage-inventory";
     }
-    const SortByName = async () => {
+    const SortByName = async (page) => {
         ShowLoder();
-        await ApiGetCall("/search/" + schoolid + "&name").then((result) => {
+        await ApiGetCall("/sortby/" + schoolid + "&name").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -328,6 +326,7 @@ export function ManageInventory() {
                     $(".RowClass").removeClass("GridBgColor");
                     $(".RocketImgClass").addClass('d-none');
                     $("#DeviceDetailsDiv").addClass('d-none');
+                    $("#PaginationID").addClass('d-none');
                 }
                 HideLoder();
             }
@@ -375,7 +374,7 @@ export function ManageInventory() {
                                 <label className='cursor-pointer' onClick={(e) => GetListOfDevices(1)}>Clear Filter</label>
                             </div>
                             <div className='col-md-2 text-end mt-2'>
-                                <select name="sorting" id="SortBy" onChange={SortByName}>
+                                <select name="sorting" id="SortBy" onChange={(e) => SortByName(1)}>
                                     <option value="0">Sort By</option>
                                     <option value="Name">Student Name</option>
                                 </select>
