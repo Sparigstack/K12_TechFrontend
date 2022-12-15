@@ -149,8 +149,17 @@ export function CreateTicket() {
                             </form>
                         </div>
                         <div className='mt-4'>
-                            <div className='col-12 greyBox' id="AddDeviceIssues">
+                            <div className='col-12 greyBox d-none' id="AddDeviceIssues">
                                 <div className='Header'>
+                                    <b className='font-16'>Device Details</b><br />
+                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-4 my-1">Device Number: 78624566</div>
+                                    <div className="col-md-4 my-1">Model type: Camera</div>
+                                    <div className="col-md-4 my-1">Extended Warranty Until: 12-15-2022</div>
+                                </div>
+                                <div className='Header mt-4'>
                                     <b className='font-16'>Device Issue</b><br />
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                 </div>
@@ -180,7 +189,7 @@ export function CreateTicket() {
                                         *required
                                     </span>
                                 </div>
-                                <div className="col-12 text-center p-5">
+                                <div className="col-12 text-center pt-5 pb-2">
                                     <button className='SaveBtn' onClick={CreateTicket}>Create Ticket</button>
                                 </div>
                             </div>

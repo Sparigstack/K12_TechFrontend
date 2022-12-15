@@ -5,29 +5,30 @@ import { useState } from "react";
 import Cookies from 'js-cookie';
 import { ShowLoder, HideLoder } from "../JS/Common";
 import { CSVLink } from "react-csv";
+import { MMDDYYYY } from "../JS/Common";
 export function ImportExportInventory() {
     const [CsvData, setCsvData] = useState([]);
     const headers = [
-        {label : "ID",key : "ID"},
-        {label : "Purchase_date",key : "Purchase_date"},
-        {label : "OEM_warranty_until",key : "OEM_warranty_until"},
-        {label : "Extended_warranty_until",key : "Extended_warranty_until"},
-        {label : "ADP_coverage",key : "ADP_coverage"},
-        {label : "OEM",key : "OEM"},
-        {label : "Device_model",key : "Device_model"},
-        {label : "OS",key : "OS"},
-        {label : "Serial_number",key : "Serial_number"},
-        {label : "Asset_tag",key : "Asset_tag"},
-        {label : "Building",key : "Building"},
-        {label : "Grade",key : "Grade"},
-        {label : "Student_name",key : "Student_name"},
-        {label : "Student_ID",key : "Student_ID"},
-        {label : "Parent_email",key : "Parent_email"},
-        {label : "Parent_phone_number",key : "Parent_phone_number"},
-        {label : "Parental_coverage",key : "Parental_coverage"},
-        {label : "Repair_cap",key : "Repair_cap"},
-        {label : "created_at",key : "created_at"},
-        {label : "updated_at",key : "updated_at"}
+        { label: "ID", key: "ID" },
+        { label: "Purchase_date", key: "Purchase_date" },
+        { label: "OEM_warranty_until", key: "OEM_warranty_until" },
+        { label: "Extended_warranty_until", key: "Extended_warranty_until" },
+        { label: "ADP_coverage", key: "ADP_coverage" },
+        { label: "OEM", key: "OEM" },
+        { label: "Device_model", key: "Device_model" },
+        { label: "OS", key: "OS" },
+        { label: "Serial_number", key: "Serial_number" },
+        { label: "Asset_tag", key: "Asset_tag" },
+        { label: "Building", key: "Building" },
+        { label: "Grade", key: "Grade" },
+        { label: "Student_name", key: "Student_name" },
+        { label: "Student_ID", key: "Student_ID" },
+        { label: "Parent_email", key: "Parent_email" },
+        { label: "Parent_phone_number", key: "Parent_phone_number" },
+        { label: "Parental_coverage", key: "Parental_coverage" },
+        { label: "Repair_cap", key: "Repair_cap" },
+        { label: "created_at", key: "created_at" },
+        { label: "updated_at", key: "updated_at" }
     ];
     const csvReport = {
         filename: 'Inventory.csv',
@@ -37,7 +38,7 @@ export function ImportExportInventory() {
     var SchoolId = 1;
     const BaseUrl = process.env.REACT_APP_Base_URL;
     const [UpdateFlag, setUpdateFlag] = useState(0);
-    var CsvUserId = Cookies.get('CsvUserId');
+    var CsvUserId = parseInt(Cookies.get('CsvUserId'));
     const fileRef = useRef();
     useEffect(() => {
         return () => {
@@ -62,8 +63,8 @@ export function ImportExportInventory() {
         }
         var formdata = new FormData();
         formdata.append("file", files);
-        formdata.append("userid", CsvUserId);
-        formdata.append("updateflag", UpdateFlag);
+        formdata.append("ID", CsvUserId);
+        formdata.append("schId", SchoolId);
         var requestOptions = {
             method: 'POST',
             body: formdata,
@@ -79,7 +80,7 @@ export function ImportExportInventory() {
                     setTimeout(function () {
                         window.location.reload();
                     }, 1500);
-                }else{
+                } else {
                     $(".alert-danger").show();
                     $("#AlertDangerMsg").text(result);
                     setTimeout(function () {
@@ -93,13 +94,20 @@ export function ImportExportInventory() {
     }
     const ExportInventory = async () => {
         ShowLoder();
-        await ApiGetCall("/getInventories/"+SchoolId+"&null").then((result) => {
+        await ApiGetCall("/getInventories/" + SchoolId + "&null").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                console.log(responseRs);
                 var msgdata = responseRs.msg.data;
+                for (var i = 0; i < msgdata.length; i++) {
+                    msgdata[i].ADP_coverage = MMDDYYYY(msgdata[i].ADP_coverage);
+                    msgdata[i].Extended_warranty_until = MMDDYYYY(msgdata[i].Extended_warranty_until);
+                    msgdata[i].OEM_warranty_until = MMDDYYYY(msgdata[i].OEM_warranty_until);
+                    msgdata[i].Purchase_date = MMDDYYYY(msgdata[i].Purchase_date);
+                    msgdata[i].created_at = MMDDYYYY(msgdata[i].created_at);
+                    msgdata[i].updated_at = MMDDYYYY(msgdata[i].updated_at);
+                }
                 setCsvData(msgdata);
                 $("#ExportedFileDiv").removeClass('d-none');
                 HideLoder();
@@ -113,7 +121,7 @@ export function ImportExportInventory() {
             setUpdateFlag(0);
         }
     }
-    const RemoveCsv = () =>{
+    const RemoveCsv = () => {
         setCsvData([]);
         $("#ExportedFileDiv").addClass('d-none');
     }
@@ -150,7 +158,7 @@ export function ImportExportInventory() {
                                         </div>
                                         <div className='col-md-5 pt-2'>
                                             <div className="form-check">
-                                                <input className="form-check-input" type="checkbox" value="" id="UpdateCsv" onChange={UpdateCsvFlag}/>
+                                                <input className="form-check-input" type="checkbox" value="" id="UpdateCsv" onChange={UpdateCsvFlag} />
                                                 <label className="form-check-label ps-1" htmlFor="UpdateCsv">
                                                     Update CSV
                                                 </label>
@@ -194,7 +202,7 @@ export function ImportExportInventory() {
                                             </div>
                                             <div className="text-end col-md-5 pe-0">
                                                 <button className='SaveBtn'><CSVLink {...csvReport} className="WhiteFont">Download</CSVLink></button>
-                                                <img src="/images/CloseCsvIcon.svg" className="cursor-pointer img-fluid ps-3" onClick={RemoveCsv}/>
+                                                <img src="/images/CloseCsvIcon.svg" className="cursor-pointer img-fluid ps-3" onClick={RemoveCsv} />
                                             </div>
                                         </div>
                                     </div>
