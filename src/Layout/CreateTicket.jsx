@@ -31,7 +31,7 @@ export function CreateTicket() {
             StoreDeviceSearchData();
             var DeviceidGlobal = $("#hdnDeviceId").val();
             if (DeviceidGlobal != "false") {
-                ShowDeviceDetails("",2);
+                ShowDeviceDetails("", 2);
             }
         };
     }, []);
@@ -57,7 +57,7 @@ export function CreateTicket() {
                         ShowSuggestionBox();
                         for (var i = 0; i < sugData.length; i++) {
                             sugArray.push(
-                                <div className="row brdr-Btm font-14" key={i} onClick={(e) => ShowDeviceDetails(e,1)} Deviceid={sugData[i].ID}>
+                                <div className="row brdr-Btm font-14" key={i} onClick={(e) => ShowDeviceDetails(e, 1)} Deviceid={sugData[i].ID} style={{padding:"8px 15px"}}>
                                     <div className="col-8">{sugData[i].Student_name}</div>
                                     <div className="col-4 text-end">{sugData[i].Serial_number}</div>
                                     <div className="col-12">{sugData[i].Device_model}</div>
@@ -67,12 +67,19 @@ export function CreateTicket() {
                         setSuggestionBoxArray(sugArray);
                     } else {
                         sugArray.push(
-                            <div className="col-12 GridNoRecord text-center" key={i}>
-                                <label>No Record Found</label>
-                            </div>
+                            <>
+                                <div className="col-12 text-center" key={i}>
+                                    <label>No Record Found</label>
+                                </div>
+                                <div className="col-12 d-flex align-items-center justify-content-center position-absolute pb-2" style={{ bottom: "0",borderTop:"1px solid #e1dddd" }}>
+                                    <a href="/manage-inventory/add-inventory" >
+                                        <img src="/images/AddInventory.svg" className="img-fluid pe-2" />
+                                        <b className="font-18 BlackFont pt-1">Add Inventory</b>
+                                    </a>
+                                </div>
+                            </>
                         );
-                        setNorecord(sugArray);
-                        setSuggestionBoxArray([]);
+                        setSuggestionBoxArray(sugArray);
                     }
                 } else {
                     $(".alert-danger").show();
@@ -109,7 +116,7 @@ export function CreateTicket() {
             "schoolId": schoolid,
             "userId": userid,
             "inventoryId": hdnDeviceid,
-            "status": "open"
+            "status": 1
         };
         $(".CheckboxClass").each(function () {
             var vjson = {};

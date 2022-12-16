@@ -56,7 +56,7 @@ export function Login() {
         <>
             <div className="position-relative MainDiv">
                 <div className="card mx-auto">
-                    <div className="p-5">
+                    <div className="px-5 pt-5">
                         <div className="mb-5">
                             <img src="/Images/LoginLogo.png" className="img-fluid" alt="Logo" />
                         </div>
@@ -76,6 +76,9 @@ export function Login() {
                         </div>
                         <div className="col-12 text-center">
                             <SignInMicrosoft />
+                        </div>
+                        <div className="col-12 text-center pt-5 pb-1">
+                            See a demo video?<a className="ps-2 cursor-pointer" style={{color:"rgb(30 191 162)"}} href="https://www.k12techrepairs.com/" target="_blank">Click Here</a>
                         </div>
                     </div>
                 </div>

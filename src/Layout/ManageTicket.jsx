@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import $ from 'jquery';
-import { ShowLoder, HideLoder } from "../JS/Common";
+import { ShowLoder, HideLoder, MMDDYYYY } from "../JS/Common";
 import { ApiGetCall } from "../JS/Connector";
 import { Cookies } from 'react-cookie';
 export function ManageTicket() {
@@ -8,9 +8,12 @@ export function ManageTicket() {
     const schoolid = 1;
     var userid = parseInt(cookies.get('CsvUserId'));
     const [OpenTicket, setOpenTicket] = useState([]);
+    const [TicketStatus, setTicketStatus] = useState([]);
     const [CloseTicket, setCloseTicket] = useState([]);
-    const [openticketnorecord,setopenticketnorecord] = useState("");
-    const [closeticketnorecord,setcloseticketnorecord] = useState("");
+    const [openticketnorecord, setopenticketnorecord] = useState("");
+    const [closeticketnorecord, setcloseticketnorecord] = useState("");
+
+    const [OpenTicketList, setOpenTicketList] = useState([]);
     useEffect(() => {
         return () => {
             const height = window.innerHeight;
@@ -18,26 +21,9 @@ export function ManageTicket() {
             var finalHeight = height - navbarheight - 80;
             $(".GridBox").css('height', finalHeight);
             $(".GridBox").css('overflow', 'hidden');
-            // CheckUrl();
             GetListOfTickets();
         };
     }, []);
-    const CheckUrl = () => {
-        ShowLoder();
-        var PathName = window.location.pathname;
-        var pathsplit = PathName.split('/');
-        var prodActive = pathsplit[2];
-        if (prodActive == "open-ticket") {
-            ShowOpenTicketDetails();
-        } else if (prodActive == "close-ticket") {
-            // ShowCloseTicketDetails();
-        }
-        else {
-            // GetListOfTickets();
-        }
-        HideLoder();
-    }
-
     const GetListOfTickets = async () => {
         ShowLoder();
         await ApiGetCall("/allTickets/" + schoolid + "&" + userid).then((result) => {
@@ -45,15 +31,14 @@ export function ManageTicket() {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                console.log(responseRs)
                 var i = 1;
                 if (responseRs.response == "success") {
                     if (responseRs.Openticket.length != 0) {
                         setOpenTicket(responseRs.Openticket);
                     } else {
-                    var sugArray = [];
+                        var sugArray = [];
                         sugArray.push(
-                            <div className="col-12 GridNoRecord text-center" key={i}>
+                            <div className="col-12 p-5 text-center" key={i}>
                                 <label>No Record Found</label>
                             </div>
                         );
@@ -66,7 +51,7 @@ export function ManageTicket() {
                     } else {
                         var sugArray = [];
                         sugArray.push(
-                            <div className="col-12 GridNoRecord text-center" key={i}>
+                            <div className="col-12 p-5 text-center" key={i}>
                                 <label>No Record Found</label>
                             </div>
                         );
@@ -78,13 +63,6 @@ export function ManageTicket() {
             }
         });
     }
-
-    const OpenCloseTicket = (url) => {
-        var PathName = window.location.pathname;
-        var FinalUrl = PathName + url;
-        window.location.href = FinalUrl;
-    }
-
     const ShowOpenTicketDetails = () => {
         $("#MainGridDiv").addClass('d-none');
         $("#OpenTicketDiv").removeClass('d-none');
@@ -92,11 +70,56 @@ export function ManageTicket() {
         $("#CloseTicketBtn").removeClass('SaveBtn');
         $("#OpenTicketBtn").addClass('SaveBtn');
         $("#OpenTicketBtn").removeClass('BorderColorBtn');
+        ListOfTicketStatus();
+    }
+    const ListOfTicketStatus = async () => {
+        ShowLoder();
+        await ApiGetCall("/getTicketStatus").then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                console.log(responseRs)
+                setTicketStatus(responseRs);
+                HideLoder();
+                ListOfOpenTickets();
+            }
+        });
+    }
+    const ListOfOpenTickets = async () => {
+        var SearchString = $("#SearchTicket").val();
+        ShowLoder();
+        if (SearchString == "") {
+            SearchString = null;
+        }
+        await ApiGetCall("/openTickets/" + schoolid + "&" + SearchString).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                var i = 1;
+                if (responseRs.response == "success") {
+                    if (responseRs.Openticket.length != 0) {
+                        setOpenTicketList(responseRs.Openticket);
+                    } else {
+                        var sugArray = [];
+                        sugArray.push(
+                            <div className="col-12 p-5 text-center" key={i}>
+                                <label>No Record Found</label>
+                            </div>
+                        );
+                        setopenticketnorecord(sugArray);
+                        setOpenTicketList([]);
+                    }
+                }
+                HideLoder();
+            }
+        });
     }
     return (
         <>
             <div className='row col-12'>
-                <h1 className="PageHeading">Manage Ticket</h1>
+                <h1 className="PageHeading">Manage Tickets</h1>
             </div>
             <div className="container-fluid px-0" id="GridDiv">
                 <div className="GridBox p-3">
@@ -105,15 +128,12 @@ export function ManageTicket() {
                             <div className='col-md-6 mt-2'>
                                 <form className="gridsearchbar">
                                     <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                    <input className="form-control" autoComplete="off" type="text" placeholder="Search Ticket (User, ticket number, Device asset tag / Serial number)" id="SearchTicket" />
-                                    <div className="SuggestionBox">
-                                        {/* {SuggestionBoxArray} */}
-                                    </div>
+                                    <input className="form-control" autoComplete="off" type="text" placeholder="Search Ticket (User, ticket number, Device asset tag / Serial number)" id="SearchTicket" onKeyUp={ListOfOpenTickets} />
                                 </form>
                             </div>
                             <div className="col-md-6 text-end">
-                                <label className='BorderColorBtn ms-3 text-center' id="OpenTicketBtn" onClick={ShowOpenTicketDetails}>Open Ticket</label>
-                                <label className='BorderColorBtn ms-3 text-center' id="CloseTicketBtn">Close Ticket</label>
+                                <label className='BorderColorBtn ms-3 text-center' id="OpenTicketBtn" onClick={ShowOpenTicketDetails}>View All Open Ticket</label>
+                                <label className='BorderColorBtn ms-3 text-center' id="CloseTicketBtn">View All Close Ticket</label>
                             </div>
                         </div>
 
@@ -142,7 +162,7 @@ export function ManageTicket() {
                                                 var returData;
                                                 returData = (<tr key={i}>
                                                     <td>{item.studentName}</td>
-                                                    <td>{item.ticketid}</td>
+                                                    <td className="ps-5">{item.ticketid}</td>
                                                     <td>{item.serialNum}</td>
                                                 </tr>
                                                 );
@@ -176,7 +196,7 @@ export function ManageTicket() {
                                                 var returData;
                                                 returData = (<tr key={i}>
                                                     <td>{item.studentName}</td>
-                                                    <td>{item.ticketid}</td>
+                                                    <td className="ps-5">{item.ticketid}</td>
                                                     <td>{item.serialNum}</td>
                                                 </tr>
                                                 );
@@ -204,9 +224,11 @@ export function ManageTicket() {
                                         </div>
                                         <div className="col-md-4">
                                             <select>
-                                                <option value="0">All</option>
-                                                <option value="1">Open</option>
-                                                <option value="2">In Progress</option>
+                                                <option value="0">Sort by</option>
+                                                <option value="1">Tickets by grade</option>
+                                                <option value="2">Tickets by building</option>
+                                                <option value="3">Tickets by Status</option>
+                                                <option value="4">Tickets by Outside locations</option>
                                             </select>
                                         </div>
                                     </div>
@@ -217,40 +239,28 @@ export function ManageTicket() {
                                                 Select All
                                             </label>
                                         </div>
-                                        <div className="form-check">
-                                            <input className="form-check-input CheckboxClass" type="checkbox" />
-                                            <label className="form-check-label ps-1">
-                                                Send out for repair
-                                            </label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input className="form-check-input CheckboxClass" type="checkbox" />
-                                            <label className="form-check-label ps-1">
-                                                Waiting on parts
-                                            </label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input className="form-check-input CheckboxClass" type="checkbox" />
-                                            <label className="form-check-label ps-1">
-                                                Decommission device
-                                            </label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input className="form-check-input CheckboxClass" type="checkbox" />
-                                            <label className="form-check-label ps-1">
-                                                Close Ticket
-                                            </label>
-                                        </div>
+                                        {TicketStatus.map((item, i) => {
+                                            var returData;
+                                            returData = (<div className="form-check" key={i}>
+                                                <input className="form-check-input CheckboxClass" type="checkbox" />
+                                                <label className="form-check-label ps-1">
+                                                    {item.status}
+                                                </label>
+                                            </div>
+                                            );
+                                            return returData;
+                                        })}
+
                                         <button className="SaveBtn">Submit</button>
                                     </div>
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                 </div>
-                                <div className="col-12">
+                                <div className="col-12" style={{ overflowY: 'scroll', height: '310px' }}>
                                     <table className="table">
                                         <tbody>
                                             <tr>
                                                 <th className="text-center">Select</th>
-                                                <th>Date
+                                                <th>Date created
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
                                                 <th>User Name
@@ -265,21 +275,33 @@ export function ManageTicket() {
                                                 <th className="text-center">Status</th>
                                                 <th></th>
                                             </tr>
-                                            <tr>
-                                                <td>
-                                                    <div className="text-center">
-                                                        <input className="form-check-input CheckboxClass" type="checkbox" />
-                                                    </div>
-                                                </td>
-                                                <td>02/11/2022</td>
-                                                <td>Dhruval Patel</td>
-                                                <td>#123 456 789</td>
-                                                <td>#123 456 789</td>
-                                                <td className="text-center">Open</td>
-                                                <td className="text-center">
-                                                    <img src="/images/DownRoundArrow.svg" className="cursor-pointer img-fluid" />
-                                                </td>
-                                            </tr>
+                                            {OpenTicketList.map((item, i) => {
+                                                var returData;
+                                                returData = (<tr key={i}>
+                                                    <td>
+                                                        <div className="text-center">
+                                                            <input className="form-check-input CheckboxClass" type="checkbox" />
+                                                        </div>
+                                                    </td>
+                                                    <td className="ps-3">{item.Date}</td>
+                                                    <td>{item.ticketCreatedBy}</td>
+                                                    <td className="ps-5">{item.ticketid}</td>
+                                                    <td>{item.serialNum}</td>
+                                                    <td className="text-center">
+                                                        {(item.ticket_status == "Open") ?
+                                                            <span style={{ color: "#3CBBA5" }}>Open</span>
+                                                            :
+                                                            <></>
+                                                        }
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <img src="/images/DownRoundArrow.svg" className="cursor-pointer img-fluid" />
+                                                    </td>
+                                                </tr>
+                                                );
+                                                return returData;
+                                            })}
+                                            {openticketnorecord}
                                         </tbody>
                                     </table>
                                 </div>

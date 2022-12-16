@@ -212,7 +212,7 @@ export function ManageInventory() {
         }
         var raw = JSON.stringify({
             ID: Deviceid,
-            PurchaseDate:PurchaseDate,
+            PurchaseDate: PurchaseDate,
             OemWarrantyUntil: OEMWarrantyUntil,
             ExtendedWarrantyUntil: ExtendedWarrantyUntil,
             ADPCoverage: ADPCoverage,
@@ -332,9 +332,12 @@ export function ManageInventory() {
             }
         });
     }
-    const CreateTicket = () =>{
+    const CreateTicket = () => {
         var userid = parseInt($("#hdnDeviceId").val());
-        window.location.href = '/create-ticket/?id=' +userid; 
+        window.location.href = '/create-ticket/?id=' + userid;
+    }
+    const ShowActionDropDown = () =>{
+        $("#ActionDropDown").removeClass('d-none');
     }
     return (
         <>
@@ -355,41 +358,54 @@ export function ManageInventory() {
             <div className="container-fluid px-0" id="GridDiv">
                 <div className="GridBox">
                     <div className="container ps-3">
-                        <div className='row pt-4 d-flex align-items-center'>
+                        <div className='row pt-2 d-flex align-items-center'>
                             <div className='col-md-4 mt-2'>
                                 <form className="gridsearchbar">
                                     <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
                                     <input className="form-control" autoComplete='off' type="text" placeholder="Search A Student Name" id="SearchInput" onKeyUp={(e) => GetListOfDevices(1)} />
                                 </form>
                             </div>
-                            <div className='col-md-4 mt-2'>
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                    <label className="form-check-label ps-1" htmlFor="flexCheckDefault">
-                                        Decommissioned
-                                    </label>
-                                </div>
-                            </div>
-                            <div className='col-md-2 text-end mt-2'>
-                                <label className='cursor-pointer' onClick={(e) => GetListOfDevices(1)}>Clear Filter</label>
-                            </div>
-                            <div className='col-md-2 text-end mt-2'>
-                                <select name="sorting" id="SortBy" onChange={(e) => SortByName(1)}>
-                                    <option value="0">Sort By</option>
-                                    <option value="Name">Student Name</option>
+                            <div className='col-md-2 mt-2'>
+                                {/* onChange={(e) => SortByName(1)} */}
+                                <select name="sorting" id="SortBy">
+                                    <option value="0">Sort by</option>
+                                    <option value="1">User type</option>
+                                    <option value="2">Device type</option>
+                                    <option value="3">Device model</option>
+                                    <option value="4">Grade</option>
+                                    <option value="5">Building</option>
+                                    <option value="6">OEM</option>
+                                    <option value="7">Date of Purchase</option>
                                 </select>
                             </div>
+                            {/* <div className='col-md-2 mt-2'>
+                                <label className='cursor-pointer' onClick={(e) => GetListOfDevices(1)}>Clear Filter</label>
+                            </div> */}
                         </div>
-                        <div className='row mt-4'>
+                        <div className='row mt-3'>
                             <div className='col-md-6'>
                                 <div className='col-12 greyBox'>
-                                    <div className='Header'>
-                                        <b className='font-16'>list of Devices</b><br />
+                                    <div className='Header row align-items-center '>
+                                        <div className='col-md-6 mb-2'>
+                                            <b className='font-16 mb-0'>list of Devices</b><br />
+                                        </div>
+                                        <div className='col-md-6 mb-2 d-none' id="ActionDropDown">
+                                            <select>
+                                                <option value="0">Actions</option>
+                                                <option value="1">Decommission</option>
+                                                <option value="2">Mass update device details</option>
+                                            </select>
+                                        </div>
                                         <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                                        <div className="form-check my-2 ms-4">
+                                            <input className="form-check-input" type="checkbox" />
+                                            Select All
+                                        </div>
                                     </div>
                                     <table className="table innerGridBox" style={{ overflow: "scroll" }} id="ListOfDevicesDiv">
                                         <tbody>
                                             <tr>
+                                                <th></th>
                                                 <th>Student Name</th>
                                                 <th>Serial Number</th>
                                                 <th>Device Model</th>
@@ -397,6 +413,9 @@ export function ManageInventory() {
                                             {AllDevices.map((item, i) => {
                                                 var returData;
                                                 returData = (<tr key={i} onClick={(e) => GetDeviceDetailById(item.ID, '1')} id={`MainRow_${item.ID}`} className="RowClass position-relative">
+                                                    <td>
+                                                        <input className="form-check-input" type="checkbox" onChange={ShowActionDropDown}/>
+                                                    </td>
                                                     <td>{item.Student_name}</td>
                                                     <td>{item.Serial_number}</td>
                                                     <td>{item.Device_model}</td>

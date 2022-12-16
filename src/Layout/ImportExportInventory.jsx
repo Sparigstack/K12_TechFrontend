@@ -143,10 +143,10 @@ export function ImportExportInventory() {
                                 </div>
                                 <div className="p-2">
                                     <p className="text-justify">
-                                        First Import Inventory file and upload a file. If you want to update csv records then select Update CSV. Want to see an example?  <a href="/inventory_managementcsv.csv" style={{ color: "#04ADFD", fontWeight: "600" }}>Click here</a> to download a sample CSV file.
+                                        To ensure inventory and data accuracy please download our templated CSV file and ensure your columns match the template before you import your inventory into the system. <a href="/inventory_managementcsv.csv" style={{ color: "#04ADFD", fontWeight: "600" }}>CLICK HERE</a> to download the template CSV file.
                                     </p>
                                     <div className="row pt-4">
-                                        <div className="col-md-7 px-0">
+                                        <div className="col-12 px-0">
                                             <form onSubmit={ImportCSV}>
                                                 <input type="file" ref={fileRef} name="upload_file" id="UploadFileId" accept='.csv' />
                                                 <label className='ImportInventoryBtn' for="UploadFileId"> Import Inventory
@@ -156,7 +156,7 @@ export function ImportExportInventory() {
                                                 <label id="ImportInventoryText" ></label>
                                             </form>
                                         </div>
-                                        <div className='col-md-5 pt-2'>
+                                        <div className='col-12 pt-4'>
                                             <div className="form-check">
                                                 <input className="form-check-input" type="checkbox" value="" id="UpdateCsv" onChange={UpdateCsvFlag} />
                                                 <label className="form-check-label ps-1" htmlFor="UpdateCsv">
@@ -178,22 +178,20 @@ export function ImportExportInventory() {
                                 </div>
                                 <div className="p-2">
                                     <p className="text-justify">
-                                        Want to export csv? Click on Export Inventory. If you want to Including Decommission then select and export.You can download and remove csv file.
+                                        Want to export your inventory? For active inventory click on the “export active inventory” button. For decommissioned inventory click on the “export decommissioned inventory” button below
                                     </p>
                                     <div className="row pt-4 px-3">
-                                        <div className="col-md-6 px-0">
-                                            <label className='BorderBtn' onClick={ExportInventory}> Export Inventory
+                                        <div className="col-12 px-0">
+                                            <label className='BorderBtn' onClick={ExportInventory}>Export Active Inventory 
                                                 <img src='/images/ExportInventory.svg' className='img-fluid ps-2' />
                                             </label>
                                         </div>
-                                        <div className="col-md-6 px-0 pt-2">
-                                            <div className="form-check">
-                                                <input className="form-check-input" type="checkbox" value="" id="IncludingDecommission" />
-                                                <label className="form-check-label ps-1" htmlFor="IncludingDecommission">
-                                                    Including Decommission
-                                                </label>
-                                            </div>
+                                        <div className="col-12 px-0 pt-2">
+                                            <label className='BorderBtn'>Export Decommissioned Inventory
+                                                <img src='/images/ExportInventory.svg' className='img-fluid ps-2' />
+                                            </label>
                                         </div>
+                                        
                                         <div className='row align-items-center pe-0 pt-2 d-none' id="ExportedFileDiv">
                                             <div className="col-md-7">
                                                 <label style={{ fontSize: "12px", color: "#04ADFD" }} id="ExportedFileName">

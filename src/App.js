@@ -48,7 +48,7 @@ function App({ msalInstance }) {
               {/* <Route path="/os-model" element={<OsModel />} /> */}
               <Route path="/importexport-inventory" element={<ImportExportInventory />} />
               <Route path="/create-ticket" element={<CreateTicket />} />
-              <Route path="/manage-ticket/*" element={<ManageTicket />} />
+              <Route path="/manage-tickets/*" element={<ManageTicket />} />
             </Routes>
           </Layout>
           :

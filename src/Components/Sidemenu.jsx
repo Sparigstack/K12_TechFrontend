@@ -292,11 +292,11 @@ export function Sidemenu() {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/manage-ticket" changeimg="/Images/SideMenu/Icons/ManageTicketWhite.svg" originalimg="/Images/SideMenu/Icons/ManageTicket.svg">
+                                            <a href="/manage-tickets" changeimg="/Images/SideMenu/Icons/ManageTicketWhite.svg" originalimg="/Images/SideMenu/Icons/ManageTicket.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/ManageTicket.svg' className='img-fluid ChangeImage' title='Manage Ticket' />
                                                 </div>
-                                                <div className="menu-title">Manage Ticket</div>
+                                                <div className="menu-title">Manage Tickets</div>
                                             </a>
                                         </li>
                                         <li>
