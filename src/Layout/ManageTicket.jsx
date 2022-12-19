@@ -32,6 +32,7 @@ export function ManageTicket() {
             } else {
                 const responseRs = JSON.parse(result);
                 var i = 1;
+                console.log(responseRs.Openticket)
                 if (responseRs.response == "success") {
                     if (responseRs.Openticket.length != 0) {
                         setOpenTicket(responseRs.Openticket);
@@ -63,13 +64,11 @@ export function ManageTicket() {
             }
         });
     }
-    const ShowOpenTicketDetails = () => {
+    const ShowOpenTicketDetails = (TabId) => {
+        $(".linkclass").removeClass('active');
+        $("#" + TabId).addClass('active');
         $("#MainGridDiv").addClass('d-none');
         $("#OpenTicketDiv").removeClass('d-none');
-        $("#CloseTicketBtn").addClass('BorderColorBtn');
-        $("#CloseTicketBtn").removeClass('SaveBtn');
-        $("#OpenTicketBtn").addClass('SaveBtn');
-        $("#OpenTicketBtn").removeClass('BorderColorBtn');
         ListOfTicketStatus();
     }
     const ListOfTicketStatus = async () => {
@@ -87,17 +86,18 @@ export function ManageTicket() {
         });
     }
     const ListOfOpenTickets = async () => {
-        var SearchString = $("#SearchTicket").val();
+        var SortBy = $("#OpenTicketSortBy option:selected").val();
         ShowLoder();
-        if (SearchString == "") {
-            SearchString = null;
+        if (SortBy == "") {
+            SortBy = null;
         }
-        await ApiGetCall("/openTickets/" + schoolid + "&" + SearchString).then((result) => {
+        await ApiGetCall("/openTickets/" + schoolid + "&" + SortBy).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
                 var i = 1;
+                console.log(responseRs.Openticket)
                 if (responseRs.response == "success") {
                     if (responseRs.Openticket.length != 0) {
                         setOpenTicketList(responseRs.Openticket);
@@ -116,6 +116,24 @@ export function ManageTicket() {
             }
         });
     }
+    const ShowTicketNote = (TicketId) => {
+        if ($("#NotesId_" + TicketId).hasClass('d-none')) {
+            $("#NotesId_" + TicketId).fadeIn();
+            $("#NotesId_" + TicketId).fadeIn("slow");
+            $("#NotesId_" + TicketId).fadeIn(3000);
+            $("#NotesId_" + TicketId).removeClass('d-none');
+            $("#DownArrow_" + TicketId).addClass('d-none');
+            $("#UpArrow_" + TicketId).removeClass('d-none');
+        } else {
+            $("#NotesId_" + TicketId).fadeOut();
+            $("#NotesId_" + TicketId).fadeOut("slow");
+            $("#NotesId_" + TicketId).fadeOut(3000);
+            $("#NotesId_" + TicketId).addClass('d-none');
+            $("#NotesId_" + TicketId).addClass('d-none');
+            $("#UpArrow_" + TicketId).addClass('d-none');
+            $("#DownArrow_" + TicketId).removeClass('d-none');
+        }
+    }
     return (
         <>
             <div className='row col-12'>
@@ -125,22 +143,28 @@ export function ManageTicket() {
                 <div className="GridBox p-3">
                     <div className="container ps-3">
                         <div className="row">
-                            <div className='col-md-6 mt-2'>
+                            <div className="col-md-8">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item navitembrdrbtm">
+                                        <a class="nav-link linkclass" aria-current="page" href="#" id="OpenTicketBtn" onClick={(e) => ShowOpenTicketDetails("OpenTicketBtn")}>View All Open Ticket</a>
+                                    </li>
+                                    <li class="nav-item navitembrdrbtm">
+                                        <a class="nav-link linkclass" href="#" tabindex="-1" id="CloseTicketBtn" aria-disabled="true" onClick={(e) => ShowOpenTicketDetails("CloseTicketBtn")}>View All Close Ticket</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className='col-md-4 text-end pe-0'>
                                 <form className="gridsearchbar">
                                     <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                    <input className="form-control" autoComplete="off" type="text" placeholder="Search Ticket (User, ticket number, Device asset tag / Serial number)" id="SearchTicket" onKeyUp={ListOfOpenTickets} />
+                                    <input className="form-control" autoComplete="off" type="text" placeholder="Search Ticket" id="SearchTicket" onKeyUp={ListOfOpenTickets} />
+                                    {/* (User, ticket number, Device asset tag / Serial number) */}
                                 </form>
                             </div>
-                            <div className="col-md-6 text-end">
-                                <label className='BorderColorBtn ms-3 text-center' id="OpenTicketBtn" onClick={ShowOpenTicketDetails}>View All Open Ticket</label>
-                                <label className='BorderColorBtn ms-3 text-center' id="CloseTicketBtn">View All Close Ticket</label>
-                            </div>
                         </div>
-
                         {/* Grid Div */}
-                        <div className="row mt-4" id="MainGridDiv">
+                        <div className="row mt-3" id="MainGridDiv">
                             <div className='col-md-6'>
-                                <div className="greyBox" style={{ height: '75%', overflowY: 'scroll' }}>
+                                <div className="greyBox" style={{ height: '95%', overflowY: 'scroll' }}>
                                     <div className='Header'>
                                         <b className='font-17'>list of Open Ticket</b><br />
                                         <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
@@ -151,10 +175,10 @@ export function ManageTicket() {
                                                 <th>User Name
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
-                                                <th>Ticket No.
+                                                <th>Date created
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
-                                                <th>Serial No.
+                                                <th>Status
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
                                             </tr>
@@ -162,8 +186,8 @@ export function ManageTicket() {
                                                 var returData;
                                                 returData = (<tr key={i}>
                                                     <td>{item.studentName}</td>
-                                                    <td className="ps-5">{item.ticketid}</td>
-                                                    <td>{item.serialNum}</td>
+                                                    <td className="ps-3">{item.Date}</td>
+                                                    <td>{item.ticket_status}</td>
                                                 </tr>
                                                 );
                                                 return returData;
@@ -174,7 +198,7 @@ export function ManageTicket() {
                                 </div>
                             </div>
                             <div className='col-md-6'>
-                                <div className="greyBox" style={{ height: '75%', overflowY: 'scroll' }}>
+                                <div className="greyBox" style={{ height: '95%', overflowY: 'scroll' }}>
                                     <div className='Header'>
                                         <b className='font-17'>list of Close Ticket</b><br />
                                         <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
@@ -185,10 +209,10 @@ export function ManageTicket() {
                                                 <th>User Name
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
-                                                <th>Ticket No.
+                                                <th>Date created
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
-                                                <th>Serial No.
+                                                <th>Status
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
                                             </tr>
@@ -196,8 +220,8 @@ export function ManageTicket() {
                                                 var returData;
                                                 returData = (<tr key={i}>
                                                     <td>{item.studentName}</td>
-                                                    <td className="ps-5">{item.ticketid}</td>
-                                                    <td>{item.serialNum}</td>
+                                                    <td className="ps-3">{item.Date}</td>
+                                                    <td>{item.ticket_status}</td>
                                                 </tr>
                                                 );
                                                 return returData;
@@ -213,17 +237,28 @@ export function ManageTicket() {
                         <div className="row mt-3" id="OpenTicketDiv">
                             <div className="greyBox">
                                 <div className='Header row align-items-center'>
-                                    <div className="col-md-8">
-                                        <b className='font-18'>list of Open Ticket</b><br />
+                                    <div className="col-md-7 row pe-0">
+                                        {TicketStatus.map((item, i) => {
+                                            var returData;
+                                            returData = (
+                                                <div className="col-md-4 pe-0" key={i}>
+                                                    <input className="form-check-input me-2" id="SelectAllId" type="checkbox" />{item.status}
+                                                </div>
+                                            );
+                                            return returData;
+                                        })}
                                     </div>
-                                    <div className="col-md-4 row">
+                                    <div className="col-md-1">
+                                        <button className="BorderBtn">Submit</button>
+                                    </div>
+                                    <div className="col-md-4 row pe-0">
                                         <div className="col-md-8 text-end">
                                             <label className='BorderBtn'> Export Ticket CSV
                                                 <img src='/images/ExportInventory.svg' className='img-fluid ps-2' />
                                             </label>
                                         </div>
-                                        <div className="col-md-4">
-                                            <select>
+                                        <div className="col-md-4 px-0">
+                                            <select onChange={ListOfOpenTickets} id="OpenTicketSortBy">
                                                 <option value="0">Sort by</option>
                                                 <option value="1">Tickets by grade</option>
                                                 <option value="2">Tickets by building</option>
@@ -232,34 +267,15 @@ export function ManageTicket() {
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="col-12 d-flex justify-content-evenly align-items-center pt-3 pb-1 ps-0">
-                                        <div className="form-check">
-                                            <input className="form-check-input CheckboxClass" type="checkbox" />
-                                            <label className="form-check-label ps-1">
-                                                Select All
-                                            </label>
-                                        </div>
-                                        {TicketStatus.map((item, i) => {
-                                            var returData;
-                                            returData = (<div className="form-check" key={i}>
-                                                <input className="form-check-input CheckboxClass" type="checkbox" />
-                                                <label className="form-check-label ps-1">
-                                                    {item.status}
-                                                </label>
-                                            </div>
-                                            );
-                                            return returData;
-                                        })}
-
-                                        <button className="SaveBtn">Submit</button>
-                                    </div>
-                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                                 </div>
-                                <div className="col-12" style={{ overflowY: 'scroll', height: '310px' }}>
+                                <div className="col-12 scroll-350">
                                     <table className="table">
                                         <tbody>
                                             <tr>
-                                                <th className="text-center">Select</th>
+                                                <th className="text-center">
+                                                    Select All<input className="form-check-input ms-2" id="SelectAllId" type="checkbox" />
+                                                </th>
                                                 <th>Date created
                                                     <img src="/images/TicketGridIcon.svg" className="img-fluid ps-2" />
                                                 </th>
@@ -277,27 +293,31 @@ export function ManageTicket() {
                                             </tr>
                                             {OpenTicketList.map((item, i) => {
                                                 var returData;
-                                                returData = (<tr key={i}>
-                                                    <td>
-                                                        <div className="text-center">
-                                                            <input className="form-check-input CheckboxClass" type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td className="ps-3">{item.Date}</td>
-                                                    <td>{item.ticketCreatedBy}</td>
-                                                    <td className="ps-5">{item.ticketid}</td>
-                                                    <td>{item.serialNum}</td>
-                                                    <td className="text-center">
-                                                        {(item.ticket_status == "Open") ?
-                                                            <span style={{ color: "#3CBBA5" }}>Open</span>
-                                                            :
-                                                            <></>
-                                                        }
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <img src="/images/DownRoundArrow.svg" className="cursor-pointer img-fluid" />
-                                                    </td>
-                                                </tr>
+                                                returData = (<>
+                                                    <tr key={i}>
+                                                        <td>
+                                                            <div className="text-center">
+                                                                <input className="form-check-input CheckboxClass" type="checkbox" />
+                                                            </div>
+                                                        </td>
+                                                        <td className="ps-3">{item.Date}</td>
+                                                        <td>{item.ticketCreatedBy}</td>
+                                                        <td className="ps-5">{item.ticketid}</td>
+                                                        <td>{item.serialNum}</td>
+                                                        <td className="text-center" style={{ color: "#3CBBA5" }}>
+                                                            {item.ticket_status}
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <img src="/images/DownRoundArrow.svg" id={`DownArrow_${item.ticketid}`} className="cursor-pointer img-fluid" onClick={(e) => ShowTicketNote(item.ticketid)} />
+                                                            <img src='/images/UpRoundArrow.svg' id={`UpArrow_${item.ticketid}`} className='img-fluid cursor-pointer d-none' onClick={(e) => ShowTicketNote(item.ticketid)} />
+                                                        </td>
+                                                    </tr>
+                                                    <tr className="py-2 d-none" id={`NotesId_${item.ticketid}`}>
+                                                        <td colSpan={7}>
+                                                            <textarea className="form-control bgWhite" rows={3} disabled value={"Notes:  " + item.notes}></textarea>
+                                                        </td>
+                                                    </tr>
+                                                </>
                                                 );
                                                 return returData;
                                             })}

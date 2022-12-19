@@ -453,7 +453,7 @@ export function ManageInventory() {
                                     <div className='col-md-2 text-center'>Serial Number</div>
                                     <div className='col-md-2'>Device Model</div>
                                     <div className='col-md-2 text-center'>Asset Tag</div>
-                                    <div className='col-md-1 text-center'>Grade</div>
+                                    {/* <div className='col-md-1 text-center'>Grade</div> */}
                                     <div className='col-md-1 text-center'>Building</div>
                                     <div className='col-md-1'></div>
                                 </div>
@@ -468,7 +468,7 @@ export function ManageInventory() {
                                             <div className='col-md-2 text-center'>{item.Serial_number}</div>
                                             <div className='col-md-2'>{item.Device_model}</div>
                                             <div className='col-md-2 text-center'>{item.Asset_tag}</div>
-                                            <div className='col-md-1 text-center'>{item.Grade}</div>
+                                            {/* <div className='col-md-1 text-center'>{item.Grade}</div> */}
                                             <div className='col-md-1 text-center'>{item.Building}</div>
                                             <div className='col-md-1 text-end cursor-pointer'><i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1')}></i></div>
                                         </div>
