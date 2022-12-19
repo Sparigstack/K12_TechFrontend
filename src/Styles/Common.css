@@ -123,6 +123,8 @@ a {
     color: black;
     font-weight: 600;
     font-size: 15px;
+    border-bottom: 1px solid rgb(223, 220, 220);
+    padding: .5rem .5rem;
 }
 
 .gridsearchbar .form-control {
@@ -194,6 +196,11 @@ select {
 
 .innerGridBox tr:hover {
     background-color: #F7FFFE;
+}
+.grid{
+    border-bottom: 1px solid rgb(223, 220, 220);
+  padding: .5rem .5rem;
+    font-size: 14px;
 }
 
 .grid:hover {
@@ -289,19 +296,7 @@ input[type="file"] {
 }
 
 .modal {
-    top: 14% !important;
     left: 10% !important;
-}
-
-.ModalHeader {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-}
-
-.modal-content {
-    padding-left: 15px;
-    padding-right: 20px;
 }
 
 .form-check-input:focus {
@@ -384,4 +379,13 @@ input[type="file"] {
 }
 .brdr-Btm{
     border-bottom: 1px solid rgba(0, 0, 0, .125);
+}
+
+
+
+/* scroll class */
+.scroll-330{
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 332px;
 }

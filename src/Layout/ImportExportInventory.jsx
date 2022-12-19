@@ -114,6 +114,28 @@ export function ImportExportInventory() {
             }
         });
     }
+    const ExportDecommissionedInventory =async () =>{
+        ShowLoder();
+        await ApiGetCall("/getInventories/" + SchoolId + "&null").then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                var msgdata = responseRs.decommisionInvenoty.data;
+                for (var i = 0; i < msgdata.length; i++) {
+                    msgdata[i].ADP_coverage = MMDDYYYY(msgdata[i].ADP_coverage);
+                    msgdata[i].Extended_warranty_until = MMDDYYYY(msgdata[i].Extended_warranty_until);
+                    msgdata[i].OEM_warranty_until = MMDDYYYY(msgdata[i].OEM_warranty_until);
+                    msgdata[i].Purchase_date = MMDDYYYY(msgdata[i].Purchase_date);
+                    msgdata[i].created_at = MMDDYYYY(msgdata[i].created_at);
+                    msgdata[i].updated_at = MMDDYYYY(msgdata[i].updated_at);
+                }
+                setCsvData(msgdata);
+                $("#ExportedFileDiv").removeClass('d-none');
+                HideLoder();
+            }
+        });
+    }
     const UpdateCsvFlag = () => {
         if ($("#UpdateCsv").is(":checked")) {
             setUpdateFlag(1);
@@ -187,7 +209,7 @@ export function ImportExportInventory() {
                                             </label>
                                         </div>
                                         <div className="col-12 px-0 pt-2">
-                                            <label className='BorderBtn'>Export Decommissioned Inventory
+                                            <label className='BorderBtn' onClick={ExportDecommissionedInventory}>Export Decommissioned Inventory
                                                 <img src='/images/ExportInventory.svg' className='img-fluid ps-2' />
                                             </label>
                                         </div>
