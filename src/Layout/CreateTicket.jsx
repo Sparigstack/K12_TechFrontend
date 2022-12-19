@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Cookies } from 'react-cookie';
 import { getUrlParameter } from "../JS/Common";
 import { ShowSuggestionBox } from "../JS/Common";
+import { MMDDYYYY } from "../JS/Common";
 export function CreateTicket() {
     const cookies = new Cookies();
     var schoolid = 1;
@@ -14,6 +15,7 @@ export function CreateTicket() {
     const [DeviceDeatils, setDeviceDeatils] = useState([]);
     const [Notes, setNotes] = useState("");
     const [norecord, setNorecord] = useState("");
+    const [username, setusername] = useState("");
     var Deviceid = getUrlParameter("id");
     const [SuggestionBoxArray, setSuggestionBoxArray] = useState("");
     useEffect(() => {
@@ -194,7 +196,7 @@ export function CreateTicket() {
     }
 
     //Device details Get call
-    const SearcDevice = async () => {
+    const SearchDevice = async () => {
         var UserId = $("#hdnDeviceId").val();
         await ApiGetCall("/fetchDeviceDetails/" + UserId).then((result) => {
             if (result == undefined || result == "") {
@@ -203,9 +205,11 @@ export function CreateTicket() {
                 const responseRs = JSON.parse(result);
                 HideLoder();
                 var sugData = responseRs.msg;
+                console.log(sugData)
                 if (responseRs.response == "success") {
                     setNorecord("");
                     setDeviceDeatils(sugData);
+                    setusername(responseRs.userName);
                 } else {
                     $(".alert-danger").show();
                     $("#AlertDangerMsg").text(responseRs.msg);
@@ -233,7 +237,7 @@ export function CreateTicket() {
         $("#SearchText").addClass('d-none');
         $("#AddDeviceIssues").removeClass('d-none');
         GetDeviceIssues();
-        SearcDevice();
+        SearchDevice();
     }
     return (
         <>
@@ -253,23 +257,21 @@ export function CreateTicket() {
                                 </div>
                             </form>
                         </div>
-                        <div className='mt-4'>
+                        <div className='mt-3'>
                             <div className='col-12 greyBox d-none' id="AddDeviceIssues">
-                                <div className='Header'>
-                                    <b className='font-17'>Device Details</b><br />
-                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
-                                </div>
                                 <div className="row">
-                                    <div className="col-md-4 my-1"><b>Device Number:</b> &nbsp; {DeviceDeatils.Serial_number}</div>
-                                    <div className="col-md-4 my-1"><b>Model type:</b> &nbsp; {DeviceDeatils.Device_model}</div>
-                                    <div className="col-md-4 my-1"><b>Under warranty till:</b> &nbsp; {DeviceDeatils.Extended_warranty_until}</div>
+                                    <div className="col-md-4 my-1"><span className="fw-600">Model type:</span> &nbsp; {DeviceDeatils.Device_model}</div>
+                                    <div className="col-md-4 my-1"><span className="fw-600">Purchase Date:</span> &nbsp; {MMDDYYYY(DeviceDeatils.Purchase_date)}</div>
+                                    <div className="col-md-4 my-1"><span className="fw-600">Student Name:</span> &nbsp; {DeviceDeatils.Student_name}</div>
+                                    <div className="col-md-4 my-1"><span className="fw-600">User Name:</span> &nbsp; {username}</div>
+                                    <div className="col-md-4 my-1"><span className="fw-600">Asset Tag:</span> &nbsp; {DeviceDeatils.Asset_tag}</div>
+                                    <div className="col-md-4 my-1"><span className="fw-600">Serial Number:</span> &nbsp; {DeviceDeatils.Serial_number}</div>
                                     <div className="col-12">
                                         <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                     </div>
                                 </div>
                                 <div className='Header'>
-                                    <b className='font-17'>Device Issue</b><br />
-                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                                    <b className='font-18'>Device Issue</b><br />
                                 </div>
                                 <div className="row px-3 pb-3">
                                     {DeviceIssues.map((item, i) => {

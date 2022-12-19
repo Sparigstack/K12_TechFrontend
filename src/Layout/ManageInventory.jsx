@@ -448,28 +448,28 @@ export function ManageInventory() {
                             </div>
                             <div className='innerGridBox mt-2'>
                                 <div className='row GridHeader mx-1 px-0'>
-                                    <div className='col-md-1 font-13 px-0'>Select All<input className="form-check-input ms-1" id="SelectAllId" type="checkbox" onClick={SelectAllDevices} /></div>
+                                    <div className='col-md-1 font-13 px-0 text-center'>Select All<input className="form-check-input ms-1" id="SelectAllId" type="checkbox" onClick={SelectAllDevices} /></div>
                                     <div className='col-md-2'>Student Name</div>
-                                    <div className='col-md-2'>Serial Number</div>
+                                    <div className='col-md-2 text-center'>Serial Number</div>
                                     <div className='col-md-2'>Device Model</div>
-                                    <div className='col-md-2'>Asset Tag</div>
-                                    <div className='col-md-1'>Grade</div>
-                                    <div className='col-md-1'>Building</div>
+                                    <div className='col-md-2 text-center'>Asset Tag</div>
+                                    <div className='col-md-1 text-center'>Grade</div>
+                                    <div className='col-md-1 text-center'>Building</div>
                                     <div className='col-md-1'></div>
                                 </div>
                                 <div className='scroll-330'>
                                     {AllDevices.map((item, i) => {
                                         var returData;
                                         returData = (<div key={i} className="row grid mx-1 px-0">
-                                            <div className='col-md-1'>
+                                            <div className='col-md-1 text-center'>
                                                 <input className="form-check-input CommonCheckBoxClass" deviceid={item.ID} type="checkbox" onChange={ShowActionDropDown} />
                                             </div>
                                             <div className='col-md-2'>{item.Student_name}</div>
-                                            <div className='col-md-2'>{item.Serial_number}</div>
+                                            <div className='col-md-2 text-center'>{item.Serial_number}</div>
                                             <div className='col-md-2'>{item.Device_model}</div>
-                                            <div className='col-md-2'>{item.Asset_tag}</div>
-                                            <div className='col-md-1'>{item.Grade}</div>
-                                            <div className='col-md-1'>{item.Building}</div>
+                                            <div className='col-md-2 text-center'>{item.Asset_tag}</div>
+                                            <div className='col-md-1 text-center'>{item.Grade}</div>
+                                            <div className='col-md-1 text-center'>{item.Building}</div>
                                             <div className='col-md-1 text-end cursor-pointer'><i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1')}></i></div>
                                         </div>
                                         );
@@ -690,7 +690,6 @@ export function ManageInventory() {
             <Modal show={isShow} size="lg">
                 <Modal.Header closeButton onClick={ClosePopup}>
                     <Modal.Title>Details</Modal.Title>
-
                 </Modal.Header>
                 <Modal.Body>
                     <div className='row'>
