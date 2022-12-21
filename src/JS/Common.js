@@ -82,13 +82,14 @@ function findParent(element) {
     }
 }
 export function ShowSuggestionBox(BoxId) {
-    if ($("#" + BoxId).val() != "") {
+    // if ($("#" + BoxId).val() != "") {
         $(".SuggestionBox").css('visibility', 'visible');
         $(".SuggestionBox").css('opacity', '1');
-    } else {
-        $(".SuggestionBox").css('visibility', 'hidden');
-        $(".SuggestionBox").css('opacity', '0');
-    }
+        $(".SuggestionBox").css('display', 'block');
+    // } else {
+    //     $(".SuggestionBox").css('visibility', 'hidden');
+    //     $(".SuggestionBox").css('opacity', '0');
+    // }
 }
 export var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),

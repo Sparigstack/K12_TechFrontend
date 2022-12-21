@@ -355,11 +355,14 @@ export function ManageTicket() {
                         <div className="row">
                             <div className="col-md-8">
                                 <ul className="nav nav-tabs">
-                                    <li className="nav-item navitembrdrbtm">
-                                        <a className="nav-link linkclass" aria-current="page" id="OpenTicketBtn" href="/manage-tickets/open-tickets">View All Open Ticket</a>
+                                    <li className="nav-item navitembrdrbtm ">
+                                        <a className="nav-link linkclass active" aria-current="page" id="AllTicketBtn" href="/manage-tickets">View All Tickets</a>
                                     </li>
                                     <li className="nav-item navitembrdrbtm">
-                                        <a className="nav-link linkclass" id="CloseTicketBtn" aria-disabled="true" href="/manage-tickets/close-tickets">View All Close Ticket</a>
+                                        <a className="nav-link linkclass" aria-current="page" id="OpenTicketBtn" href="/manage-tickets/open-tickets">View All Open Tickets</a>
+                                    </li>
+                                    <li className="nav-item navitembrdrbtm">
+                                        <a className="nav-link linkclass" id="CloseTicketBtn" aria-disabled="true" href="/manage-tickets/close-tickets">View All Close Tickets</a>
                                     </li>
                                 </ul>
                             </div>
