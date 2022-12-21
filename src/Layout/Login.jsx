@@ -24,7 +24,8 @@ export function Login() {
             googleId: res.googleId,
             microsoftId: null,
             accessToken: accessToken,
-            flag: 1
+            flag: 1,
+            schoolId: 1
         });
         await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {

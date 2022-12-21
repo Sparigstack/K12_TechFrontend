@@ -16,9 +16,11 @@ export function ManageInventory() {
     const schoolid = 1;
     const cookies = new Cookies();
     const [AllDevices, setAllDevices] = useState([]);
+    const [IsDecommission, setIsDecommission] = useState(1);
     const [DeviceDetails, setDeviceDetails] = useState([]);
     const [DeviceHistory, setDeviceHistory] = useState([]);
     const [norecord, setNorecord] = useState("");
+    const [historynorecord, sethistorynorecord] = useState("");
     const [Deviceid, setDeviceid] = useState("");
 
     // form input fields start
@@ -125,13 +127,20 @@ export function ManageInventory() {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
+                console.log(result)
                 const responseRs = JSON.parse(result);
                 HideLoder();
                 var sugData = responseRs.msg;
                 var historyData = responseRs.deviceHistory;
                 if (responseRs.response == "success") {
                     setDeviceDetails(sugData);
-                    setDeviceHistory(historyData);
+                    if (historyData.length != 0) {
+                        setDeviceHistory(historyData);
+                    } else {
+                        sethistorynorecord(<div className="col-12 GridNoRecord text-center">
+                            <label>No Record Found</label>
+                        </div>);
+                    }
                     if (flag == 1) {
                         invokeModal(true);
                     } else {
@@ -299,14 +308,25 @@ export function ManageInventory() {
     const SortByName = async () => {
         var sortbyval = $("#SortBy option:selected").val();
         ShowLoder();
-        await ApiGetCall("/sortby/" + schoolid + "&" + sortbyval).then((result) => {
+        await ApiGetCall("/sortby/" + schoolid + "&" + sortbyval + "&" + IsDecommission).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
                 if (responseRs.response == "success") {
-                    setAllDevices(responseRs.msg);
-                    setNorecord("");
+                    if (responseRs.msg.length != 0) {
+                        setNorecord("");
+                        setAllDevices(responseRs.msg);
+                    } else {
+                        var sugArray = [];
+                        var i = 1;
+                        sugArray.push(
+                            <div className="col-12 GridNoRecord text-center" key={i}>
+                                <label>No Record Found</label>
+                            </div>
+                        );
+                        setNorecord(sugArray);
+                    }
                 }
                 HideLoder();
             }
@@ -389,6 +409,52 @@ export function ManageInventory() {
             });
         }
     }
+    const GetDecommissionData = async () => {
+        if ($("#DecommissionedId").is(":checked")) {
+            setIsDecommission(2);
+            $("#ChangeDecommissionText").text('Active');
+            $("#ChangeDecommissionText").val('3');
+            $(".CommonCheckBoxClass").prop('checked',false);
+            $("#SelectAllId").prop('checked',false);
+            $("#SortBy").val(0);
+            var searchString = $("#SearchInput").val();
+            ShowLoder();
+            if (searchString == "") {
+                searchString = null;
+            }
+            await ApiGetCall("/getallDecommission/" + schoolid + "&" + searchString).then((result) => {
+                if (result == undefined || result == "") {
+                    alert("Something went wrong");
+                } else {
+                    const responseRs = JSON.parse(result);
+                    var sugArray = [];
+                    var i = 1;
+                    if (responseRs.response == "success") {
+                        if (responseRs.msg.length != 0) {
+                            setNorecord("");
+                            setAllDevices(responseRs.msg);
+                        } else {
+                            sugArray.push(
+                                <div className="col-12 GridNoRecord text-center" key={i}>
+                                    <label>No Record Found</label>
+                                </div>
+                            );
+                            setNorecord(sugArray);
+                            setAllDevices([]);
+                        }
+                    }
+                    HideLoder();
+                }
+            });
+        }else{
+            setIsDecommission(1);
+            $("#ChangeDecommissionText").text('Decommission');
+            $("#ChangeDecommissionText").val('2');
+            $(".CommonCheckBoxClass").prop('checked',false);
+            $("#SelectAllId").prop('checked',false);
+            GetListOfDevices();
+        }
+    }
     return (
         <>
             <input type="hidden" id="hdnDeviceId" />
@@ -415,7 +481,10 @@ export function ManageInventory() {
                                     <input className="form-control" autoComplete='off' type="text" placeholder="Search A Student Name" id="SearchInput" onKeyUp={GetListOfDevices} />
                                 </form>
                             </div>
-                            <div className='col-md-6'>
+                            <div className='col-md-3  px-0 pt-2'>
+                                <input className="form-check-input me-2" type="checkbox" onChange={GetDecommissionData} id="DecommissionedId" />Show Decommissioned
+                            </div>
+                            <div className='col-md-3'>
                                 <div className='col-md-4 offset-md-8 mt-2'>
                                     <select name="sorting" id="SortBy" onChange={SortByName}>
                                         <option value="0">Sort by</option>
@@ -441,7 +510,7 @@ export function ManageInventory() {
                                     <select>
                                         <option value="0">Actions</option>
                                         <option value="1">Mass update device details</option>
-                                        <option value="2">Decommission</option>
+                                        <option value="2" id="ChangeDecommissionText">Decommission</option>
                                     </select>
                                 </div>
                                 <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
@@ -823,17 +892,15 @@ export function ManageInventory() {
                                 );
                                 return returData;
                             })}
+                            {historynorecord}
                         </div>
                     </div>
                     <div className='row text-center pt-3'>
-                        <div className='col-md-4 pe-0 text-end'>
-                            <button className='SaveBtn' onClick={(e) => AddUpdateInventory(Deviceid, "/update-inventory")}>Update Inventory</button>
+                        <div className='col-md-6 pe-0 text-end'>
+                            <button className='SaveBtn' onClick={(e) => AddUpdateInventory(Deviceid, "/update-inventory")}>Update Device</button>
                         </div>
-                        <div className='col-md-4 pe-0 text-center'>
+                        <div className='col-md-6 pe-0 text-start'>
                             <button className='SaveBtn' onClick={CreateTicket}>Create Ticket</button>
-                        </div>
-                        <div className='col-md-4 text-start'>
-                            <button className='SaveBtn'>Decommission Device</button>
                         </div>
                     </div>
                 </Modal.Body>

@@ -348,7 +348,7 @@ export function Sidemenu() {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" changeimg="/Images/SideMenu/Icons/UsersWhite.svg" originalimg="/Images/SideMenu/Icons/Users.svg">
+                                            <a href="/users" changeimg="/Images/SideMenu/Icons/UsersWhite.svg" originalimg="/Images/SideMenu/Icons/Users.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/Users.svg' className='img-fluid ChangeImage' title='Users' />
                                                 </div>

@@ -14,6 +14,7 @@ import { ManageInventory } from './Layout/ManageInventory';
 import { Logout } from './Layout/Logout';
 import { MsalProvider } from "@azure/msal-react";
 import { ErrorPage } from './Layout/404.jsx';
+import { Users } from './Layout/Users.jsx';
 // import { DeviceType } from './Layout/DeviceType.jsx';
 // import { OsModel } from './Layout/OsModel.jsx';
 import { ImportExportInventory } from './Layout/ImportExportInventory.jsx';
@@ -49,11 +50,12 @@ function App({ msalInstance }) {
               <Route path="/importexport-inventory" element={<ImportExportInventory />} />
               <Route path="/create-ticket" element={<CreateTicket />} />
               <Route path="/manage-tickets/*" element={<ManageTicket />} />
+              <Route path="/users" element={<Users />} />
             </Routes>
           </Layout>
           :
           <Routes>
-            <Route path="*" element={<ErrorPage />} />
+            <Route path="*" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/" element={<Login />} />
           </Routes>

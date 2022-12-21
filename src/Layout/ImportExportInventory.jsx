@@ -37,7 +37,6 @@ export function ImportExportInventory() {
     };
     var SchoolId = 1;
     const BaseUrl = process.env.REACT_APP_Base_URL;
-    const [UpdateFlag, setUpdateFlag] = useState(0);
     var CsvUserId = parseInt(Cookies.get('CsvUserId'));
     const fileRef = useRef();
     useEffect(() => {
@@ -136,13 +135,6 @@ export function ImportExportInventory() {
             }
         });
     }
-    const UpdateCsvFlag = () => {
-        if ($("#UpdateCsv").is(":checked")) {
-            setUpdateFlag(1);
-        } else {
-            setUpdateFlag(0);
-        }
-    }
     const RemoveCsv = () => {
         setCsvData([]);
         $("#ExportedFileDiv").addClass('d-none');
@@ -177,14 +169,6 @@ export function ImportExportInventory() {
                                                 <input type="submit" value="Upload" className='UploadBtn' />
                                                 <label id="ImportInventoryText" ></label>
                                             </form>
-                                        </div>
-                                        <div className='col-12 pt-4'>
-                                            <div className="form-check">
-                                                <input className="form-check-input" type="checkbox" value="" id="UpdateCsv" onChange={UpdateCsvFlag} />
-                                                <label className="form-check-label ps-1" htmlFor="UpdateCsv">
-                                                    Update CSV
-                                                </label>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
