@@ -30,7 +30,7 @@ export function CreateTicket() {
             const navbarheight = $(".navbar").height();
             var finalHeight = height - navbarheight - 80;
             $(".GridBox").css('height', finalHeight);
-            StoreDeviceSearchData();
+            StoreDeviceSearchData(1);
             var DeviceidGlobal = $("#hdnDeviceId").val();
             if (DeviceidGlobal != "false") {
                 ShowDeviceDetails("", 2);
@@ -39,13 +39,13 @@ export function CreateTicket() {
     }, []);
 
     // on keyup store data in array
-    const StoreDeviceSearchData = async () => {
+    const StoreDeviceSearchData = async (flag) => {
         var searchstring = $("#SearchDeviceId").val();
         ShowLoder();
         if (searchstring == "") {
             searchstring = null;
         }
-        await ApiGetCall("/searchInventory/" + searchstring).then((result) => {
+        await ApiGetCall("/searchInventoryCT/" + schoolid + "&" + searchstring).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -56,11 +56,13 @@ export function CreateTicket() {
                 var i = 1;
                 if (responseRs.response == "success") {
                     if (sugData.length != 0) {
-                        ShowSuggestionBox();
+                        if (flag != 1) {
+                            ShowSuggestionBox();
+                        }
                         for (var i = 0; i < sugData.length; i++) {
                             sugArray.push(
-                                <div className="row brdr-Btm font-14" key={i} onClick={(e) => ShowDeviceDetails(e, 1)} Deviceid={sugData[i].ID} style={{padding:"8px 15px"}}>
-                                    <div className="col-8">{sugData[i].Student_name}</div>
+                                <div className="row brdr-Btm font-14" key={i} onClick={(e) => ShowDeviceDetails(e, 1)} UsreId={sugData[i].user_id} Deviceid={sugData[i].ID} style={{ padding: "8px 15px" }}>
+                                    <div className="col-8">{sugData[i].Device_user_first_name} {sugData[i].Device_user_last_name}</div>
                                     <div className="col-4 text-end">{sugData[i].Serial_number}</div>
                                     <div className="col-12">{sugData[i].Device_model}</div>
                                 </div>
@@ -73,8 +75,8 @@ export function CreateTicket() {
                                 <div className="col-12 text-center" key={i}>
                                     <label>No Record Found</label>
                                 </div>
-                                <div className="col-12 d-flex align-items-center justify-content-center position-absolute pb-2" style={{ bottom: "0",borderTop:"1px solid #e1dddd" }}>
-                                    <a href="/manage-inventory/add-inventory" >
+                                <div className="col-12 d-flex align-items-center justify-content-center position-absolute pb-2" style={{ bottom: "0", borderTop: "1px solid #e1dddd" }}>
+                                    <a href="/manage-inventory/add-inventory" target="_blank">
                                         <img src="/images/AddInventory.svg" className="img-fluid pe-2" />
                                         <b className="font-18 BlackFont pt-1">Add Inventory</b>
                                     </a>
@@ -98,6 +100,7 @@ export function CreateTicket() {
     //final save call
     const CreateTicket = async () => {
         var hdnDeviceid = parseInt($("#hdnDeviceId").val());
+        var UserID = parseInt($("#hdnUserId").val());
         var checkvalid = 0;
         var isFormValid = CheckValidation("AddDeviceIssues");
         $(".CheckboxClass").each(function () {
@@ -116,9 +119,8 @@ export function CreateTicket() {
         var NewJson = {
             "Notes": Notes,
             "schoolId": schoolid,
-            "userId": userid,
-            "inventoryId": hdnDeviceid,
-            "status": 1
+            "userId": UserID,
+            "inventoryId": hdnDeviceid
         };
         $(".CheckboxClass").each(function () {
             var vjson = {};
@@ -205,7 +207,6 @@ export function CreateTicket() {
                 const responseRs = JSON.parse(result);
                 HideLoder();
                 var sugData = responseRs.msg;
-                console.log(sugData)
                 if (responseRs.response == "success") {
                     setNorecord("");
                     setDeviceDeatils(sugData);
@@ -226,9 +227,10 @@ export function CreateTicket() {
     const ShowDeviceDetails = (e, flag) => {
         setNorecord("");
         $("#SearchDeviceId").val("");
+        $("#hdnUserId").val(parseInt(e.currentTarget.attributes[1].value));
         var userid = "";
         if (flag == 1) {
-            userid = parseInt(e.currentTarget.attributes[1].value);
+            userid = parseInt(e.currentTarget.attributes[2].value);
         } else {
             userid = parseInt($("#hdnDeviceId").val());
         }
@@ -242,6 +244,7 @@ export function CreateTicket() {
     return (
         <>
             <input type="hidden" id="hdnDeviceId" />
+            <input type="hidden" id="hdnUserId" />
             <div className='row col-12'>
                 <h1 className="PageHeading">Create Ticket</h1>
             </div>
@@ -251,7 +254,8 @@ export function CreateTicket() {
                         <div className='col-md-6 mt-2'>
                             <form className="gridsearchbar">
                                 <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                <input className="form-control" autoComplete="off" type="text" placeholder="Search Device (Student Name, Serial Number, Asset Tag*)" id="SearchDeviceId" onKeyUp={StoreDeviceSearchData} />
+                                <div className="position-absolute top-50 translate-middle-y me-3 RefreshButton" style={{ right: "0" }} title="Refresh" onClick={(e) => StoreDeviceSearchData(2)}><i class="bi bi-arrow-clockwise"></i></div>
+                                <input className="form-control" autoComplete="off" type="text" placeholder="Search Device (Student Name, Serial Number, Asset Tag*)" id="SearchDeviceId" onKeyUp={(e) => StoreDeviceSearchData(2)} />
                                 <div className="SuggestionBox">
                                     {SuggestionBoxArray}
                                 </div>
@@ -262,7 +266,7 @@ export function CreateTicket() {
                                 <div className="row">
                                     <div className="col-md-4 my-1"><span className="fw-600">Model type:</span> &nbsp; {DeviceDeatils.Device_model}</div>
                                     <div className="col-md-4 my-1"><span className="fw-600">Purchase Date:</span> &nbsp; {MMDDYYYY(DeviceDeatils.Purchase_date)}</div>
-                                    <div className="col-md-4 my-1"><span className="fw-600">Student Name:</span> &nbsp; {DeviceDeatils.Student_name}</div>
+                                    <div className="col-md-4 my-1"><span className="fw-600">Student Name:</span> &nbsp; {DeviceDeatils.Device_user_first_name} {DeviceDeatils.Device_user_last_name}</div>
                                     <div className="col-md-4 my-1"><span className="fw-600">User Name:</span> &nbsp; {username}</div>
                                     <div className="col-md-4 my-1"><span className="fw-600">Asset Tag:</span> &nbsp; {DeviceDeatils.Asset_tag}</div>
                                     <div className="col-md-4 my-1"><span className="fw-600">Serial Number:</span> &nbsp; {DeviceDeatils.Serial_number}</div>

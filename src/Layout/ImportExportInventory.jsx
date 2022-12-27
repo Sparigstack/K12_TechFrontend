@@ -10,25 +10,34 @@ export function ImportExportInventory() {
     const [CsvData, setCsvData] = useState([]);
     const headers = [
         { label: "ID", key: "ID" },
-        { label: "Purchase_date", key: "Purchase_date" },
-        { label: "OEM_warranty_until", key: "OEM_warranty_until" },
-        { label: "Extended_warranty_until", key: "Extended_warranty_until" },
-        { label: "ADP_coverage", key: "ADP_coverage" },
-        { label: "OEM", key: "OEM" },
+        { label: "Device_manufacturer", key: "Device_manufacturer" },
+        { label: "Device Type", key: "Device_Type" },
+        { label: "Manufacturer_warranty_until", key: "Manufacturer_warranty_until" },
+        { label: "Manufacturer_ADP_until", key: "Manufacturer_ADP_until" },
+        { label: "Third_party_extended_warranty_until", key: "Third_party_extended_warranty_until" },
+        { label: "Third_party_ADP_until", key: "Third_party_ADP_until" },
+        { label: "Expected_retirement", key: "Expected_retirement" },
+        { label: "Loaner_device", key: "Loaner_device" },
+        { label: "Device_user_first_name", key: "Device_user_first_name" },
+        { label: "Device_user_last_name", key: "Device_user_last_name" },
+        { label: "Student_ID", key: "Student_ID" },
+        { label: "Grade/Department", key: "Grade" },
         { label: "Device_model", key: "Device_model" },
-        { label: "OS", key: "OS" },
+        { label: "Device_MPN", key: "Device_MPN" },
         { label: "Serial_number", key: "Serial_number" },
         { label: "Asset_tag", key: "Asset_tag" },
+        { label: "Purchase_date", key: "Purchase_date" },
         { label: "Building", key: "Building" },
-        { label: "Grade", key: "Grade" },
-        { label: "Student_name", key: "Student_name" },
-        { label: "Student_ID", key: "Student_ID" },
-        { label: "Parent_email", key: "Parent_email" },
+        { label: "User_type", key: "User_type" },
+        { label: "Parent_guardian_name", key: "Parent_guardian_name" },
+        { label: "Parent_Guardian_Email", key: "Parent_guardian_Email" },
         { label: "Parent_phone_number", key: "Parent_phone_number" },
         { label: "Parental_coverage", key: "Parental_coverage" },
         { label: "Repair_cap", key: "Repair_cap" },
+        { label: "inventory_status", key: "inventory_status" },
         { label: "created_at", key: "created_at" },
-        { label: "updated_at", key: "updated_at" }
+        { label: "updated_at", key: "updated_at" },
+        { label: "Device_os", key: "Device_os" }
     ];
     const csvReport = {
         filename: 'Inventory.csv',
@@ -72,7 +81,6 @@ export function ImportExportInventory() {
         fetch(`${BaseUrl}/upload`, requestOptions)
             .then(response => response.text())
             .then(result => {
-                console.log(result);
                 if (result == "success") {
                     $(".alert-success").show();
                     $("#AlertMsg").text("CSV imported Successfully.");
@@ -93,7 +101,7 @@ export function ImportExportInventory() {
     }
     const ExportInventory = async () => {
         ShowLoder();
-        await ApiGetCall("/getInventories/" + SchoolId + "&null").then((result) => {
+        await ApiGetCall("/getInventories/" + SchoolId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -115,7 +123,7 @@ export function ImportExportInventory() {
     }
     const ExportDecommissionedInventory =async () =>{
         ShowLoder();
-        await ApiGetCall("/getInventories/" + SchoolId + "&null").then((result) => {
+        await ApiGetCall("/getInventories/" + SchoolId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {

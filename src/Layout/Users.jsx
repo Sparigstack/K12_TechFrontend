@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import $ from 'jquery';
 import { ShowLoder, HideLoder } from "../JS/Common";
 import { CheckValidation } from "../JS/Common";
-import { ApiGetCall, ApiPostCall } from "../JS/Connector";
+import { ApiGetCall, ApiPostCall, ApiDeleteCall } from "../JS/Connector";
 export function Users() {
     var schoolid = 1;
     const [Flag, setFlag] = useState(1);
@@ -120,6 +120,33 @@ export function Users() {
             }
         });
     }
+    const DeleteUserbyid = async(UserId)=>{
+        ShowLoder();
+        var raw = JSON.stringify({
+            ID: UserId
+        });
+        await ApiDeleteCall("/deleteUser", raw).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                HideLoder();
+                if (result == "success") {
+                    $(".alert-success").show();
+                    $("#AlertMsg").text("User Deleted Succesfully.");
+                    setTimeout(function () {
+                        window.location = "/users";
+                    }, 1500);
+                } else {
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text(result);
+                    setTimeout(function () {
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
+                    }, 1500);
+                }
+            }
+        });
+    }
     const UpdateExistingUser = async() =>{
         var isFormValid = CheckValidation("UserForm");
         if ($("#AccessDevice option:selected").val() == 0) {
@@ -169,9 +196,9 @@ export function Users() {
             </div>
             <div className="container-fluid px-0" id="GridDiv">
                 <div className="GridBox p-3">
-                    <div className="row mt-3">
+                    <div className="row mt-3 d-flex">
                         <div className="col-md-6">
-                            <div className="greyBox" style={{ height: '65%', overflowY: 'scroll', overflowX: 'hidden' }}>
+                            <div className="greyBox">
                                 <div>
                                     <b className='font-16 mb-0' id="HeaderUser">Add User</b>
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
@@ -209,11 +236,11 @@ export function Users() {
                                     </div>
                                     <div className='col-12 pt-2'>
                                         Building*
-                                        <input type="text" name='Building' autoComplete="off" className="form-control mt-2" required value={building}
+                                        <input type="text" name='Building' autoComplete="off" className="form-control mt-2" value={building}
                                             onChange={(e) => setbuilding(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
+                                        {/* <span className="form-text invalid-feedback">
                                             *required
-                                        </span>
+                                        </span> */}
                                     </div>
                                     <div className="col-12 text-center py-3">
                                         {Flag == 1 ?
@@ -227,7 +254,7 @@ export function Users() {
                             </div>
                         </div>
                         <div className="col-md-6">
-                            <div className="greyBox" style={{ height: '65%', overflowY: 'scroll' }}>
+                            <div className="greyBox" style={{ height: '75%', overflowY: 'scroll' }}>
                                 <div>
                                     <b className='font-16 mb-0'>Current Users</b>
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
@@ -246,7 +273,7 @@ export function Users() {
                                                 <td>{item.Acess}</td>
                                                 <td className="text-center">
                                                     <img src="/images/EditIcon.svg" className="img-fluid me-2" onClick={(e) => GetUserbyid(item.id)} />
-                                                    <img src="/images/DeleteIcon.svg" className="img-fluid" />
+                                                    <img src="/images/DeleteIcon.svg" className="img-fluid" onClick={(e) => DeleteUserbyid(item.id)}/>
                                                 </td>
                                             </tr>);
                                             return returData;
