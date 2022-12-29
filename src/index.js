@@ -29,7 +29,8 @@ pca.addEventCallback(event => {
       googleId: null,
       microsoftId: payloadData.uniqueId,
       accessToken: payloadData.accessToken,
-      flag: 2
+      flag: 2,
+      schoolId: 1
     });
     ApiPostCall("/register", raw).then((result) => {
       if (result == undefined || result == "") {

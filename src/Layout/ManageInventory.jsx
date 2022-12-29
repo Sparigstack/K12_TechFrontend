@@ -22,6 +22,7 @@ export function ManageInventory() {
     const [norecord, setNorecord] = useState("");
     const [historynorecord, sethistorynorecord] = useState("");
     const [Deviceid, setDeviceid] = useState("");
+    const [TicketUserid, setTicketUserid] = useState("");
     const [isShow, invokeModal] = useState(false);
 
     // form input fields start
@@ -79,12 +80,15 @@ export function ManageInventory() {
     }
     const ShowAddUpdatediv = () => {
         var Deviceid = getUrlParameter("id");
+        var Ticketuserid = getUrlParameter("userid");
         var uri = window.location.toString();
         if (uri.indexOf("?") > 0) {
             var clean_uri = uri.substring(0, uri.indexOf("?"));
             window.history.replaceState({}, document.title, clean_uri);
         }
         $("#hdnDeviceId").val(Deviceid);
+        $("#hdnTicketUserId").val(Ticketuserid);
+        setTicketUserid(Ticketuserid);
         setDeviceid(Deviceid);
         ShowLoder();
         $("#GridDiv").addClass('d-none');
@@ -93,7 +97,7 @@ export function ManageInventory() {
         $("#AddUpdateHeader").text("Add New Inventory");
         HideLoder();
         if (Deviceid >= 1) {
-            GetDeviceDetailById(Deviceid, '2');
+            GetDeviceDetailById(Deviceid, '2', Ticketuserid);
         }
     }
     const GetListOfDevices = async (flag) => {
@@ -124,7 +128,7 @@ export function ManageInventory() {
             }
         });
     }
-    const SearchDevice = async() =>{
+    const SearchDevice = async () => {
         var searchString = $("#SearchInput").val();
         ShowLoder();
         if (searchString == "") {
@@ -155,17 +159,19 @@ export function ManageInventory() {
             }
         });
     }
-    const GetDeviceDetailById = async (UserId, flag) => {
+    const GetDeviceDetailById = async (UserId, flag, TicketUserid) => {
         $("#hdnDeviceId").val(UserId);
+        $("#hdnTicketUserId").val(TicketUserid);
         setDeviceid(UserId);
+        setTicketUserid(TicketUserid);
         await ApiGetCall("/fetchDeviceDetails/" + UserId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
                 HideLoder();
+                console.log(responseRs)
                 var sugData = responseRs.msg;
-                console.log(sugData);
                 var historyData = responseRs.deviceHistory;
                 if (responseRs.response == "success") {
                     setDeviceDetails(sugData);
@@ -231,9 +237,9 @@ export function ManageInventory() {
             }
         });
     }
-    const AddUpdateInventory = (DeviceId, url) => {
+    const AddUpdateInventory = (TicketUserid, DeviceId, url) => {
         var PathName = window.location.pathname;
-        var FinalUrl = PathName + url + "?id=" + DeviceId;
+        var FinalUrl = PathName + url + "?id=" + DeviceId + "&userid=" + TicketUserid;
         window.location.href = FinalUrl;
     }
     const UpdateInventory = async () => {
@@ -290,7 +296,6 @@ export function ManageInventory() {
             Loanerdevice: LoanerDevice,
             Parentalcoverage: parentalCoverage
         });
-        console.log(raw)
         await ApiPostCall("/addeditmanualInventoy", raw).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
@@ -420,7 +425,8 @@ export function ManageInventory() {
     }
     const CreateTicket = () => {
         var userid = parseInt($("#hdnDeviceId").val());
-        window.location.href = '/create-ticket/?id=' + userid;
+        var ticktuserid = parseInt($("#hdnTicketUserId").val());
+        window.location.href = '/create-ticket/?id=' + userid + "&userid=" + ticktuserid;
     }
     const ShowActionDropDown = () => {
         $("#ActionDropDown").removeClass('d-none');
@@ -438,20 +444,25 @@ export function ManageInventory() {
         invokeModal(false);
     }
     const ShowDeviceDetail = (divId) => {
+        if (divId == "DeviceHistoryDiv") {
+            $("#DeviceDetailsScroll").addClass('d-none');
+            $("#DeviceDetailsTab").removeClass('active');
+            $("#DeviceHistoryTab").addClass('active');
+        } else {
+            $("#DeviceHistoryDiv").addClass('d-none');
+            $("#DeviceHistoryTab").removeClass('active');
+            $("#DeviceDetailsTab").addClass('active');
+        }
         if ($("#" + divId).hasClass('d-none')) {
             $("#" + divId).fadeIn();
             $("#" + divId).fadeIn("slow");
             $("#" + divId).fadeIn(3000);
             $("#" + divId).removeClass('d-none');
-            $("#DownArrow_" + divId).addClass('d-none');
-            $("#UpArrow_" + divId).removeClass('d-none');
         } else {
             $("#" + divId).fadeOut();
             $("#" + divId).fadeOut("slow");
             $("#" + divId).fadeOut(3000);
             $("#" + divId).addClass('d-none');
-            $("#UpArrow_" + divId).addClass('d-none');
-            $("#DownArrow_" + divId).removeClass('d-none');
         }
     }
     const InventoryAction = async () => {
@@ -496,56 +507,71 @@ export function ManageInventory() {
         }
     }
     const GetDecommissionData = async () => {
-        if ($("#DecommissionedId").is(":checked")) {
-            $("#HighlightTitle").text("Decommissioned Devices");
-            setIsDecommission(2);
-            $("#ChangeDecommissionText").text('Active');
-            $("#ChangeDecommissionText").val('3');
-            $(".CommonCheckBoxClass").prop('checked', false);
-            $("#SelectAllId").prop('checked', false);
-            $("#SortBy").val(0);
-            var searchString = $("#SearchInput").val();
-            ShowLoder();
-            if (searchString == "") {
-                searchString = null;
-            }
-            await ApiGetCall("/getallDecommission/" + schoolid + "&" + searchString).then((result) => {
-                if (result == undefined || result == "") {
-                    alert("Something went wrong");
-                } else {
-                    const responseRs = JSON.parse(result);
-                    var sugArray = [];
-                    var i = 1;
-                    if (responseRs.response == "success") {
-                        if (responseRs.msg.length != 0) {
-                            setNorecord("");
-                            setAllDevices(responseRs.msg);
-                        } else {
-                            sugArray.push(
-                                <div className="col-12 GridNoRecord text-center" key={i}>
-                                    <label>No Record Found</label>
-                                </div>
-                            );
-                            setNorecord(sugArray);
-                            setAllDevices([]);
-                        }
+        setIsDecommission(2);
+        $("#ChangeDecommissionText").text('Active');
+        $("#ChangeDecommissionText").val('3');
+        $(".CommonCheckBoxClass").prop('checked', false);
+        $("#SelectAllId").prop('checked', false);
+        $("#SortBy").val(0);
+        var searchString = $("#SearchInput").val();
+        ShowLoder();
+        if (searchString == "") {
+            searchString = null;
+        }
+        await ApiGetCall("/getallDecommission/" + schoolid + "&" + searchString).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                var sugArray = [];
+                var i = 1;
+                if (responseRs.response == "success") {
+                    if (responseRs.msg.length != 0) {
+                        setNorecord("");
+                        setAllDevices(responseRs.msg);
+                    } else {
+                        sugArray.push(
+                            <div className="col-12 GridNoRecord text-center" key={i}>
+                                <label>No Record Found</label>
+                            </div>
+                        );
+                        setNorecord(sugArray);
+                        setAllDevices([]);
                     }
-                    HideLoder();
                 }
-            });
+                HideLoder();
+            }
+        });
+    }
+    const ShowTicketHistoryDiv = (ticketid) => {
+        if ($("#TicketHistoryDiv_" + ticketid).hasClass('d-none')) {
+            $("#TicketHistoryDiv_" + ticketid).removeClass('d-none');
+            $("#TicketHistoryDiv_" + ticketid).fadeIn();
+            $("#TicketHistoryDiv_" + ticketid).fadeIn("slow");
+            $("#TicketHistoryDiv_" + ticketid).fadeIn(3000);
         } else {
-            $("#HighlightTitle").text("List of all Devices");
-            setIsDecommission(1);
-            $("#ChangeDecommissionText").text('Decommission');
-            $("#ChangeDecommissionText").val('2');
-            $(".CommonCheckBoxClass").prop('checked', false);
-            $("#SelectAllId").prop('checked', false);
+            $("#TicketHistoryDiv_" + ticketid).addClass('d-none');
+            $("#TicketHistoryDiv_" + ticketid).fadeOut();
+            $("#TicketHistoryDiv_" + ticketid).fadeOut("slow");
+            $("#TicketHistoryDiv_" + ticketid).fadeOut(3000);
+        }
+    }
+    const ShowDeviceGrid = (DivId) => {
+        $("#SelectAllId").prop('checked',false);
+        $(".CommonCheckBoxClass").prop('checked',false);
+        $("#ActionDropDown").addClass('d-none');
+        $(".linkclass").removeClass('active');
+        $("#" + DivId).addClass('active');
+        if (DivId == "ActiveDeviceTab") {
             GetListOfDevices(1);
+        } else if (DivId == "DecommissionedDeviceTab") {
+            GetDecommissionData();
         }
     }
     return (
         <>
             <input type="hidden" id="hdnDeviceId" />
+            <input type="hidden" id="hdnTicketUserId" />
             <div className='row col-12'>
                 <div className='col-md-6'>
                     <h1 className="PageHeading">Manage Inventory</h1>
@@ -554,46 +580,53 @@ export function ManageInventory() {
                     <a href='/importexport-inventory' className='BlackFont cursor-pointer'><label className='BorderBtn text-center'> Import Inventory
                         <img src='/images/ImportInventory.svg' className='img-fluid ps-2' />
                     </label></a>
-                    <label className='BorderBtn ms-3 text-center' onClick={(e) => AddUpdateInventory(0, "/add-inventory")}> Add Inventory
+                    <label className='BorderBtn ms-3 text-center' onClick={(e) => AddUpdateInventory(0, 0, "/add-inventory")}> Add Inventory
                         <img src='/images/AddInventory.svg' className='img-fluid ps-2' />
                     </label>
                 </div>
             </div>
             <div className="container-fluid px-0" id="GridDiv">
-                <div className="GridBox">
+                <div className="GridBox p-3">
                     <div className="container ps-3">
-                        <div className='row pt-2 d-flex align-items-center'>
-                            <div className='col-md-6 mt-2'>
+                        <div className='row'>
+                            <div className="col-md-7 px-0">
+                                <ul className="nav nav-tabs">
+                                    <li className="nav-item navitembrdrbtm text-center cursor-pointer">
+                                        <a className="nav-link linkclass active" aria-current="page" id="ActiveDeviceTab" onClick={(e) => ShowDeviceGrid("ActiveDeviceTab")}>Active Devices</a>
+                                    </li>
+                                    <li className="nav-item navitembrdrbtm text-center cursor-pointer">
+                                        <a className="nav-link linkclass " aria-current="page" id="DecommissionedDeviceTab" onClick={(e) => ShowDeviceGrid("DecommissionedDeviceTab")}>Decommissioned Devices</a>
+                                    </li>
+                                    <li className="nav-item navitembrdrbtm text-center cursor-pointer">
+                                        <a className="nav-link linkclass" id="LoanerDeviceTab" aria-disabled="true" onClick={(e) => ShowDeviceGrid("LoanerDeviceTab")}>Loaner Devices</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className='col-md-3 text-end pe-0 SearchBarDiv'>
                                 <form className="gridsearchbar">
                                     <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                    <input className="form-control" autoComplete='off' type="text" placeholder="Search A Student Name" id="SearchInput" onKeyUp={SearchDevice} />
+                                    <input className="form-control" autoComplete="off" type="text" placeholder="Search" id="SearchInput" onKeyUp={SearchDevice} />
                                 </form>
                             </div>
-                            <div className='col-md-3  px-0 pt-2'>
+                            <div className="col-md-2 pe-0 SearchBarDiv">
+                                <select name="sorting" id="SortBy" onChange={SortByName}>
+                                    <option value="0">Sort by</option>
+                                    <option value="1">Student Name</option>
+                                    <option value="2">Device model</option>
+                                    <option value="3">Grade</option>
+                                    <option value="4">Building</option>
+                                    <option value="6">Date of Purchase</option>
+                                </select>
+                            </div>
+                            {/* <div className='col-md-3  px-0 pt-2'>
                                 <input className="form-check-input me-2" type="checkbox" onChange={GetDecommissionData} id="DecommissionedId" />Show Decommissioned
-                            </div>
-                            <div className='col-md-3'>
-                                <div className='col-md-4 offset-md-8 mt-2'>
-                                    <select name="sorting" id="SortBy" onChange={SortByName}>
-                                        <option value="0">Sort by</option>
-                                        <option value="1">Student Name</option>
-                                        <option value="2">Device model</option>
-                                        <option value="3">Grade</option>
-                                        <option value="4">Building</option>
-                                        {/* <option value="5">OEM</option> */}
-                                        <option value="6">Date of Purchase</option>
-                                    </select>
-                                </div>
-                            </div>
+                            </div> */}
                         </div>
-                        <div className='col-12 greyBox mt-3'>
+                        <div className='row greyBox mt-3'>
                             <div className='Header row align-items-center '>
                                 <div className='col-md-5 mb-2 d-flex justify-content-between'>
-                                    <b className='font-16 mb-0' id="HighlightTitle">List of all Devices</b><br />
                                 </div>
-                                <div className='col-md-4 text-end' style={{ color: "red" }} id="ErrorDiv">
-
-                                </div>
+                                <div className='col-md-4 text-end' style={{ color: "red" }} id="ErrorDiv"></div>
                                 <div className='col-md-3 mb-2 d-none' id="ActionDropDown" onChange={InventoryAction}>
                                     <select>
                                         <option value="0">Actions</option>
@@ -601,7 +634,6 @@ export function ManageInventory() {
                                         <option value="2" id="ChangeDecommissionText">Decommission</option>
                                     </select>
                                 </div>
-                                <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                             </div>
                             <div className='innerGridBox mt-2'>
                                 <div className='row GridHeader mx-1 px-0'>
@@ -625,7 +657,7 @@ export function ManageInventory() {
                                             <div className='col-md-1 text-center'>{item.Grade}</div>
                                             <div className='col-md-1 text-center'>{item.Building}</div>
                                             <div className='col-md-2 text-center'>{item.Purchase_date}</div>
-                                            <div className='col-md-1 text-end cursor-pointer'><i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1')}></i></div>
+                                            <div className='col-md-1 text-end cursor-pointer'><i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1', item.user_id)}></i></div>
                                         </div>
                                         );
                                         return returData;
@@ -888,9 +920,9 @@ export function ManageInventory() {
                                 </div>
                             </div>
                             <div className='row p-2 justify-content-between'>
-                                <div className='col-md-6 row align-items-center'>
-                                    <div className='col-md-7 FormLabel'>Loaner Device</div>
-                                    <div className='col-md-5 d-flex'>
+                                <div className='col-12 row align-items-center'>
+                                    <div className='col-md-5 FormLabel'>Do you want to act this device as loaner? </div>
+                                    <div className='col-md-7 d-flex'>
                                         <div className="form-check">
                                             <input className="form-check-input" type="radio" name='LoanerDevice' id="LoanerDeviceYes" />
                                             <label className="form-check-label">
@@ -908,9 +940,9 @@ export function ManageInventory() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className='col-md-6 row align-items-center'>
-                                    <div className='col-md-7 FormLabel'>Parental Coverage</div>
-                                    <div className='col-md-5 d-flex'>
+                                <div className='col-12 row align-items-center pt-2'>
+                                    <div className='col-md-5 FormLabel'>Parental Coverage</div>
+                                    <div className='col-md-7 d-flex'>
                                         <div className="form-check">
                                             <input className="form-check-input" type="radio" name='ParentalCoverage' id="ParentalCoverageYes" />
                                             <label className="form-check-label">
@@ -947,153 +979,178 @@ export function ManageInventory() {
                     <Modal.Title>Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className='row'>
-                        <div className='col-11'>
-                            <h5>Device Details</h5>
-                        </div>
-                        <div className='col-1'>
-                            <img src='/images/DownRoundArrow.svg' id="DownArrow_DeviceDetailsScroll" className='img-fluid cursor-pointer' onClick={(e) => ShowDeviceDetail("DeviceDetailsScroll")} />
-                            <img src='/images/UpRoundArrow.svg' id="UpArrow_DeviceDetailsScroll" className='img-fluid cursor-pointer d-none' onClick={(e) => ShowDeviceDetail("DeviceDetailsScroll")} />
-                        </div>
-                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100 ' />
+                    <div className="px-0">
+                        <ul className="nav nav-tabs row">
+                            <li className="nav-item col-6 px-0 navitembrdrbtm text-center cursor-pointer">
+                                <a className="nav-link deviceLinkClass active" aria-current="page" id="DeviceDetailsTab" onClick={(e) => ShowDeviceDetail("DeviceDetailsScroll")}>Device Details</a>
+                            </li>
+                            <li className="nav-item col-6 px-0 text-center navitembrdrbtm cursor-pointer">
+                                <a className="nav-link deviceLinkClass" id="DeviceHistoryTab" aria-disabled="true" onClick={(e) => ShowDeviceDetail("DeviceHistoryDiv")}>Device History</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div id="DeviceDetailsScroll" >
+                    <div id="DeviceDetailsScroll" className=" mt-3">
                         <div className='row'>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>ID: </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>ID : </div>
                                 <div className='col-6'>  {DeviceDetails.ID}</div>
                             </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>Student ID : </div>
+                                <div className='col-6'> {DeviceDetails.Student_ID}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-9 fw-600'>Grade : </div>
+                                <div className='col-3'> {DeviceDetails.Grade}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>Building : </div>
+                                <div className='col-6'> {DeviceDetails.Building}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>Device OS : </div>
+                                <div className='col-6'> {DeviceDetails.Device_os}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-9 fw-600'>Loaner Device : </div>
+                                <div className='col-3'> {DeviceDetails.Loaner_device}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>User Type : </div>
+                                <div className='col-6'> {DeviceDetails.User_type}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>Repair Cap : </div>
+                                <div className='col-6'> {DeviceDetails.Repair_cap}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-9 fw-600'>Parental Coverage : </div>
+                                <div className='col-3'> {(DeviceDetails.Parental_coverage == 1) ?
+                                    <>Yes</> : <>No</>}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>Device Type : </div>
+                                <div className='col-6'> {DeviceDetails.Device_type}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-6 fw-600'>Device MPN : </div>
+                                <div className='col-6'> {DeviceDetails.Device_MPN}</div>
+                            </div>
+                            <div className='col-md-4 row py-1'>
+                                <div className='col-9 fw-600'>Asset Tag : </div>
+                                <div className='col-3'> {DeviceDetails.Asset_tag}</div>
+                            </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+
                             <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Expected Retirement: </div>
-                                <div className='col-6'> {DeviceDetails.Expected_retirement}</div>
+                                <div className='col-7 fw-600'>Device Manufacturer : </div>
+                                <div className='col-5'> {DeviceDetails.Device_manufacturer}</div>
                             </div>
                             <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Device Manufacturer: </div>
-                                <div className='col-6'> {DeviceDetails.Device_manufacturer}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Student Name: </div>
+                                <div className='col-6 fw-600'>Student Name : </div>
                                 <div className='col-6'> {DeviceDetails.Device_user_first_name} {DeviceDetails.Device_user_last_name}</div>
                             </div>
                             <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Student ID: </div>
-                                <div className='col-6'> {DeviceDetails.Student_ID}</div>
+                                <div className='col-7 fw-600'>Device Model : </div>
+                                <div className='col-5'> {DeviceDetails.Device_model}</div>
                             </div>
                             <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Device Model: </div>
-                                <div className='col-6'> {DeviceDetails.Device_model}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Serial Number: </div>
+                                <div className='col-6 fw-600'>Serial Number : </div>
                                 <div className='col-6'> {DeviceDetails.Serial_number}</div>
                             </div>
+
                             <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Building: </div>
-                                <div className='col-6'> {DeviceDetails.Building}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Device OS: </div>
-                                <div className='col-6'> {DeviceDetails.Device_os}</div>
+                                <div className='col-7 fw-600'>Parent Phone Number : </div>
+                                <div className='col-5'> {DeviceDetails.Parent_phone_number}</div>
                             </div>
                             <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Device Type: </div>
-                                <div className='col-6'> {DeviceDetails.Device_type}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Grade / Department: </div>
-                                <div className='col-6'> {DeviceDetails.Grade}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Device MPN: </div>
-                                <div className='col-6'> {DeviceDetails.Device_MPN}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Asset Tag: </div>
-                                <div className='col-6'> {DeviceDetails.Asset_tag}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>User Type: </div>
-                                <div className='col-6'> {DeviceDetails.User_type}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Repair Cap: </div>
-                                <div className='col-6'> {DeviceDetails.Repair_cap}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Loaner Device: </div>
-                                <div className='col-6'> {DeviceDetails.Loaner_device}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Parental Coverage: </div>
-                                <div className='col-6'> {(DeviceDetails.Parental_coverage == 1) ?
-                                    <>Yes</> : <>No</>}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6'>Created At: </div>
-                                <div className='col-6'> {MMDDYYYY(DeviceDetails.created_at)}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6'>Purchase Date: </div>
-                                <div className='col-6'> {DeviceDetails.Purchase_date}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6'>Manufacturer Warranty Until: </div>
-                                <div className='col-6'>  {DeviceDetails.Manufacturer_warranty_until}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6'>Third Party Extended Warranty Until: </div>
-                                <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6'>Manufacturer ADP Until: </div>
-                                <div className='col-6'> {DeviceDetails.Manufacturer_ADP_until}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6'>Third Party ADP Until: </div>
-                                <div className='col-6'> {DeviceDetails.Third_party_ADP_until}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6'>Parent Phone Number: </div>
-                                <div className='col-6'> {DeviceDetails.Parent_phone_number}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6'>Parent Guardian Email: </div>
+                                <div className='col-6 fw-600'>Parent Email : </div>
                                 <div className='col-6'> {DeviceDetails.Parent_Guardian_Email}</div>
                             </div>
-                           
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Created At : </div>
+                                <div className='col-4'> {MMDDYYYY(DeviceDetails.created_at)}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Expected Retirement : </div>
+                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Purchase Date : </div>
+                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
+                                <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Manufacturer ADP Until : </div>
+                                <div className='col-4'> {DeviceDetails.Manufacturer_ADP_until}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Third Party ADP Until : </div>
+                                <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
+                            </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-12 row py-1'>
+                                <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
+                                <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
+                            </div>
                         </div>
                     </div>
-                    <div className='row pt-4'>
-                        <div className='col-11'>
-                            <h5>Device History</h5>
-                        </div>
-                        <div className='col-1'>
-                            <img src='/images/DownRoundArrow.svg' id="DownArrow_DeviceHistoryDiv" className='img-fluid cursor-pointer' onClick={(e) => ShowDeviceDetail("DeviceHistoryDiv")} />
-                            <img src='/images/UpRoundArrow.svg' id="UpArrow_DeviceHistoryDiv" className='img-fluid cursor-pointer d-none' onClick={(e) => ShowDeviceDetail("DeviceHistoryDiv")} />
-                        </div>
-                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100 ' />
-                    </div>
-                    <div id='DeviceHistoryDiv' className='d-none'>
+                    <div id='DeviceHistoryDiv' className='d-none mt-3'>
                         <div className='row px-3'>
                             {DeviceHistory.map((item, i) => {
                                 var returData;
-                                returData = (<div className='brdr-Btm row'>
-                                    <div className='col-md-6 p-1 pe-0 row'>
-                                        <div className='col-md-6'>Issue </div>
-                                        <div className='col-md-6'>:  {item.Issue}</div>
+                                returData = (<div className='row' key={i}>
+                                    <div className='col-12 p-1 pe-0 row'>
+                                        <div className='col-md-3 fw-600'>Created Date : </div>
+                                        <div className='col-md-9'>  {item.Issue_createdDate}</div>
                                     </div>
-                                    <div className='col-md-6 p-1 pe-0 row'>
-                                        <div className='col-md-6'>Issue Created Date </div>
-                                        <div className='col-md-6'>:  {item.Issue_createdDate}</div>
+                                    <div className='col-12 p-1 pe-0 row'>
+                                        <div className='col-md-3 fw-600'>Created By : </div>
+                                        <div className='col-md-9'> {item.Created_by_user}</div>
                                     </div>
-                                    <div className='col-md-6 p-1 pe-0 row'>
-                                        <div className='col-md-6'>Notes </div>
-                                        <div className='col-md-6'>:  {item.Notes}</div>
+                                    <div className='col-12 p-1 pe-0 row'>
+                                        <div className='col-md-3 fw-600'>Issue : </div>
+                                        <div className='col-md-9' style={{ display: "inline" }}>
+                                            {item.Issue.map(item => item).join(', ')}
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 p-1 pe-0 row'>
-                                        <div className='col-md-6'>Status </div>
-                                        <div className='col-md-6'>:  {item.Status}</div>
+                                    <div className='col-12 p-1 pe-0 row text-justify'>
+                                        <div className='col-md-3 fw-600'>Notes : </div>
+                                        <div className='col-md-9'> {item.Notes}</div>
                                     </div>
+                                    <div className='col-12 p-1 pe-0 row'>
+                                        <div className='col-md-3 fw-600'>Status : </div>
+                                        <div className='col-md-9' > <label style={{ color: "#3CBBA5" }}>{item.Status}</label>
+                                            <label className='cursor-pointer' onClick={(e) => ShowTicketHistoryDiv(item.Ticket_ID)}>
+                                                <img src="/images/DownRoundArrow.svg" className="img-fluid ps-5 cursor-pointer pe-2" title="Show Ticket History" />Show Ticket History
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className="col-12 pt-3 d-none" id={`TicketHistoryDiv_${item.Ticket_ID}`}>
+                                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2 px-0' />
+                                        <h4><u>Ticket History</u></h4>
+                                        <div className="row">
+                                            {(item.ticketHistory.length != 0) ?
+                                                item.ticketHistory.map((tickethistory, j) => {
+                                                    var returData;
+                                                    returData = <div className="col-12 py-1" key={j}>
+                                                        On {tickethistory.date}, {tickethistory.update_by_user} has changed the ticket status {tickethistory.previous_status} to {tickethistory.updated_status}
+                                                    </div>
+                                                    return returData;
+                                                })
+                                                :
+                                                <div className="col-12 text-center">
+                                                    <label>No Record Found</label>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2 px-0' />
                                 </div>
                                 );
                                 return returData;
@@ -1103,7 +1160,7 @@ export function ManageInventory() {
                     </div>
                     <div className='row text-center pt-3'>
                         <div className='col-md-6 pe-0 text-end'>
-                            <button className='SaveBtn' onClick={(e) => AddUpdateInventory(Deviceid, "/update-inventory")}>Update Device</button>
+                            <button className='SaveBtn' onClick={(e) => AddUpdateInventory(TicketUserid, Deviceid, "/update-inventory")}>Update Device</button>
                         </div>
                         <div className='col-md-6 pe-0 text-start'>
                             <button className='SaveBtn' onClick={CreateTicket}>Create Ticket</button>

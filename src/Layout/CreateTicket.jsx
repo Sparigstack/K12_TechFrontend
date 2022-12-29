@@ -3,20 +3,18 @@ import $ from 'jquery';
 import { CheckValidation, ShowLoder, HideLoder } from "../JS/Common";
 import { ApiGetCall, ApiPostCall } from "../JS/Connector";
 import { useState } from "react";
-import { Cookies } from 'react-cookie';
 import { getUrlParameter } from "../JS/Common";
 import { ShowSuggestionBox } from "../JS/Common";
 import { MMDDYYYY } from "../JS/Common";
 export function CreateTicket() {
-    const cookies = new Cookies();
     var schoolid = 1;
-    var userid = parseInt(cookies.get('CsvUserId'));
     const [DeviceIssues, setAllDevicesIssues] = useState([]);
     const [DeviceDeatils, setDeviceDeatils] = useState([]);
     const [Notes, setNotes] = useState("");
     const [norecord, setNorecord] = useState("");
     const [username, setusername] = useState("");
     var Deviceid = getUrlParameter("id");
+    var userid = getUrlParameter("userid");
     const [SuggestionBoxArray, setSuggestionBoxArray] = useState("");
     useEffect(() => {
         return () => {
@@ -26,6 +24,7 @@ export function CreateTicket() {
                 window.history.replaceState({}, document.title, clean_uri);
             }
             $("#hdnDeviceId").val(Deviceid);
+            $("#hdnUserId").val(userid);
             const height = window.innerHeight;
             const navbarheight = $(".navbar").height();
             var finalHeight = height - navbarheight - 80;
@@ -227,14 +226,17 @@ export function CreateTicket() {
     const ShowDeviceDetails = (e, flag) => {
         setNorecord("");
         $("#SearchDeviceId").val("");
-        $("#hdnUserId").val(parseInt(e.currentTarget.attributes[1].value));
         var userid = "";
+        var ticketuserid = "";
         if (flag == 1) {
             userid = parseInt(e.currentTarget.attributes[2].value);
+            ticketuserid = parseInt(e.currentTarget.attributes[1].value);
         } else {
             userid = parseInt($("#hdnDeviceId").val());
+            ticketuserid = parseInt($("#hdnUserId").val());
         }
         $("#hdnDeviceId").val(userid);
+        $("#hdnUserId").val(ticketuserid);
         $(".SuggestionBox").hide();
         $("#SearchText").addClass('d-none');
         $("#AddDeviceIssues").removeClass('d-none');
@@ -254,7 +256,7 @@ export function CreateTicket() {
                         <div className='col-md-6 mt-2'>
                             <form className="gridsearchbar">
                                 <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                <div className="position-absolute top-50 translate-middle-y me-3 RefreshButton" style={{ right: "0" }} title="Refresh" onClick={(e) => StoreDeviceSearchData(2)}><i class="bi bi-arrow-clockwise"></i></div>
+                                <div className="position-absolute top-50 translate-middle-y me-3 RefreshButton" style={{ right: "0" }} title="Refresh" onClick={(e) => StoreDeviceSearchData(2)}><i className="bi bi-arrow-clockwise"></i></div>
                                 <input className="form-control" autoComplete="off" type="text" placeholder="Search Device (Student Name, Serial Number, Asset Tag*)" id="SearchDeviceId" onKeyUp={(e) => StoreDeviceSearchData(2)} />
                                 <div className="SuggestionBox">
                                     {SuggestionBoxArray}
@@ -280,7 +282,7 @@ export function CreateTicket() {
                                 <div className="row px-3 pb-3">
                                     {DeviceIssues.map((item, i) => {
                                         var returData;
-                                        returData = (<div className="col-md-3 pt-3" key={i}>
+                                        returData = (<div className="col-md-3 pt-2" key={i}>
                                             <div className="form-check">
                                                 <input className="form-check-input CheckboxClass" type="checkbox" id={`DeviceIssue_${item.ID}`} />
                                                 <label className="form-check-label ps-1">
@@ -296,12 +298,22 @@ export function CreateTicket() {
                                     </span>
                                     {norecord}
                                 </div>
-                                <div className="row p-4">
+                                <div className="row px-4">
                                     <textarea placeholder="Notes*" rows="3" className="form-control" required value={Notes}
                                         onChange={(e) => setNotes(e.target.value)}></textarea>
                                     <span className="form-text invalid-feedback">
                                         *required
                                     </span>
+                                </div>
+                                <div className="col-12 d-flex align-items-center p-3">
+                                    <h5 className="mb-0 pe-5">Assign a Loaner: </h5>
+                                    <form className="gridsearchbar">
+                                        <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
+                                        <input className="form-control" style={{backgroundColor: "white"}} autoComplete="off" type="text" placeholder="Search" id="AssignLoanerId"/>
+                                        <div className="SuggestionBox">
+                                            {/* {SuggestionBoxArray} */}
+                                        </div>
+                                    </form>
                                 </div>
                                 <div className="col-12 text-center py-2">
                                     <button className='SaveBtn' onClick={CreateTicket}>Create Ticket</button>
