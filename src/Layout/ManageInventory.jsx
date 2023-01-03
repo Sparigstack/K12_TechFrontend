@@ -35,7 +35,6 @@ export function ManageInventory() {
     const [ExpectedRetirement, setExpectedRetirement] = useState("");
     const [FirstName, setFirstName] = useState("");
     const [LastName, setLastName] = useState("");
-    const [StudentId, setStudentId] = useState("");
     const [Grade, setGrade] = useState("");
     const [DeviceModel, setDeviceModel] = useState("");
     const [DeviceMPN, setDeviceMPN] = useState("");
@@ -75,7 +74,7 @@ export function ManageInventory() {
         }
         else {
             HideLoder();
-            GetListOfDevices(1);
+            GetListOfDevices();
         }
     }
     const ShowAddUpdatediv = () => {
@@ -100,10 +99,10 @@ export function ManageInventory() {
             GetDeviceDetailById(Deviceid, '2', Ticketuserid);
         }
     }
-    const GetListOfDevices = async (flag) => {
+    const GetListOfDevices = async () => {
         $("#SortBy").val(0);
         ShowLoder();
-        await ApiGetCall("/getallInventories/" + schoolid + "&" + flag).then((result) => {
+        await ApiGetCall("/getallInventories/" + schoolid + "&1").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -199,7 +198,6 @@ export function ManageInventory() {
                         setPurchaseDate(sugData.Purchase_date);
                         setDeviceManufacturer(sugData.Device_manufacturer);
                         setFirstName(sugData.Device_user_first_name);
-                        setStudentId(sugData.Student_ID);
                         setDeviceModel(sugData.Device_model);
                         setSerialNumber(sugData.Serial_number);
                         setBuilding(sugData.Building);
@@ -220,7 +218,7 @@ export function ManageInventory() {
                             $("#ParentalCoverageNo").prop('checked', true);
                         }
 
-                        if (sugData.Loaner_device == "yes") {
+                        if (sugData.Loaner_device == 1) {
                             $("#LoanerDeviceYes").prop('checked', true);
                         } else {
                             $("#LoanerDeviceNo").prop('checked', true);
@@ -259,12 +257,12 @@ export function ManageInventory() {
         $("#LoanerDeviceRadioButtonRequired").css('display', 'none');
         ShowLoder();
         var parentalCoverage = 0;
-        var LoanerDevice = "no";
+        var LoanerDevice = 0;
         if ($("#ParentalCoverageYes").is(":checked")) {
             parentalCoverage = 1;
         }
         if ($("#LoanerDeviceYes").is(":checked")) {
-            LoanerDevice = "yes";
+            LoanerDevice = 1;
         }
         var raw = JSON.stringify({
             ID: Deviceid,
@@ -278,7 +276,6 @@ export function ManageInventory() {
             PurchaseDate: PurchaseDate,
             Devicemanufacturer: DeviceManufacturer,
             Deviceuserfirstname: FirstName,
-            StudentID: StudentId,
             Devicemodel: DeviceModel,
             Serialnumber: SerialNumber,
             Building: Building,
@@ -334,12 +331,12 @@ export function ManageInventory() {
         $("#LoanerDeviceRadioButtonRequired").css('display', 'none');
         ShowLoder();
         var parentalCoverage = 0;
-        var LoanerDevice = "no";
+        var LoanerDevice = 0;
         if ($("#ParentalCoverageYes").is(":checked")) {
             parentalCoverage = 1;
         }
         if ($("#LoanerDeviceYes").is(":checked")) {
-            LoanerDevice = "yes";
+            LoanerDevice = 1;
         }
         var raw = JSON.stringify({
             schoolid: schoolid,
@@ -352,7 +349,6 @@ export function ManageInventory() {
             PurchaseDate: PurchaseDate,
             Devicemanufacturer: DeviceManufacturer,
             Deviceuserfirstname: FirstName,
-            StudentID: StudentId,
             Devicemodel: DeviceModel,
             Serialnumber: SerialNumber,
             Building: Building,
@@ -513,12 +509,8 @@ export function ManageInventory() {
         $(".CommonCheckBoxClass").prop('checked', false);
         $("#SelectAllId").prop('checked', false);
         $("#SortBy").val(0);
-        var searchString = $("#SearchInput").val();
         ShowLoder();
-        if (searchString == "") {
-            searchString = null;
-        }
-        await ApiGetCall("/getallDecommission/" + schoolid + "&" + searchString).then((result) => {
+        await ApiGetCall("/getallDecommission/" + schoolid).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -556,6 +548,39 @@ export function ManageInventory() {
             $("#TicketHistoryDiv_" + ticketid).fadeOut(3000);
         }
     }
+    const GetLoanerDeviceData = async() =>{
+        setIsDecommission(3);
+        $("#ChangeDecommissionText").text('Decommission');
+        $("#ChangeDecommissionText").val('2');
+        $(".CommonCheckBoxClass").prop('checked', false);
+        $("#SelectAllId").prop('checked', false);
+        $("#SortBy").val(0);
+        ShowLoder();
+        await ApiGetCall("/allLonerDevice/" + schoolid + "&null").then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                var sugArray = [];
+                var i = 1;
+                if (responseRs.response == "success") {
+                    if (responseRs.msg.length != 0) {
+                        setNorecord("");
+                        setAllDevices(responseRs.msg);
+                    } else {
+                        sugArray.push(
+                            <div className="col-12 GridNoRecord text-center" key={i}>
+                                <label>No Record Found</label>
+                            </div>
+                        );
+                        setNorecord(sugArray);
+                        setAllDevices([]);
+                    }
+                }
+                HideLoder();
+            }
+        });
+    }
     const ShowDeviceGrid = (DivId) => {
         $("#SelectAllId").prop('checked',false);
         $(".CommonCheckBoxClass").prop('checked',false);
@@ -563,9 +588,17 @@ export function ManageInventory() {
         $(".linkclass").removeClass('active');
         $("#" + DivId).addClass('active');
         if (DivId == "ActiveDeviceTab") {
-            GetListOfDevices(1);
+            $("#ChangeDecommissionText").text('Decommission');
+            $("#ChangeDecommissionText").val('2');
+            GetListOfDevices();
         } else if (DivId == "DecommissionedDeviceTab") {
+            $("#ChangeDecommissionText").text('Active');
+            $("#ChangeDecommissionText").val('3');
             GetDecommissionData();
+        } else{
+            $("#ChangeDecommissionText").text('Decommission');
+            $("#ChangeDecommissionText").val('2');
+            GetLoanerDeviceData();
         }
     }
     return (
@@ -786,16 +819,6 @@ export function ManageInventory() {
                                     </div>
                                 </div>
                                 <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Student ID</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='Studentid' className="form-control" required value={StudentId}
-                                            onChange={(e) => setStudentId(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
                                     <div className='col-md-7 FormLabel'>Grade / Department</div>
                                     <div className='col-md-5'>
                                         <input type="text" name='grade' className="form-control" required value={Grade}
@@ -996,10 +1019,6 @@ export function ManageInventory() {
                                 <div className='col-6'>  {DeviceDetails.ID}</div>
                             </div>
                             <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Student ID : </div>
-                                <div className='col-6'> {DeviceDetails.Student_ID}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
                                 <div className='col-9 fw-600'>Grade : </div>
                                 <div className='col-3'> {DeviceDetails.Grade}</div>
                             </div>
@@ -1013,7 +1032,8 @@ export function ManageInventory() {
                             </div>
                             <div className='col-md-4 row py-1'>
                                 <div className='col-9 fw-600'>Loaner Device : </div>
-                                <div className='col-3'> {DeviceDetails.Loaner_device}</div>
+                                <div className='col-3'> {(DeviceDetails.Loaner_device == 1) ?
+                                    <>Yes</> : <>No</>}</div>
                             </div>
                             <div className='col-md-4 row py-1'>
                                 <div className='col-6 fw-600'>User Type : </div>

@@ -81,11 +81,11 @@ function findParent(element) {
         }
     }
 }
-export function ShowSuggestionBox(BoxId) {
+export function ShowSuggestionBox(BoxClass) {
     // if ($("#" + BoxId).val() != "") {
-        $(".SuggestionBox").css('visibility', 'visible');
-        $(".SuggestionBox").css('opacity', '1');
-        $(".SuggestionBox").css('display', 'block');
+        $("." + BoxClass).css('visibility', 'visible');
+        $("." + BoxClass).css('opacity', '1');
+        $("." + BoxClass).css('display', 'block');
     // } else {
     //     $(".SuggestionBox").css('visibility', 'hidden');
     //     $(".SuggestionBox").css('opacity', '0');

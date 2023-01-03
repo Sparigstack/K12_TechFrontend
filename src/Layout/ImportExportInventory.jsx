@@ -106,37 +106,31 @@ export function ImportExportInventory() {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                var msgdata = responseRs.msg.data;
-                for (var i = 0; i < msgdata.length; i++) {
-                    msgdata[i].ADP_coverage = MMDDYYYY(msgdata[i].ADP_coverage);
-                    msgdata[i].Extended_warranty_until = MMDDYYYY(msgdata[i].Extended_warranty_until);
-                    msgdata[i].OEM_warranty_until = MMDDYYYY(msgdata[i].OEM_warranty_until);
-                    msgdata[i].Purchase_date = MMDDYYYY(msgdata[i].Purchase_date);
-                    msgdata[i].created_at = MMDDYYYY(msgdata[i].created_at);
-                    msgdata[i].updated_at = MMDDYYYY(msgdata[i].updated_at);
-                }
+                var msgdata = responseRs.msg;
+                // for (var i = 0; i < msgdata.length; i++) {
+                //     msgdata[i].Expected_retirement = MMDDYYYY(msgdata[i].Expected_retirement);
+                //     msgdata[i].Manufacturer_ADP_until = MMDDYYYY(msgdata[i].Manufacturer_ADP_until);
+                //     msgdata[i].Manufacturer_warranty_until = MMDDYYYY(msgdata[i].Manufacturer_warranty_until);
+                //     msgdata[i].Purchase_date = MMDDYYYY(msgdata[i].Purchase_date);
+                //     msgdata[i].Third_party_ADP_until = MMDDYYYY(msgdata[i].Third_party_ADP_until);
+                //     msgdata[i].Third_party_extended_warranty_until = MMDDYYYY(msgdata[i].Third_party_extended_warranty_until);
+                //     msgdata[i].created_at = MMDDYYYY(msgdata[i].created_at);
+                //     msgdata[i].updated_at = MMDDYYYY(msgdata[i].updated_at);
+                // }
                 setCsvData(msgdata);
                 $("#ExportedFileDiv").removeClass('d-none');
                 HideLoder();
             }
         });
     }
-    const ExportDecommissionedInventory =async () =>{
+    const ExportDecommissionedInventory = async () => {
         ShowLoder();
         await ApiGetCall("/getInventories/" + SchoolId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                var msgdata = responseRs.decommisionInvenoty.data;
-                for (var i = 0; i < msgdata.length; i++) {
-                    msgdata[i].ADP_coverage = MMDDYYYY(msgdata[i].ADP_coverage);
-                    msgdata[i].Extended_warranty_until = MMDDYYYY(msgdata[i].Extended_warranty_until);
-                    msgdata[i].OEM_warranty_until = MMDDYYYY(msgdata[i].OEM_warranty_until);
-                    msgdata[i].Purchase_date = MMDDYYYY(msgdata[i].Purchase_date);
-                    msgdata[i].created_at = MMDDYYYY(msgdata[i].created_at);
-                    msgdata[i].updated_at = MMDDYYYY(msgdata[i].updated_at);
-                }
+                var msgdata = responseRs.decommisionInvenoty;
                 setCsvData(msgdata);
                 $("#ExportedFileDiv").removeClass('d-none');
                 HideLoder();
@@ -196,7 +190,7 @@ export function ImportExportInventory() {
                                     </p>
                                     <div className="row pt-4 px-3">
                                         <div className="col-12 px-0">
-                                            <label className='BorderBtn' onClick={ExportInventory}>Export Active Inventory 
+                                            <label className='BorderBtn' onClick={ExportInventory}>Export Active Inventory
                                                 <img src='/images/ExportInventory.svg' className='img-fluid ps-2' />
                                             </label>
                                         </div>
@@ -205,7 +199,7 @@ export function ImportExportInventory() {
                                                 <img src='/images/ExportInventory.svg' className='img-fluid ps-2' />
                                             </label>
                                         </div>
-                                        
+
                                         <div className='row align-items-center pe-0 pt-2 d-none' id="ExportedFileDiv">
                                             <div className="col-md-7">
                                                 <label style={{ fontSize: "12px", color: "#04ADFD" }} id="ExportedFileName">

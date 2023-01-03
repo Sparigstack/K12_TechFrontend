@@ -17,7 +17,6 @@ export function ManageTicket() {
     const [CloseTicketCsvData, setCloseTicketCsvData] = useState([]);
     const [TabCheck, setTabCheck] = useState("");
     const [AsDesc, setAsDesc] = useState("as");
-    const [closeAsDesc, setcloseAsDesc] = useState("as");
     var userid = parseInt(cookies.get('CsvUserId'));
     const [OpenTicket, setOpenTicket] = useState([]);
     const [TicketStatus, setTicketStatus] = useState([]);
@@ -37,8 +36,8 @@ export function ManageTicket() {
     }
     const headers = [
         { label: "Ticket Id", key: "ticketid" },
-        { label: "Student Name", key: "studentName" },
-        { label: "Ticket Created By", key: "ticketCreatedBy" },
+        { label: "Student Name", key: "studentname" },
+        { label: "Ticket Created By", key: "TicketCreatedBy" },
         { label: "Serial Number", key: "serialNum" },
         { label: "Ticket Status", key: "ticket_status" },
         { label: "Building", key: "Building" },
@@ -270,6 +269,68 @@ export function ManageTicket() {
             }
         }
     }
+    const SubmitCloseTicketStatus = async () => {
+        var isFormValid = true;
+        if ($('input[name="CloseStatus"]:checked').length == 0) {
+            $("#LoanerRequired").css('display', 'block');
+            isFormValid = false;
+        }
+        if (!isFormValid) return;
+        $("#LoanerRequired").css('display', 'none');
+        ShowLoder();
+        var actionid = "";
+        $(".TicketStatus").each(function () {
+            if ($(this).is(":checked")) {
+                actionid = parseInt($(this).attr('statusid'));
+            }
+        });
+        var vArray = [];
+        $(".OpenTicketCheckbox").each(function () {
+            var vJson = {};
+            if ($(this).is(":checked")) {
+                var vid = parseInt($(this).attr('ticketid'));
+                var issueid = parseInt($(this).attr('issueid'));
+                vJson['TicketID'] = vid;
+                vJson['IssueID'] = issueid;
+                vArray.push(vJson);
+            }
+        });
+        var closestatusvalue = 0;
+        if($("#ParmanentDevice").is(":checked")){
+            closestatusvalue = 1;
+        }else{
+            closestatusvalue = 2;
+        }
+        var raw = JSON.stringify({
+            UserId: CsvUserId,
+            IssueIDArray: vArray,
+            Status: actionid,
+            Flag: 1,
+            closestatus: closestatusvalue
+        });
+        await ApiPostCall("/changeticketStatus", raw).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                HideLoder();
+                if (result == "success") {
+                    setisStatusPopup(false);
+                    $(".alert-success").show();
+                    $("#AlertMsg").text("Status Updated Successfully.");
+                    setTimeout(function () {
+                        window.location = "/manage-tickets";
+                    }, 1500);
+                } else {
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text(result);
+                    setTimeout(function () {
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
+                    }, 1500);
+                }
+            }
+        });
+    }
     const FinalSubmitTicketStatus = async () => {
         ShowLoder();
         var actionid = "";
@@ -292,7 +353,8 @@ export function ManageTicket() {
         var raw = JSON.stringify({
             UserId: CsvUserId,
             IssueIDArray: vArray,
-            Status: actionid
+            Status: actionid,
+            Flag: 0
         });
         await ApiPostCall("/changeticketStatus", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -462,7 +524,6 @@ export function ManageTicket() {
             } else {
                 const responseRs = JSON.parse(result);
                 HideLoder();
-                console.log(responseRs)
                 var sugData = responseRs.msg;
                 var historyData = responseRs.deviceHistory;
                 if (responseRs.response == "success") {
@@ -579,7 +640,7 @@ export function ManageTicket() {
                                             {OpenTicket.map((item, i) => {
                                                 var returData;
                                                 returData = (<tr key={i}>
-                                                    <td>{item.firstName} {item.lastName}</td>
+                                                    <td>{item.studentname}</td>
                                                     <td className="ps-3">{item.Date}</td>
                                                     <td>{item.serialNum}</td>
                                                 </tr>
@@ -607,7 +668,7 @@ export function ManageTicket() {
                                             {CloseTicket.map((item, i) => {
                                                 var returData;
                                                 returData = (<tr key={i}>
-                                                    <td>{item.firstName} {item.lastName}</td>
+                                                    <td>{item.studentname}</td>
                                                     <td className="ps-3">{item.Date}</td>
                                                     <td>{item.serialNum}</td>
                                                 </tr>
@@ -667,7 +728,7 @@ export function ManageTicket() {
                                                 <div className='col-md-2 text-center' key={i}>
                                                     <input className="form-check-input OpenTicketCheckbox" ticketid={item.ticketid} issueid={item.IssuedbID} type="checkbox" onClick={CheckOpenTicketCheckbox} />
                                                 </div>
-                                                <div className="col-md-2 text-center studentname">{item.firstName} {item.lastName}</div>
+                                                <div className="col-md-2 text-center studentname">{item.studentname}</div>
                                                 <div className="col-md-2 px-0 text-center devicemodel">{item.Device_model}</div>
                                                 <div className="col-md-2 text-center serialnoclass cursor-pointer" title="Show Device Details" onClick={(e) => ShowModal(item.Inventory_ID, item.ticketid)}><u>{item.serialNum}</u></div>
                                                 <div className="col-md-1 text-center dateclass px-0">{item.Date}</div>
@@ -723,7 +784,7 @@ export function ManageTicket() {
                                             {CloseTicketList.map((item, i) => {
                                                 var returData;
                                                 returData = (<div className="row grid px-0" key={i}>
-                                                    <div className="col-md-2 text-center dateclass">{item.firstName} {item.lastName}</div>
+                                                    <div className="col-md-2 text-center dateclass">{item.studentname}</div>
                                                     <div className="col-md-2 text-center usernameclass">{item.Device_model}</div>
                                                     <div className="col-md-2 text-center serialnoclass cursor-pointer" title="Show Device Details" onClick={(e) => ShowModal(item.Inventory_ID, item.ticketid)}><u>{item.serialNum}</u></div>
                                                     <div className="col-md-2 text-center dateclass px-0">{item.Date}</div>
@@ -775,10 +836,6 @@ export function ManageTicket() {
                                 <div className='col-6'>  {DeviceDetails.ID}</div>
                             </div>
                             <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Student ID : </div>
-                                <div className='col-6'> {DeviceDetails.Student_ID}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
                                 <div className='col-9 fw-600'>Grade : </div>
                                 <div className='col-3'> {DeviceDetails.Grade}</div>
                             </div>
@@ -792,7 +849,8 @@ export function ManageTicket() {
                             </div>
                             <div className='col-md-4 row py-1'>
                                 <div className='col-9 fw-600'>Loaner Device : </div>
-                                <div className='col-3'> {DeviceDetails.Loaner_device}</div>
+                                <div className='col-3'> {(DeviceDetails.Loaner_device == 1) ?
+                                    <>Yes</> : <>No</>}</div>
                             </div>
                             <div className='col-md-4 row py-1'>
                                 <div className='col-6 fw-600'>User Type : </div>
@@ -948,14 +1006,17 @@ export function ManageTicket() {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="col-12">
-                        <input className="form-check-input me-2" type="radio" name="CloseStatus" />Is the assigned loaner device permanently assigned to the user?
+                        <input className="form-check-input me-2" type="radio" name="CloseStatus" id="ParmanentDevice" />Is the assigned loaner device permanently assigned to the user?
                     </div>
                     <div className="col-12 py-3">
-                        <input className="form-check-input me-2" type="radio" name="CloseStatus" />Want to free an assigned loaner device?
+                        <input className="form-check-input me-2" type="radio" name="CloseStatus" id="FreeDevice" />Want to free an assigned loaner device?
                     </div>
+                    <span className="form-text invalid-feedback" id="LoanerRequired">
+                        *required
+                    </span>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className="SaveBtn">Submit</button>
+                    <button className="SaveBtn" onClick={SubmitCloseTicketStatus}>Submit</button>
                     <label className='cursor-pointer' onClick={CloseStatusPopup}>Cancel</label>
                 </Modal.Footer>
             </Modal>

@@ -16,6 +16,8 @@ export function CreateTicket() {
     var Deviceid = getUrlParameter("id");
     var userid = getUrlParameter("userid");
     const [SuggestionBoxArray, setSuggestionBoxArray] = useState("");
+    const [LoanerSuggestionBoxArray, setLoanerSuggestionBoxArray] = useState("");
+    const [LoanerId, setLoanerId] = useState("");
     useEffect(() => {
         return () => {
             var uri = window.location.toString();
@@ -56,7 +58,7 @@ export function CreateTicket() {
                 if (responseRs.response == "success") {
                     if (sugData.length != 0) {
                         if (flag != 1) {
-                            ShowSuggestionBox();
+                            ShowSuggestionBox('SearchDeviceClass');
                         }
                         for (var i = 0; i < sugData.length; i++) {
                             sugArray.push(
@@ -98,6 +100,8 @@ export function CreateTicket() {
 
     //final save call
     const CreateTicket = async () => {
+        var assignloanerval = $("#AssignLoanerId").val();
+        var lonerDeviceStatus = 0;
         var hdnDeviceid = parseInt($("#hdnDeviceId").val());
         var UserID = parseInt($("#hdnUserId").val());
         var checkvalid = 0;
@@ -115,12 +119,19 @@ export function CreateTicket() {
         $("#DeviceIssueRequired").css('display', 'none');
         ShowLoder();
         var DeviceIssueArray = [];
-        var NewJson = {
-            "Notes": Notes,
-            "schoolId": schoolid,
-            "userId": UserID,
-            "inventoryId": hdnDeviceid
-        };
+        var NewJson = {};
+        NewJson['Notes'] = Notes;
+        NewJson['schoolId'] = schoolid;
+        NewJson['userId'] = UserID;
+        NewJson['inventoryId'] = hdnDeviceid;
+        if(assignloanerval != ""){
+            lonerDeviceStatus = 1;
+            NewJson['lonerId'] = LoanerId;
+            NewJson['lonerDeviceStatus'] = lonerDeviceStatus;
+        }else{
+            NewJson['lonerId'] = null;
+            NewJson['lonerDeviceStatus'] = 0;
+        }
         $(".CheckboxClass").each(function () {
             var vjson = {};
             var vid = $(this).attr('id');
@@ -156,7 +167,6 @@ export function CreateTicket() {
                 }
             }
         });
-
     }
 
     // Device Issue Get call
@@ -243,6 +253,67 @@ export function CreateTicket() {
         GetDeviceIssues();
         SearchDevice();
     }
+
+    const SetLoanerData = (e) => {
+        var loanerid = parseInt(e.currentTarget.attributes[1].value);
+        var studentname = e.currentTarget.attributes[2].value;
+        $("#AssignLoanerId").val(studentname);
+        setLoanerId(loanerid);
+        $(".AssignLoanerClass").css('visibility', 'hidden');
+        $(".AssignLoanerClass").css('opacity', '0');
+    }
+
+    //assign a loaner suggestion box
+    const StoreLoanerSearchData = async () => {
+        var searchstring = $("#AssignLoanerId").val();
+        ShowLoder();
+        if (searchstring == "") {
+            searchstring = null;
+        }
+        await ApiGetCall("/allLonerDevice/" + schoolid + "&" + searchstring).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                HideLoder();
+                var sugData = responseRs.msg;
+                var sugArray = [];
+                var i = 1;
+                console.log(responseRs)
+                if (responseRs.response == "success") {
+                    if (sugData.length != 0) {
+                        ShowSuggestionBox('AssignLoanerClass');
+                        for (var i = 0; i < sugData.length; i++) {
+                            sugArray.push(
+                                <div className="row brdr-Btm font-14" key={i} loanerid={sugData[i].Inventory_ID} studentname={sugData[i].Device_user_first_name + ' ' + sugData[i].Device_user_last_name} style={{ padding: "8px 15px" }} onClick={(e) => SetLoanerData(e)}>
+                                    <div className="col-8">{sugData[i].Device_user_first_name} {sugData[i].Device_user_last_name}</div>
+                                    <div className="col-4 text-end">{sugData[i].Serial_number}</div>
+                                    <div className="col-12">{sugData[i].Device_model}</div>
+                                </div>
+                            )
+                        }
+                        setLoanerSuggestionBoxArray(sugArray);
+                    } else {
+                        sugArray.push(
+                            <>
+                                <div className="col-12 text-center" key={i}>
+                                    <label>No Record Found</label>
+                                </div>
+                            </>
+                        );
+                        setLoanerSuggestionBoxArray(sugArray);
+                    }
+                } else {
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text(responseRs.message);
+                    setTimeout(function () {
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
+                    }, 1500);
+                }
+            }
+        });
+    }
     return (
         <>
             <input type="hidden" id="hdnDeviceId" />
@@ -258,7 +329,7 @@ export function CreateTicket() {
                                 <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
                                 <div className="position-absolute top-50 translate-middle-y me-3 RefreshButton" style={{ right: "0" }} title="Refresh" onClick={(e) => StoreDeviceSearchData(2)}><i className="bi bi-arrow-clockwise"></i></div>
                                 <input className="form-control" autoComplete="off" type="text" placeholder="Search Device (Student Name, Serial Number, Asset Tag*)" id="SearchDeviceId" onKeyUp={(e) => StoreDeviceSearchData(2)} />
-                                <div className="SuggestionBox">
+                                <div className="SuggestionBox SearchDeviceClass">
                                     {SuggestionBoxArray}
                                 </div>
                             </form>
@@ -305,15 +376,19 @@ export function CreateTicket() {
                                         *required
                                     </span>
                                 </div>
-                                <div className="col-12 d-flex align-items-center p-3">
-                                    <h5 className="mb-0 pe-5">Assign a Loaner: </h5>
-                                    <form className="gridsearchbar">
-                                        <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
-                                        <input className="form-control" style={{backgroundColor: "white"}} autoComplete="off" type="text" placeholder="Search" id="AssignLoanerId"/>
-                                        <div className="SuggestionBox">
-                                            {/* {SuggestionBoxArray} */}
-                                        </div>
-                                    </form>
+                                <div className="row d-flex align-items-center p-3">
+                                    <div className="col-md-3 text-end pe-0">
+                                        <h5 className="mb-0 pe-5">Assign a Loaner: </h5>
+                                    </div>
+                                    <div className="col-md-6 ps-0">
+                                        <form className="gridsearchbar">
+                                            <div className="position-absolute top-50 translate-middle-y search-icon ms-3 searchIcon"><i className="bi bi-search"></i></div>
+                                            <input className="form-control" style={{ backgroundColor: "white" }} autoComplete="off" type="text" placeholder="Search" id="AssignLoanerId" onKeyUp={StoreLoanerSearchData} />
+                                            <div className="SuggestionBox AssignLoanerClass">
+                                                {LoanerSuggestionBoxArray}
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                                 <div className="col-12 text-center py-2">
                                     <button className='SaveBtn' onClick={CreateTicket}>Create Ticket</button>
