@@ -11,7 +11,7 @@ export function ImportExportInventory() {
     const headers = [
         { label: "ID", key: "ID" },
         { label: "Device_manufacturer", key: "Device_manufacturer" },
-        { label: "Device Type", key: "Device_Type" },
+        { label: "Device Type", key: "Device_type" },
         { label: "Manufacturer_warranty_until", key: "Manufacturer_warranty_until" },
         { label: "Manufacturer_ADP_until", key: "Manufacturer_ADP_until" },
         { label: "Third_party_extended_warranty_until", key: "Third_party_extended_warranty_until" },
@@ -107,6 +107,7 @@ export function ImportExportInventory() {
             } else {
                 const responseRs = JSON.parse(result);
                 var msgdata = responseRs.msg;
+                console.log(msgdata)
                 // for (var i = 0; i < msgdata.length; i++) {
                 //     msgdata[i].Expected_retirement = MMDDYYYY(msgdata[i].Expected_retirement);
                 //     msgdata[i].Manufacturer_ADP_until = MMDDYYYY(msgdata[i].Manufacturer_ADP_until);
