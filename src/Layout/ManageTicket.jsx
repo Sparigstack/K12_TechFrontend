@@ -722,13 +722,12 @@ export function ManageTicket() {
                                 </div>
                                 <div className="col-12">
                                     <div className='row GridHeader px-0 '>
-                                        <div className='col-md-1 font-13 px-0 text-center'>
+                                        <div className='col-md-2 font-13 px-0 text-center'>
                                             Select All<input className="form-check-input ms-2" id="OpenTicketSelectAll" type="checkbox" onChange={(e) => SelectAllOpenCloseTicket("OpenTicketSelectAll", "OpenTicketCheckbox", "OpenTicketStatusDiv")} />
                                         </div>
                                         <div className='col-md-2 text-center'>Student Name</div>
                                         <div className='col-md-2 text-center'>Device Model</div>
-                                        <div className='col-md-1 text-center'>Serial No.</div>
-                                        <div className="col-md-2 text-center">Assign a Loaner</div>
+                                        <div className='col-md-2 text-center'>Serial No.</div>
                                         <div className='col-md-1 text-center px-0'>Created at</div>
                                         <div className='col-md-2 text-center cursor-pointer' title="Sort by Status" onClick={(e) => SortByOpenTicket(3)}>Status<img src="/images/TicketGridIcon.svg" className="img-fluid ps-1" /></div>
                                         <div className='col-md-1'></div>
@@ -737,13 +736,12 @@ export function ManageTicket() {
                                         {OpenTicketList.map((item, i) => {
                                             var returData;
                                             returData = (<div className="row grid px-0 subjectName" key={i} ticketid={item.IssuedbID}>
-                                                <div className='col-md-1 text-center' key={i}>
+                                                <div className='col-md-2 text-center' key={i}>
                                                     <input className="form-check-input OpenTicketCheckbox" ticketid={item.ticketid} issueid={item.IssuedbID} type="checkbox" onClick={CheckOpenTicketCheckbox} />
                                                 </div>
                                                 <div className="col-md-2 text-center studentname">{item.studentname}</div>
                                                 <div className="col-md-2 px-0 text-center devicemodel">{item.Device_model}</div>
-                                                <div className="col-md-1 text-center serialnoclass cursor-pointer" title="Show Device Details" onClick={(e) => ShowModal(item.Inventory_ID, item.ticketid)}><u>{item.serialNum}</u></div>
-                                                <div className="col-md-2 text-center">{item.lonerdevicename}</div>
+                                                <div className="col-md-2 text-center serialnoclass cursor-pointer" title="Show Device Details" onClick={(e) => ShowModal(item.Inventory_ID, item.ticketid)}><u>{item.serialNum}</u></div>
                                                 <div className="col-md-1 text-center dateclass px-0">{item.Date}</div>
                                                 <div className="col-md-2 text-center statusclass px-0" style={{ color: "#3CBBA5" }}>
                                                     {item.ticket_status}

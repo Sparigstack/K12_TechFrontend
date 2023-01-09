@@ -42,6 +42,7 @@ export function CreateTicket() {
 
     // on keyup store data in array
     const StoreDeviceSearchData = async (flag) => {
+        setLoanerSuggestionBoxArray([]);
         var searchstring = $("#SearchDeviceId").val();
         ShowLoder();
         if (searchstring == "") {

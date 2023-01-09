@@ -24,8 +24,7 @@ export function Login() {
             googleId: res.googleId,
             microsoftId: null,
             accessToken: accessToken,
-            flag: 1,
-            schoolId: 1
+            flag: 1
         });
         await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -38,19 +37,29 @@ export function Login() {
                 }, 1500);
             } else {
                 const responseRs = JSON.parse(result);
-                cookies.set('accesstoken', accessToken);
-                cookies.set('emailid', res.profileObj.email);
                 if (responseRs.status == "success") {
-                    $(".alert-success").show();
-                    $("#AlertMsg").text("Login Successfully.");
+                    cookies.set('accesstoken', accessToken);
+                    cookies.set('emailid', res.profileObj.email);
+                    if (responseRs.status == "success") {
+                        $(".alert-success").show();
+                        $("#AlertMsg").text("Login Successfully.");
+                        setTimeout(function () {
+                            window.location = "/dashboard";
+                        }, 1500);
+                    }
+                } else {
+                    $(".alert-danger").show();
+                    $("#AlertDangerMsg").text(responseRs.status);
                     setTimeout(function () {
-                        window.location = "/dashboard";
+                        $(".alert-danger").hide();
+                        $("#AlertDangerMsg").text();
                     }, 1500);
                 }
                 HideLoder();
+
                 // cookies.set('accesstoken', accessToken, { path: '/', maxAge: 1200 }); //30 minutes
             }
-           
+
         });
     }
     return (
@@ -79,7 +88,10 @@ export function Login() {
                             <SignInMicrosoft />
                         </div>
                         <div className="col-12 text-center pt-5 pb-1">
-                            See a demo video?<a className="ps-2 cursor-pointer" style={{color:"rgb(30 191 162)"}} href="https://www.k12techrepairs.com/" target="_blank">Click Here</a>
+                            See a demo video?<a className="ps-2 cursor-pointer" style={{ color: "rgb(30 191 162)" }} href="https://www.k12techrepairs.com/" target="_blank">Click Here</a>
+                        </div>
+                        <div className="col-12 text-center pt-1 pb-1">
+                            Need an account?<a className="ps-2 cursor-pointer" style={{ color: "rgb(30 191 162)" }} href="/register">SIGN UP</a>
                         </div>
                     </div>
                 </div>

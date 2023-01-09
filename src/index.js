@@ -29,8 +29,7 @@ pca.addEventCallback(event => {
       googleId: null,
       microsoftId: payloadData.uniqueId,
       accessToken: payloadData.accessToken,
-      flag: 2,
-      schoolId: 1
+      flag: 2
     });
     ApiPostCall("/register", raw).then((result) => {
       if (result == undefined || result == "") {
@@ -42,17 +41,28 @@ pca.addEventCallback(event => {
         }, 1500);
       } else {
         const responseRs = JSON.parse(result);
-        cookies.set('accesstoken', payloadData.accessToken);
-        cookies.set('emailid', payloadData.account.username);
         if (responseRs.status == "success") {
-          $(".alert-success").show();
-          $("#AlertMsg").text("Login Successfully.");
+          cookies.set('accesstoken', payloadData.accessToken);
+          cookies.set('emailid', payloadData.account.username);
+          if (responseRs.status == "success") {
+            $(".alert-success").show();
+            $("#AlertMsg").text("Login Successfully.");
+            setTimeout(function () {
+              window.location = "/dashboard";
+            }, 1500);
+          }
+        }
+        else {
+          $(".alert-danger").show();
+          $("#AlertDangerMsg").text(responseRs.status);
           setTimeout(function () {
-            window.location = "/dashboard";
+            $(".alert-danger").hide();
+            $("#AlertDangerMsg").text();
+            window.location = "/";
           }, 1500);
         }
+        HideLoder();
       }
-      HideLoder();
     });
   }
 });

@@ -20,6 +20,7 @@ import { Users } from './Layout/Users.jsx';
 import { ImportExportInventory } from './Layout/ImportExportInventory.jsx';
 import { CreateTicket } from './Layout/CreateTicket.jsx';
 import { ManageTicket } from './Layout/ManageTicket.jsx';
+import { Signup } from './Layout/Signup.jsx';
 import './JS/Connector.js';
 import './JS/Common.js';
 function App({ msalInstance }) {
@@ -41,6 +42,7 @@ function App({ msalInstance }) {
           <Layout>
             <Routes>
               <Route path="*" element={<ErrorPage />} />
+              <Route path="/register" element={<Signup />} />
               <Route path="/" element={<Temp />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/dashboard" element={<Temp />} />
@@ -56,6 +58,7 @@ function App({ msalInstance }) {
           :
           <Routes>
             <Route path="*" element={<Login />} />
+            <Route path="/register" element={<Signup />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/" element={<Login />} />
           </Routes>

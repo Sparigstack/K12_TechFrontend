@@ -3,8 +3,11 @@ import { useMsal } from "@azure/msal-react";
 export function Logout(){
     const cookies = new Cookies();
     const { instance } = useMsal();
-    instance.logoutRedirect();
     cookies.remove('accesstoken');
     cookies.remove('emailid');
+    cookies.remove('CsvUserId');
+    cookies.remove('G_AUTHUSER_H');
+    instance.logoutRedirect();
+  
     window.location = "/";
 }

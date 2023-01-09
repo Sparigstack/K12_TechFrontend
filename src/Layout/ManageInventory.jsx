@@ -97,12 +97,12 @@ export function ManageInventory() {
         $("#AddImportBtnDiv").addClass('d-none');
         $("#AddUpdateDiv").removeClass('d-none');
         $("#AddUpdateHeader").text("Add New Inventory");
-        $("#LoanerDeviceYes").prop('checked', true);
+        $("#LoanerDeviceNo").prop('checked', true);
+        $("#AssignDeviceToUserDiv").removeClass('d-none');
+        $("#AssignUserDeviceNo").prop('checked',true);
         HideLoder();
         if (Deviceid >= 1) {
             GetDeviceDetailById(Deviceid, '2', Ticketuserid);
-        }else{
-            window.location = "/manage-inventory";
         }
     }
     const GetListOfDevices = async () => {
@@ -164,7 +164,6 @@ export function ManageInventory() {
             }
         });
     }
-    
     const GetDeviceDetailById = async (UserId, flag, TicketUserid) => {
         $("#hdnDeviceId").val(UserId);
         $("#hdnTicketUserId").val(TicketUserid);
@@ -636,9 +635,9 @@ export function ManageInventory() {
                 const responseRs = JSON.parse(result);
                 var sugArray = [];
                 var i = 1;
-                if (responseRs.length != 0) {
+                if (responseRs.msg.length != 0) {
                     setloanernorecord("");
-                    setLoanerHistory(responseRs);
+                    setLoanerHistory(responseRs.msg);
                 } else {
                     sugArray.push(
                         <div className="col-12 GridNoRecord text-center" key={i}>
@@ -1005,7 +1004,6 @@ export function ManageInventory() {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div className='row d-none' id="StudentDetailsDiv">
                             <h3 className='pt-3'>Student Details</h3>
