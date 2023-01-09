@@ -212,6 +212,7 @@ export function ManageTicket() {
                         setCloseTicketList(responseRs.Closeticket);
                         setCloseTicketCsvData(responseRs.Closeticket);
                     } else {
+                        
                         var sugArray = [];
                         sugArray.push(
                             <div className="col-12 p-5 text-center" key={i}>
@@ -296,9 +297,9 @@ export function ManageTicket() {
             }
         });
         var closestatusvalue = 0;
-        if($("#ParmanentDevice").is(":checked")){
+        if ($("#ParmanentDevice").is(":checked")) {
             closestatusvalue = 1;
-        }else{
+        } else {
             closestatusvalue = 2;
         }
         var raw = JSON.stringify({
@@ -583,10 +584,20 @@ export function ManageTicket() {
             $("#TicketHistoryDiv").fadeOut(3000);
         }
     }
+    const OpenCreateTicket = () =>{
+        window.location = "/create-ticket";
+    }
     return (
         <>
             <div className='row col-12'>
-                <h1 className="PageHeading">Manage Tickets</h1>
+                <div className='col-md-6'>
+                    <h1 className="PageHeading">Manage Tickets</h1>
+                </div>
+                <div className='col-md-6 mb-2 pe-0 text-end d-flex justify-content-end align-items-center'>
+                    <label className='BorderBtn ms-3 text-center' onClick={OpenCreateTicket}> Create Ticket
+                        <img src='/images/AddInventory.svg' className='img-fluid ps-2' />
+                    </label>
+                </div>
             </div>
             <div className="container-fluid px-0" id="GridDiv">
                 <div className="GridBox p-3">
@@ -711,12 +722,13 @@ export function ManageTicket() {
                                 </div>
                                 <div className="col-12">
                                     <div className='row GridHeader px-0 '>
-                                        <div className='col-md-2 font-13 px-0 text-center'>
+                                        <div className='col-md-1 font-13 px-0 text-center'>
                                             Select All<input className="form-check-input ms-2" id="OpenTicketSelectAll" type="checkbox" onChange={(e) => SelectAllOpenCloseTicket("OpenTicketSelectAll", "OpenTicketCheckbox", "OpenTicketStatusDiv")} />
                                         </div>
                                         <div className='col-md-2 text-center'>Student Name</div>
                                         <div className='col-md-2 text-center'>Device Model</div>
-                                        <div className='col-md-2 text-center'>Serial No.</div>
+                                        <div className='col-md-1 text-center'>Serial No.</div>
+                                        <div className="col-md-2 text-center">Assign a Loaner</div>
                                         <div className='col-md-1 text-center px-0'>Created at</div>
                                         <div className='col-md-2 text-center cursor-pointer' title="Sort by Status" onClick={(e) => SortByOpenTicket(3)}>Status<img src="/images/TicketGridIcon.svg" className="img-fluid ps-1" /></div>
                                         <div className='col-md-1'></div>
@@ -725,12 +737,13 @@ export function ManageTicket() {
                                         {OpenTicketList.map((item, i) => {
                                             var returData;
                                             returData = (<div className="row grid px-0 subjectName" key={i} ticketid={item.IssuedbID}>
-                                                <div className='col-md-2 text-center' key={i}>
+                                                <div className='col-md-1 text-center' key={i}>
                                                     <input className="form-check-input OpenTicketCheckbox" ticketid={item.ticketid} issueid={item.IssuedbID} type="checkbox" onClick={CheckOpenTicketCheckbox} />
                                                 </div>
                                                 <div className="col-md-2 text-center studentname">{item.studentname}</div>
                                                 <div className="col-md-2 px-0 text-center devicemodel">{item.Device_model}</div>
-                                                <div className="col-md-2 text-center serialnoclass cursor-pointer" title="Show Device Details" onClick={(e) => ShowModal(item.Inventory_ID, item.ticketid)}><u>{item.serialNum}</u></div>
+                                                <div className="col-md-1 text-center serialnoclass cursor-pointer" title="Show Device Details" onClick={(e) => ShowModal(item.Inventory_ID, item.ticketid)}><u>{item.serialNum}</u></div>
+                                                <div className="col-md-2 text-center">{item.lonerdevicename}</div>
                                                 <div className="col-md-1 text-center dateclass px-0">{item.Date}</div>
                                                 <div className="col-md-2 text-center statusclass px-0" style={{ color: "#3CBBA5" }}>
                                                     {item.ticket_status}
@@ -968,14 +981,13 @@ export function ManageTicket() {
                                         </div>
                                     </div>
                                     <div className="col-12 pt-3 d-none" id="TicketHistoryDiv">
-                                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2 px-0' />
-                                        <h4><u>Ticket History</u></h4>
+                                        {/* <h4><u>Ticket History</u></h4> */}
                                         <div className="row">
                                             {(item.Ticket_history.length != 0) ?
                                                 item.Ticket_history.map((tickethistory, j) => {
                                                     var returData;
                                                     returData = <div className="col-12 py-1" key={j}>
-                                                        On {tickethistory.date}, {tickethistory.update_by_user} has changed the ticket status {tickethistory.previous_status} to {tickethistory.updated_status}
+                                                        On {tickethistory.date}, {tickethistory.update_by_user} has changed the ticket status from {tickethistory.previous_status} to {tickethistory.updated_status}
                                                     </div>
                                                     return returData;
                                                 })
@@ -1005,11 +1017,11 @@ export function ManageTicket() {
                     <Modal.Title>Assign a loaner</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="col-12">
-                        <input className="form-check-input me-2" type="radio" name="CloseStatus" id="ParmanentDevice" />Is the assigned loaner device permanently assigned to the user?
+                    <div className="col-12 pb-3">
+                        <input className="form-check-input me-2" type="radio" name="CloseStatus" id="FreeDevice" />Vacant loaner device?
                     </div>
-                    <div className="col-12 py-3">
-                        <input className="form-check-input me-2" type="radio" name="CloseStatus" id="FreeDevice" />Want to free an assigned loaner device?
+                    <div className="col-12">
+                        <input className="form-check-input me-2" type="radio" name="CloseStatus" id="ParmanentDevice" />Keep loaner device as a permanent device for student?
                     </div>
                     <span className="form-text invalid-feedback" id="LoanerRequired">
                         *required

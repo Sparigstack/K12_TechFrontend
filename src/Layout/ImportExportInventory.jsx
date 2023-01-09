@@ -142,11 +142,12 @@ export function ImportExportInventory() {
         setCsvData([]);
         $("#ExportedFileDiv").addClass('d-none');
     }
+    
     return (
         <>
             <div>
                 <div className='row col-12 d-flex align-items-center'>
-                    <h1 className="PageHeading">Import/Export Inventory</h1>
+                    <h1 className="PageHeading">Import/Export</h1>
                 </div>
                 <div className='GridBox mt-2 p-5' id='GridDiv'>
                     <div className='row'>

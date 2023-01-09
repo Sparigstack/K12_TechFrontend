@@ -19,11 +19,14 @@ export function ManageInventory() {
     const [IsDecommission, setIsDecommission] = useState(1);
     const [DeviceDetails, setDeviceDetails] = useState([]);
     const [DeviceHistory, setDeviceHistory] = useState([]);
+    const [Loanerhistory, setLoanerHistory] = useState([]);
+    const [loanernorecord, setloanernorecord] = useState("");
     const [norecord, setNorecord] = useState("");
     const [historynorecord, sethistorynorecord] = useState("");
     const [Deviceid, setDeviceid] = useState("");
     const [TicketUserid, setTicketUserid] = useState("");
     const [isShow, invokeModal] = useState(false);
+    const [isStatusPopup, setisStatusPopup] = useState(false);
 
     // form input fields start
     const [DeviceManufacturer, setDeviceManufacturer] = useState("");
@@ -94,9 +97,12 @@ export function ManageInventory() {
         $("#AddImportBtnDiv").addClass('d-none');
         $("#AddUpdateDiv").removeClass('d-none');
         $("#AddUpdateHeader").text("Add New Inventory");
+        $("#LoanerDeviceYes").prop('checked', true);
         HideLoder();
         if (Deviceid >= 1) {
             GetDeviceDetailById(Deviceid, '2', Ticketuserid);
+        }else{
+            window.location = "/manage-inventory";
         }
     }
     const GetListOfDevices = async () => {
@@ -158,6 +164,7 @@ export function ManageInventory() {
             }
         });
     }
+    
     const GetDeviceDetailById = async (UserId, flag, TicketUserid) => {
         $("#hdnDeviceId").val(UserId);
         $("#hdnTicketUserId").val(TicketUserid);
@@ -169,7 +176,6 @@ export function ManageInventory() {
             } else {
                 const responseRs = JSON.parse(result);
                 HideLoder();
-                console.log(responseRs)
                 var sugData = responseRs.msg;
                 var historyData = responseRs.deviceHistory;
                 if (responseRs.response == "success") {
@@ -219,9 +225,19 @@ export function ManageInventory() {
                         }
 
                         if (sugData.Loaner_device == 1) {
+                            $("#AssignDeviceToUserDiv").addClass('d-none');
                             $("#LoanerDeviceYes").prop('checked', true);
                         } else {
+                            $("#AssignDeviceToUserDiv").removeClass('d-none');
                             $("#LoanerDeviceNo").prop('checked', true);
+                        }
+
+                        if(sugData.Device_user_first_name != ""){
+                            $("#AssignUserDeviceYes").prop('checked',true);
+                            $("#StudentDetailsDiv").removeClass('d-none');
+                        }else{
+                            $("#AssignUserDeviceYes").prop('checked',false);
+                            $("#StudentDetailsDiv").addClass('d-none');
                         }
                     }
                 } else {
@@ -241,16 +257,17 @@ export function ManageInventory() {
         window.location.href = FinalUrl;
     }
     const UpdateInventory = async () => {
+        var DataFlag = 0;
         var userid = parseInt(cookies.get('CsvUserId'));
 
         var isFormValid = CheckValidation("AddInventoryForm");
-        if ($('input[name="ParentalCoverage"]:checked').length == 0) {
-            $("#RadioButtonRequired").css('display', 'block');
-            isFormValid = false;
-        }
-        if ($('input[name="LoanerDevice"]:checked').length == 0) {
-            $("#LoanerDeviceRadioButtonRequired").css('display', 'block');
-            isFormValid = false;
+        if (!$("#StudentDetailsDiv").hasClass('d-none')) {
+            if ($('input[name="ParentalCoverage"]:checked').length == 0) {
+                $("#RadioButtonRequired").css('display', 'block');
+                isFormValid = false;
+            }
+            DataFlag = 1;
+            isFormValid = CheckValidation('StudentDetailsDiv');
         }
         if (!isFormValid) return;
         $("#RadioButtonRequired").css('display', 'none');
@@ -291,7 +308,8 @@ export function ManageInventory() {
             ParentguardianEmail: ParentGuardianEmail,
             Repaircap: RepairCap,
             Loanerdevice: LoanerDevice,
-            Parentalcoverage: parentalCoverage
+            Parentalcoverage: parentalCoverage,
+            flag: DataFlag
         });
         await ApiPostCall("/addeditmanualInventoy", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -316,15 +334,16 @@ export function ManageInventory() {
         });
     }
     const SaveInventory = async () => {
+        var DataFlag = 0;
         var userid = parseInt(cookies.get('CsvUserId'));
         var isFormValid = CheckValidation("AddInventoryForm");
-        if ($('input[name="ParentalCoverage"]:checked').length == 0) {
-            $("#RadioButtonRequired").css('display', 'block');
-            isFormValid = false;
-        }
-        if ($('input[name="LoanerDevice"]:checked').length == 0) {
-            $("#LoanerDeviceRadioButtonRequired").css('display', 'block');
-            isFormValid = false;
+        if (!$("#StudentDetailsDiv").hasClass('d-none')) {
+            if ($('input[name="ParentalCoverage"]:checked').length == 0) {
+                $("#RadioButtonRequired").css('display', 'block');
+                isFormValid = false;
+            }
+            DataFlag = 1;
+            isFormValid = CheckValidation('StudentDetailsDiv');
         }
         if (!isFormValid) return;
         $("#RadioButtonRequired").css('display', 'none');
@@ -338,6 +357,8 @@ export function ManageInventory() {
         if ($("#LoanerDeviceYes").is(":checked")) {
             LoanerDevice = 1;
         }
+
+
         var raw = JSON.stringify({
             schoolid: schoolid,
             userid: userid,
@@ -364,7 +385,8 @@ export function ManageInventory() {
             ParentguardianEmail: ParentGuardianEmail,
             Repaircap: RepairCap,
             Loanerdevice: LoanerDevice,
-            Parentalcoverage: parentalCoverage
+            Parentalcoverage: parentalCoverage,
+            flag: DataFlag
         });
         await ApiPostCall("/addeditmanualInventoy", raw).then((result) => {
             if (result == undefined || result == "") {
@@ -438,6 +460,9 @@ export function ManageInventory() {
     }
     const ClosePopup = () => {
         invokeModal(false);
+    }
+    const CloseStatusPopup = () => {
+        setisStatusPopup(false);
     }
     const ShowDeviceDetail = (divId) => {
         if (divId == "DeviceHistoryDiv") {
@@ -548,7 +573,7 @@ export function ManageInventory() {
             $("#TicketHistoryDiv_" + ticketid).fadeOut(3000);
         }
     }
-    const GetLoanerDeviceData = async() =>{
+    const GetLoanerDeviceData = async () => {
         setIsDecommission(3);
         $("#ChangeDecommissionText").text('Decommission');
         $("#ChangeDecommissionText").val('2');
@@ -582,8 +607,8 @@ export function ManageInventory() {
         });
     }
     const ShowDeviceGrid = (DivId) => {
-        $("#SelectAllId").prop('checked',false);
-        $(".CommonCheckBoxClass").prop('checked',false);
+        $("#SelectAllId").prop('checked', false);
+        $(".CommonCheckBoxClass").prop('checked', false);
         $("#ActionDropDown").addClass('d-none');
         $(".linkclass").removeClass('active');
         $("#" + DivId).addClass('active');
@@ -595,10 +620,50 @@ export function ManageInventory() {
             $("#ChangeDecommissionText").text('Active');
             $("#ChangeDecommissionText").val('3');
             GetDecommissionData();
-        } else{
+        } else {
             $("#ChangeDecommissionText").text('Decommission');
             $("#ChangeDecommissionText").val('2');
             GetLoanerDeviceData();
+        }
+    }
+    const ShowLoanerHistory = async (ItemId) => {
+        setisStatusPopup(true);
+        ShowLoder();
+        await ApiGetCall("/lonerdeviceHistory/" + ItemId).then((result) => {
+            if (result == undefined || result == "") {
+                alert("Something went wrong");
+            } else {
+                const responseRs = JSON.parse(result);
+                var sugArray = [];
+                var i = 1;
+                if (responseRs.length != 0) {
+                    setloanernorecord("");
+                    setLoanerHistory(responseRs);
+                } else {
+                    sugArray.push(
+                        <div className="col-12 GridNoRecord text-center" key={i}>
+                            <label>No Record Found</label>
+                        </div>
+                    );
+                    setloanernorecord(sugArray);
+                    setLoanerHistory([]);
+                }
+                HideLoder();
+            }
+        });
+    }
+    const CheckLoanerDevice = (RadioId) => {
+        if (RadioId == 2) {
+            $("#AssignDeviceToUserDiv").removeClass('d-none');
+        } else {
+            $("#AssignDeviceToUserDiv").addClass('d-none');
+        }
+    }
+    const ShowStudentDetailsDiv = (RadioId) => {
+        if (RadioId == 1) {
+            $("#StudentDetailsDiv").removeClass('d-none');
+        } else {
+            $("#StudentDetailsDiv").addClass('d-none');
         }
     }
     return (
@@ -628,11 +693,12 @@ export function ManageInventory() {
                                         <a className="nav-link linkclass active" aria-current="page" id="ActiveDeviceTab" onClick={(e) => ShowDeviceGrid("ActiveDeviceTab")}>Active Devices</a>
                                     </li>
                                     <li className="nav-item navitembrdrbtm text-center cursor-pointer">
-                                        <a className="nav-link linkclass " aria-current="page" id="DecommissionedDeviceTab" onClick={(e) => ShowDeviceGrid("DecommissionedDeviceTab")}>Decommissioned Devices</a>
-                                    </li>
-                                    <li className="nav-item navitembrdrbtm text-center cursor-pointer">
                                         <a className="nav-link linkclass" id="LoanerDeviceTab" aria-disabled="true" onClick={(e) => ShowDeviceGrid("LoanerDeviceTab")}>Loaner Devices</a>
                                     </li>
+                                    <li className="nav-item navitembrdrbtm text-center cursor-pointer">
+                                        <a className="nav-link linkclass " aria-current="page" id="DecommissionedDeviceTab" onClick={(e) => ShowDeviceGrid("DecommissionedDeviceTab")}>Decommissioned Devices</a>
+                                    </li>
+
                                 </ul>
                             </div>
                             <div className='col-md-3 text-end pe-0 SearchBarDiv'>
@@ -668,11 +734,11 @@ export function ManageInventory() {
                                     </select>
                                 </div>
                             </div>
-                            <div className='innerGridBox mt-2'>
+                            <div className='mt-2'>
                                 <div className='row GridHeader mx-1 px-0'>
                                     <div className='col-md-2 font-13 px-0 text-center'>Select All<input className="form-check-input ms-1" id="SelectAllId" type="checkbox" onClick={SelectAllDevices} /></div>
-                                    <div className='col-md-2'>Student Name</div>
                                     <div className='col-md-2'>Device Model</div>
+                                    <div className='col-md-2'>Student Name</div>
                                     <div className='col-md-1 text-center'>Grade</div>
                                     <div className='col-md-1 text-center'>Building</div>
                                     <div className='col-md-2 text-center'>Purchase Date</div>
@@ -685,12 +751,40 @@ export function ManageInventory() {
                                             <div className='col-md-2 text-center'>
                                                 <input className="form-check-input CommonCheckBoxClass" deviceid={item.ID} type="checkbox" onChange={ShowActionDropDown} />
                                             </div>
-                                            <div className='col-md-2'>{item.Device_user_first_name} {item.Device_user_last_name}</div>
                                             <div className='col-md-2'>{item.Device_model}</div>
-                                            <div className='col-md-1 text-center'>{item.Grade}</div>
-                                            <div className='col-md-1 text-center'>{item.Building}</div>
+                                            <div className='col-md-2'>
+                                                {item.inventory_status == 3 ?
+                                                    <>-</>
+                                                    :
+                                                    item.Device_user_first_name + ' ' + item.Device_user_last_name
+                                                }
+                                            </div>
+                                            <div className='col-md-1 text-center'>
+                                                {item.inventory_status == 3 ?
+                                                    <>-</>
+                                                    :
+                                                    item.Grade
+                                                }
+                                            </div>
+                                            <div className='col-md-1 text-center'>
+                                                {item.inventory_status == 3 ?
+                                                    <>-</>
+                                                    :
+                                                    item.Building
+                                                }
+                                            </div>
                                             <div className='col-md-2 text-center'>{item.Purchase_date}</div>
-                                            <div className='col-md-1 text-end cursor-pointer'><i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1', item.user_id)}></i></div>
+                                            <div className='col-md-1 text-end cursor-pointer d-flex justify-content-evenly'>
+                                                {item.Loaner_device == "1" ?
+                                                    <>
+                                                        <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1', item.user_id)}></i>
+                                                        <img src="/images/clock-history.svg" className='img-fluid LoanerHistoryIcon' onClick={(e) => ShowLoanerHistory(item.ID)} />
+
+                                                    </>
+                                                    :
+                                                    <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.Inventory_ID, '1', item.user_id)}></i>
+                                                }
+                                            </div>
                                         </div>
                                         );
                                         return returData;
@@ -712,7 +806,7 @@ export function ManageInventory() {
                             <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                         </div>
                         <div id='AddInventoryForm'>
-                            <div className='row p-2 justify-content-between'>
+                            <div className='row px-2 justify-content-between'>
                                 <div className='col-md-6 row align-items-center'>
                                     <div className='col-md-7 FormLabel'>Manufacturer Warranty Until</div>
                                     <div className='col-md-5'>
@@ -777,7 +871,7 @@ export function ManageInventory() {
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                 </div>
                             </div>
-                            <div className='row p-2 justify-content-between'>
+                            <div className='row px-2 justify-content-between'>
                                 <div className='col-md-6 row align-items-center'>
                                     <div className='col-md-7 FormLabel'>Device Manufacturer</div>
                                     <div className='col-md-5'>
@@ -793,36 +887,6 @@ export function ManageInventory() {
                                     <div className='col-md-5'>
                                         <input type="text" name='devicetype' className="form-control" required value={Devicetype}
                                             onChange={(e) => setDevicetype(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Device User FirstName</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='firstname' className="form-control" required value={FirstName}
-                                            onChange={(e) => setFirstName(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Device User LastName</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='lastName' className="form-control" required value={LastName}
-                                            onChange={(e) => setLastName(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Grade / Department</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='grade' className="form-control" required value={Grade}
-                                            onChange={(e) => setGrade(e.target.value)} />
                                         <span className="form-text invalid-feedback">
                                             *required
                                         </span>
@@ -869,50 +933,10 @@ export function ManageInventory() {
                                     </div>
                                 </div>
                                 <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Building</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='building' className="form-control" required value={Building}
-                                            onChange={(e) => setBuilding(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
                                     <div className='col-md-7 FormLabel'>User Type</div>
                                     <div className='col-md-5'>
                                         <input type="text" name='usertype' className="form-control" required value={UserType}
                                             onChange={(e) => setUserType(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Parent Guardian Name</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='guardianName' className="form-control" required value={ParentGuardianName}
-                                            onChange={(e) => setParentGuardianName(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Parent Guardian Email</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='guardianemail' className="form-control" required value={ParentGuardianEmail}
-                                            onChange={(e) => setParentGuardianEmail(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Parent Phone Number</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='parentphonenumber' className="form-control" required value={ParentPhoneNumber}
-                                            onChange={(e) => setParentPhoneNumber(e.target.value)} />
                                         <span className="form-text invalid-feedback">
                                             *required
                                         </span>
@@ -944,16 +968,16 @@ export function ManageInventory() {
                             </div>
                             <div className='row p-2 justify-content-between'>
                                 <div className='col-12 row align-items-center'>
-                                    <div className='col-md-5 FormLabel'>Do you want to act this device as loaner? </div>
+                                    <div className='col-md-5 FormLabel'>Is this device a loaner device?</div>
                                     <div className='col-md-7 d-flex'>
                                         <div className="form-check">
-                                            <input className="form-check-input" type="radio" name='LoanerDevice' id="LoanerDeviceYes" />
+                                            <input className="form-check-input" type="radio" name='LoanerDevice' id="LoanerDeviceYes" onChange={(e) => CheckLoanerDevice(1)} />
                                             <label className="form-check-label">
                                                 Yes
                                             </label>
                                         </div>
                                         <div className="form-check ms-5">
-                                            <input className="form-check-input" type="radio" name='LoanerDevice' id="LoanerDeviceNo" />
+                                            <input className="form-check-input" type="radio" name='LoanerDevice' id="LoanerDeviceNo" onChange={(e) => CheckLoanerDevice(2)} />
                                             <label className="form-check-label">
                                                 No
                                             </label>
@@ -963,25 +987,116 @@ export function ManageInventory() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className='col-12 row align-items-center pt-2'>
-                                    <div className='col-md-5 FormLabel'>Parental Coverage</div>
+                                <div className='col-12 row align-items-center d-none' id="AssignDeviceToUserDiv">
+                                    <div className='col-md-5 FormLabel'>Do you want to assign this device to User?</div>
                                     <div className='col-md-7 d-flex'>
                                         <div className="form-check">
-                                            <input className="form-check-input" type="radio" name='ParentalCoverage' id="ParentalCoverageYes" />
+                                            <input className="form-check-input" type="radio" name='AssignDevice' id="AssignUserDeviceYes" onChange={(e) => ShowStudentDetailsDiv(1)} />
                                             <label className="form-check-label">
                                                 Yes
                                             </label>
                                         </div>
                                         <div className="form-check ms-5">
-                                            <input className="form-check-input" type="radio" name='ParentalCoverage' id="ParentalCoverageNo" />
+                                            <input className="form-check-input" type="radio" name='AssignDevice' id="AssignUserDeviceNo" onChange={(e) => ShowStudentDetailsDiv(2)} />
                                             <label className="form-check-label">
                                                 No
                                             </label>
                                         </div>
-                                        <span className="form-text invalid-feedback" id="RadioButtonRequired">
-                                            *required
-                                        </span>
                                     </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className='row d-none' id="StudentDetailsDiv">
+                            <h3 className='pt-3'>Student Details</h3>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Device User FirstName</div>
+                                <div className='col-md-5'>
+                                    <input type="text" name='firstname' className="form-control" required value={FirstName}
+                                        onChange={(e) => setFirstName(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Device User LastName</div>
+                                <div className='col-md-5'>
+                                    <input type="text" name='lastName' className="form-control" required value={LastName}
+                                        onChange={(e) => setLastName(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Grade / Department</div>
+                                <div className='col-md-5'>
+                                    <input type="text" name='grade' className="form-control" required value={Grade}
+                                        onChange={(e) => setGrade(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Building</div>
+                                <div className='col-md-5'>
+                                    <input type="text" name='building' className="form-control" required value={Building}
+                                        onChange={(e) => setBuilding(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Parent Guardian Name</div>
+                                <div className='col-md-5'>
+                                    <input type="text" name='guardianName' className="form-control" required value={ParentGuardianName}
+                                        onChange={(e) => setParentGuardianName(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Parent Guardian Email</div>
+                                <div className='col-md-5'>
+                                    <input type="text" name='guardianemail' className="form-control" required value={ParentGuardianEmail}
+                                        onChange={(e) => setParentGuardianEmail(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Parent Phone Number</div>
+                                <div className='col-md-5'>
+                                    <input type="text" name='parentphonenumber' className="form-control" required value={ParentPhoneNumber}
+                                        onChange={(e) => setParentPhoneNumber(e.target.value)} />
+                                    <span className="form-text invalid-feedback">
+                                        *required
+                                    </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6 row align-items-center pt-2'>
+                                <div className='col-md-7 FormLabel'>Parental Coverage</div>
+                                <div className='col-md-5 d-flex'>
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="radio" name='ParentalCoverage' id="ParentalCoverageYes" />
+                                        <label className="form-check-label">
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div className="form-check ms-5">
+                                        <input className="form-check-input" type="radio" name='ParentalCoverage' id="ParentalCoverageNo" />
+                                        <label className="form-check-label">
+                                            No
+                                        </label>
+                                    </div>
+                                    <span className="form-text invalid-feedback" id="RadioButtonRequired">
+                                        *required
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -1014,92 +1129,6 @@ export function ManageInventory() {
                     </div>
                     <div id="DeviceDetailsScroll" className=" mt-3">
                         <div className='row'>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>ID : </div>
-                                <div className='col-6'>  {DeviceDetails.ID}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Grade : </div>
-                                <div className='col-3'> {DeviceDetails.Grade}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Building : </div>
-                                <div className='col-6'> {DeviceDetails.Building}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Device OS : </div>
-                                <div className='col-6'> {DeviceDetails.Device_os}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Loaner Device : </div>
-                                <div className='col-3'> {(DeviceDetails.Loaner_device == 1) ?
-                                    <>Yes</> : <>No</>}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>User Type : </div>
-                                <div className='col-6'> {DeviceDetails.User_type}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Repair Cap : </div>
-                                <div className='col-6'> {DeviceDetails.Repair_cap}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Parental Coverage : </div>
-                                <div className='col-3'> {(DeviceDetails.Parental_coverage == 1) ?
-                                    <>Yes</> : <>No</>}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Device Type : </div>
-                                <div className='col-6'> {DeviceDetails.Device_type}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Device MPN : </div>
-                                <div className='col-6'> {DeviceDetails.Device_MPN}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Asset Tag : </div>
-                                <div className='col-3'> {DeviceDetails.Asset_tag}</div>
-                            </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
-
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Device Manufacturer : </div>
-                                <div className='col-5'> {DeviceDetails.Device_manufacturer}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6 fw-600'>Student Name : </div>
-                                <div className='col-6'> {DeviceDetails.Device_user_first_name} {DeviceDetails.Device_user_last_name}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Device Model : </div>
-                                <div className='col-5'> {DeviceDetails.Device_model}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6 fw-600'>Serial Number : </div>
-                                <div className='col-6'> {DeviceDetails.Serial_number}</div>
-                            </div>
-
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Parent Phone Number : </div>
-                                <div className='col-5'> {DeviceDetails.Parent_phone_number}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6 fw-600'>Parent Email : </div>
-                                <div className='col-6'> {DeviceDetails.Parent_Guardian_Email}</div>
-                            </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Created At : </div>
-                                <div className='col-4'> {MMDDYYYY(DeviceDetails.created_at)}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Expected Retirement : </div>
-                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Purchase Date : </div>
-                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
-                            </div>
                             <div className='col-md-6 row py-1'>
                                 <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
                                 <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
@@ -1112,11 +1141,93 @@ export function ManageInventory() {
                                 <div className='col-8 fw-600'>Third Party ADP Until : </div>
                                 <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
                             </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Expected Retirement : </div>
+                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Purchase Date : </div>
+                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
+                            </div>
                             <div className='col-12 row py-1'>
                                 <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
                                 <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
                             </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device Manufacturer : </div>
+                                <div className='col-5'> {DeviceDetails.Device_manufacturer}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device Type : </div>
+                                <div className='col-5'> {DeviceDetails.Device_type}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device Model : </div>
+                                <div className='col-5'> {DeviceDetails.Device_model}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device MPN : </div>
+                                <div className='col-5'> {DeviceDetails.Device_MPN}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Serial Number : </div>
+                                <div className='col-5'> {DeviceDetails.Serial_number}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Asset Tag : </div>
+                                <div className='col-5'> {DeviceDetails.Asset_tag}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>User Type : </div>
+                                <div className='col-5'> {DeviceDetails.User_type}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Repair Cap : </div>
+                                <div className='col-5'> {DeviceDetails.Repair_cap}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device OS : </div>
+                                <div className='col-5'> {DeviceDetails.Device_os}</div>
+                            </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-10 row py-1'>
+                                <div className='col-4 fw-600'>Loaner Device : </div>
+                                <div className='col-8'> {(DeviceDetails.Loaner_device == 1) ?
+                                    <>Yes</> : <>No</>}</div>
+                            </div>
+                            {DeviceDetails.inventory_status != 3 ?
+                                <div className='row' id="ModalStudentDiv">
+                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Student Name : </div>
+                                        <div className='col-6'> {DeviceDetails.Device_user_first_name} {DeviceDetails.Device_user_last_name}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Grade : </div>
+                                        <div className='col-6'> {DeviceDetails.Grade}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Building : </div>
+                                        <div className='col-6'> {DeviceDetails.Building}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parental Coverage : </div>
+                                        <div className='col-6'> {(DeviceDetails.Parental_coverage == 1) ?
+                                            <>Yes</> : <>No</>}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parent Contact : </div>
+                                        <div className='col-6'> {DeviceDetails.Parent_phone_number}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parent Email : </div>
+                                        <div className='col-6'> {DeviceDetails.Parent_Guardian_Email}</div>
+                                    </div>
+                                </div>
+                                :
+                                <></>
+                            }
                         </div>
                     </div>
                     <div id='DeviceHistoryDiv' className='d-none mt-3'>
@@ -1151,8 +1262,8 @@ export function ManageInventory() {
                                         </div>
                                     </div>
                                     <div className="col-12 pt-3 d-none" id={`TicketHistoryDiv_${item.Ticket_ID}`}>
-                                        <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2 px-0' />
-                                        <h4><u>Ticket History</u></h4>
+                                        {/* <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2 px-0' /> */}
+                                        {/* <h4><u>Ticket History</u></h4> */}
                                         <div className="row">
                                             {(item.ticketHistory.length != 0) ?
                                                 item.ticketHistory.map((tickethistory, j) => {
@@ -1189,6 +1300,33 @@ export function ManageInventory() {
                 </Modal.Body>
                 <Modal.Footer>
                     <label className='cursor-pointer' onClick={ClosePopup}>Cancel</label>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={isStatusPopup} size="lg">
+                <Modal.Header closeButton onClick={CloseStatusPopup}>
+                    <Modal.Title>Loaner History</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {Loanerhistory.map((item, i) => {
+                        var returData;
+                        returData = (
+                            (item.endDate != null) ?
+                                <label>
+                                    Device was assigned as a loaner to {item.whoUseLonerDevice} from {item.startDate} to {item.endDate}
+                                </label>
+                                :
+                                <label>
+                                    Device was assigned as a loaner to {item.whoUseLonerDevice} from {item.startDate}
+                                </label>
+
+                        );
+                        return returData;
+                    })}
+                    {loanernorecord}
+                </Modal.Body>
+                <Modal.Footer>
+                    <label className='cursor-pointer' onClick={CloseStatusPopup}>Cancel</label>
                 </Modal.Footer>
             </Modal>
         </>

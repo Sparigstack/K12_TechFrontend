@@ -267,6 +267,31 @@ export function Sidemenu() {
                                                 <div className="menu-title">Dashboard</div>
                                             </a>
                                         </li>
+                                        <li>
+                                            <a href="/importexport-inventory" changeimg="/Images/SideMenu/Icons/ImportExportInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ImportExportInventory.svg">
+                                                <div className="parent-icon">
+                                                    <img src='/Images/SideMenu/Icons/ImportExportInventory.svg' className='img-fluid ChangeImage' title='Import / Export Inventory' />
+                                                </div>
+                                                <div className="menu-title">Import / Export</div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/manage-inventory" changeimg="/Images/SideMenu/Icons/ManageInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ManageInventory.svg">
+                                                <div className="parent-icon">
+                                                    <img src='/Images/SideMenu/Icons/ManageInventory.svg' className='img-fluid ChangeImage' title='Manage Inventory' />
+                                                </div>
+                                                <div className="menu-title">Manage Inventory</div>
+                                                
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/manage-tickets" changeimg="/Images/SideMenu/Icons/ManageTicketWhite.svg" originalimg="/Images/SideMenu/Icons/ManageTicket.svg">
+                                                <div className="parent-icon">
+                                                    <img src='/Images/SideMenu/Icons/ManageTicket.svg' className='img-fluid ChangeImage' title='Manage Ticket' />
+                                                </div>
+                                                <div className="menu-title">Manage Tickets</div>
+                                            </a>
+                                        </li>
                                         {/* <li>
                                             <a href="/device-type" changeimg="/Images/SideMenu/Icons/DeviceModelWhite.svg" originalimg="/Images/SideMenu/Icons/DeviceModel.svg">
                                                 <div className="parent-icon">
@@ -283,23 +308,16 @@ export function Sidemenu() {
                                                 <div className="menu-title">OS Model</div>
                                             </a>
                                         </li> */}
-                                        <li>
+                                        {/* <li>
                                             <a href="/create-ticket" changeimg="/Images/SideMenu/Icons/CreateTicketWhite.svg" originalimg="/Images/SideMenu/Icons/CreateTicket.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/CreateTicket.svg' className='img-fluid ChangeImage' title='Create Ticket' />
                                                 </div>
                                                 <div className="menu-title">Create Ticket</div>
                                             </a>
-                                        </li>
-                                        <li>
-                                            <a href="/manage-tickets" changeimg="/Images/SideMenu/Icons/ManageTicketWhite.svg" originalimg="/Images/SideMenu/Icons/ManageTicket.svg">
-                                                <div className="parent-icon">
-                                                    <img src='/Images/SideMenu/Icons/ManageTicket.svg' className='img-fluid ChangeImage' title='Manage Ticket' />
-                                                </div>
-                                                <div className="menu-title">Manage Tickets</div>
-                                            </a>
-                                        </li>
-                                        <li>
+                                        </li> */}
+
+                                        {/* <li>
                                             <a href="#" changeimg="/Images/SideMenu/Icons/ReportWhite.svg" originalimg="/Images/SideMenu/Icons/Report.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/Report.svg' className='img-fluid ChangeImage' title='Report' />
@@ -322,31 +340,16 @@ export function Sidemenu() {
                                                 </div>
                                                 <div className="menu-title">Assign a Device</div>
                                             </a>
-                                        </li>
-                                        <li>
-                                            <a href="/manage-inventory" changeimg="/Images/SideMenu/Icons/ManageInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ManageInventory.svg">
-                                                <div className="parent-icon">
-                                                    <img src='/Images/SideMenu/Icons/ManageInventory.svg' className='img-fluid ChangeImage' title='Manage Inventory' />
-                                                </div>
-                                                <div className="menu-title">Manage Inventory</div>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="/importexport-inventory" changeimg="/Images/SideMenu/Icons/ImportExportInventoryWhite.svg" originalimg="/Images/SideMenu/Icons/ImportExportInventory.svg">
-                                                <div className="parent-icon">
-                                                    <img src='/Images/SideMenu/Icons/ImportExportInventory.svg' className='img-fluid ChangeImage' title='Import / Export Inventory' />
-                                                </div>
-                                                <div className="menu-title">Import / Export Inventory</div>
-                                            </a>
-                                        </li>
-                                        <li>
+                                        </li> */}
+
+                                        {/* <li>
                                             <a href="#" changeimg="/Images/SideMenu/Icons/PurchasePartsWhite.svg" originalimg="/Images/SideMenu/Icons/PurchaseParts.svg">
                                                 <div className="parent-icon">
                                                     <img src='/Images/SideMenu/Icons/PurchaseParts.svg' className='img-fluid ChangeImage' title='Purchase Parts' />
                                                 </div>
                                                 <div className="menu-title">Purchase Parts</div>
                                             </a>
-                                        </li>
+                                        </li> */}
                                         <li>
                                             <a href="/users" changeimg="/Images/SideMenu/Icons/UsersWhite.svg" originalimg="/Images/SideMenu/Icons/Users.svg">
                                                 <div className="parent-icon">

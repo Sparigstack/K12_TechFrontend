@@ -38,6 +38,7 @@ export function CreateTicket() {
             }
         };
     }, []);
+    
 
     // on keyup store data in array
     const StoreDeviceSearchData = async (flag) => {
@@ -62,7 +63,7 @@ export function CreateTicket() {
                         }
                         for (var i = 0; i < sugData.length; i++) {
                             sugArray.push(
-                                <div className="row brdr-Btm font-14" key={i} onClick={(e) => ShowDeviceDetails(e, 1)} UsreId={sugData[i].user_id} Deviceid={sugData[i].ID} style={{ padding: "8px 15px" }}>
+                                <div className="row brdr-Btm font-14" key={i} onClick={(e) => ShowDeviceDetails(e, 1)} UsreId={sugData[i].user_id} Deviceid={sugData[i].Inventory_ID} style={{ padding: "8px 15px" }}>
                                     <div className="col-8">{sugData[i].Device_user_first_name} {sugData[i].Device_user_last_name}</div>
                                     <div className="col-4 text-end">{sugData[i].Serial_number}</div>
                                     <div className="col-12">{sugData[i].Device_model}</div>
@@ -155,7 +156,7 @@ export function CreateTicket() {
                     $(".alert-success").show();
                     $("#AlertMsg").text("Ticket Created Successfully.");
                     setTimeout(function () {
-                        window.location = "/create-ticket";
+                        window.location = "/manage-tickets";
                     }, 1500);
                 } else {
                     $(".alert-danger").show();
@@ -279,16 +280,14 @@ export function CreateTicket() {
                 var sugData = responseRs.msg;
                 var sugArray = [];
                 var i = 1;
-                console.log(responseRs)
                 if (responseRs.response == "success") {
                     if (sugData.length != 0) {
                         ShowSuggestionBox('AssignLoanerClass');
                         for (var i = 0; i < sugData.length; i++) {
                             sugArray.push(
-                                <div className="row brdr-Btm font-14" key={i} loanerid={sugData[i].Inventory_ID} studentname={sugData[i].Device_user_first_name + ' ' + sugData[i].Device_user_last_name} style={{ padding: "8px 15px" }} onClick={(e) => SetLoanerData(e)}>
-                                    <div className="col-8">{sugData[i].Device_user_first_name} {sugData[i].Device_user_last_name}</div>
-                                    <div className="col-4 text-end">{sugData[i].Serial_number}</div>
-                                    <div className="col-12">{sugData[i].Device_model}</div>
+                                <div className="row brdr-Btm font-14" key={i} loanerid={sugData[i].ID} studentname={sugData[i].Device_model} style={{ padding: "8px 15px" }} onClick={(e) => SetLoanerData(e)}>
+                                    <div className="col-6">{sugData[i].Device_model}</div>
+                                    <div className="col-6 text-end">{sugData[i].Serial_number}</div>
                                 </div>
                             )
                         }
