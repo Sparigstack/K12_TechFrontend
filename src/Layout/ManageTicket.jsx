@@ -212,7 +212,7 @@ export function ManageTicket() {
                         setCloseTicketList(responseRs.Closeticket);
                         setCloseTicketCsvData(responseRs.Closeticket);
                     } else {
-                        
+
                         var sugArray = [];
                         sugArray.push(
                             <div className="col-12 p-5 text-center" key={i}>
@@ -584,7 +584,7 @@ export function ManageTicket() {
             $("#TicketHistoryDiv").fadeOut(3000);
         }
     }
-    const OpenCreateTicket = () =>{
+    const OpenCreateTicket = () => {
         window.location = "/create-ticket";
     }
     return (
@@ -842,92 +842,6 @@ export function ManageTicket() {
                     </div>
                     <div id="DeviceDetailsScroll" className=" mt-3">
                         <div className='row'>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>ID : </div>
-                                <div className='col-6'>  {DeviceDetails.ID}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Grade : </div>
-                                <div className='col-3'> {DeviceDetails.Grade}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Building : </div>
-                                <div className='col-6'> {DeviceDetails.Building}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Device OS : </div>
-                                <div className='col-6'> {DeviceDetails.Device_os}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Loaner Device : </div>
-                                <div className='col-3'> {(DeviceDetails.Loaner_device == 1) ?
-                                    <>Yes</> : <>No</>}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>User Type : </div>
-                                <div className='col-6'> {DeviceDetails.User_type}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Repair Cap : </div>
-                                <div className='col-6'> {DeviceDetails.Repair_cap}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Parental Coverage : </div>
-                                <div className='col-3'> {(DeviceDetails.Parental_coverage == 1) ?
-                                    <>Yes</> : <>No</>}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Device Type : </div>
-                                <div className='col-6'> {DeviceDetails.Device_type}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-6 fw-600'>Device MPN : </div>
-                                <div className='col-6'> {DeviceDetails.Device_MPN}</div>
-                            </div>
-                            <div className='col-md-4 row py-1'>
-                                <div className='col-9 fw-600'>Asset Tag : </div>
-                                <div className='col-3'> {DeviceDetails.Asset_tag}</div>
-                            </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
-
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Device Manufacturer : </div>
-                                <div className='col-5'> {DeviceDetails.Device_manufacturer}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6 fw-600'>Student Name : </div>
-                                <div className='col-6'> {DeviceDetails.Device_user_first_name} {DeviceDetails.Device_user_last_name}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Device Model : </div>
-                                <div className='col-5'> {DeviceDetails.Device_model}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6 fw-600'>Serial Number : </div>
-                                <div className='col-6'> {DeviceDetails.Serial_number}</div>
-                            </div>
-
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Parent Phone Number : </div>
-                                <div className='col-5'> {DeviceDetails.Parent_phone_number}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-6 fw-600'>Parent Email : </div>
-                                <div className='col-6'> {DeviceDetails.Parent_Guardian_Email}</div>
-                            </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Created At : </div>
-                                <div className='col-4'> {MMDDYYYY(DeviceDetails.created_at)}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Expected Retirement : </div>
-                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Purchase Date : </div>
-                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
-                            </div>
                             <div className='col-md-6 row py-1'>
                                 <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
                                 <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
@@ -940,11 +854,93 @@ export function ManageTicket() {
                                 <div className='col-8 fw-600'>Third Party ADP Until : </div>
                                 <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
                             </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Expected Retirement : </div>
+                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Purchase Date : </div>
+                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
+                            </div>
                             <div className='col-12 row py-1'>
                                 <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
                                 <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
                             </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device Manufacturer : </div>
+                                <div className='col-5'> {DeviceDetails.Device_manufacturer}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device Type : </div>
+                                <div className='col-5'> {DeviceDetails.Device_type}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device Model : </div>
+                                <div className='col-5'> {DeviceDetails.Device_model}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device MPN : </div>
+                                <div className='col-5'> {DeviceDetails.Device_MPN}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Serial Number : </div>
+                                <div className='col-5'> {DeviceDetails.Serial_number}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Asset Tag : </div>
+                                <div className='col-5'> {DeviceDetails.Asset_tag}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>User Type : </div>
+                                <div className='col-5'> {DeviceDetails.User_type}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Repair Cap : </div>
+                                <div className='col-5'> {DeviceDetails.Repair_cap}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Device OS : </div>
+                                <div className='col-5'> {DeviceDetails.Device_os}</div>
+                            </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-10 row py-1'>
+                                <div className='col-4 fw-600'>Loaner Device : </div>
+                                <div className='col-8'> {(DeviceDetails.Loaner_device == 1) ?
+                                    <>Yes</> : <>No</>}</div>
+                            </div>
+                            {DeviceDetails.inventory_status != 3 ?
+                                <div className='row' id="ModalStudentDiv">
+                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Student Name : </div>
+                                        <div className='col-6'> {DeviceDetails.Device_user_first_name} {DeviceDetails.Device_user_last_name}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Grade : </div>
+                                        <div className='col-6'> {DeviceDetails.Grade}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Building : </div>
+                                        <div className='col-6'> {DeviceDetails.Building}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parental Coverage : </div>
+                                        <div className='col-6'> {(DeviceDetails.Parental_coverage == 1) ?
+                                            <>Yes</> : <>No</>}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parent Contact : </div>
+                                        <div className='col-6'> {DeviceDetails.Parent_phone_number}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parent Email : </div>
+                                        <div className='col-6'> {DeviceDetails.Parent_Guardian_Email}</div>
+                                    </div>
+                                </div>
+                                :
+                                <></>
+                            }
                         </div>
                     </div>
                     <div id='DeviceHistoryDiv' className='d-none mt-3'>

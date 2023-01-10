@@ -27,6 +27,7 @@ export function ManageInventory() {
     const [TicketUserid, setTicketUserid] = useState("");
     const [isShow, invokeModal] = useState(false);
     const [isStatusPopup, setisStatusPopup] = useState(false);
+    const [Tabid, setTabid] = useState("");
 
     // form input fields start
     const [DeviceManufacturer, setDeviceManufacturer] = useState("");
@@ -612,16 +613,17 @@ export function ManageInventory() {
         $(".linkclass").removeClass('active');
         $("#" + DivId).addClass('active');
         if (DivId == "ActiveDeviceTab") {
+            setTabid(1);
             $("#ChangeDecommissionText").text('Decommission');
             $("#ChangeDecommissionText").val('2');
             GetListOfDevices();
         } else if (DivId == "DecommissionedDeviceTab") {
+            setTabid(3);
             $("#ChangeDecommissionText").text('Active');
             $("#ChangeDecommissionText").val('3');
             GetDecommissionData();
         } else {
-            $("#ChangeDecommissionText").text('Decommission');
-            $("#ChangeDecommissionText").val('2');
+            setTabid(2);
             GetLoanerDeviceData();
         }
     }
@@ -640,7 +642,7 @@ export function ManageInventory() {
                         setloanernorecord("");
                         setLoanerHistory(responseRs.msg);
                     }
-                } else{
+                } else {
                     sugArray.push(
                         <div className="col-12 text-center" key={i}>
                             <label>No Record Found</label>
@@ -737,21 +739,36 @@ export function ManageInventory() {
                             </div>
                             <div className='mt-2'>
                                 <div className='row GridHeader mx-1 px-0'>
-                                    <div className='col-md-2 font-13 px-0 text-center'>Select All<input className="form-check-input ms-1" id="SelectAllId" type="checkbox" onClick={SelectAllDevices} /></div>
+                                    {Tabid != 2 ?
+                                        <div className='col-md-2 font-13 px-0 text-center'>
+                                            Select All<input className="form-check-input ms-1" id="SelectAllId" type="checkbox" onClick={SelectAllDevices} />
+                                        </div>
+                                        :
+                                        <></>
+                                    }
                                     <div className='col-md-2'>Device Model</div>
                                     <div className='col-md-2'>Student Name</div>
                                     <div className='col-md-1 text-center'>Grade</div>
                                     <div className='col-md-1 text-center'>Building</div>
-                                    <div className='col-md-2 text-center'>Purchase Date</div>
+                                    {Tabid != 2 ?
+                                        <div className='col-md-2 text-center'>Purchase Date</div>
+                                        :
+                                        <div className='col-md-4 text-center'>Purchase Date</div>
+                                    }
                                     <div className='col-md-1'></div>
                                 </div>
                                 <div className='scroll-330'>
                                     {AllDevices.map((item, i) => {
                                         var returData;
                                         returData = (<div key={i} className="row grid mx-1 px-0">
-                                            <div className='col-md-2 text-center'>
-                                                <input className="form-check-input CommonCheckBoxClass" deviceid={item.ID} type="checkbox" onChange={ShowActionDropDown} />
-                                            </div>
+                                            {item.inventory_status == 3 ?
+                                                <></>
+                                                :
+                                                <div className='col-md-2 text-center'>
+                                                    <input className="form-check-input CommonCheckBoxClass" deviceid={item.ID} type="checkbox" onChange={ShowActionDropDown} />
+                                                </div>
+                                            }
+
                                             <div className='col-md-2'>{item.Device_model}</div>
                                             <div className='col-md-2'>
                                                 {item.inventory_status == 3 ?
@@ -774,7 +791,11 @@ export function ManageInventory() {
                                                     item.Building
                                                 }
                                             </div>
-                                            <div className='col-md-2 text-center'>{item.Purchase_date}</div>
+                                            {item.inventory_status == 3 ?
+                                                <div className='col-md-4 text-center'>{item.Purchase_date}</div>
+                                                :
+                                                <div className='col-md-2 text-center'>{item.Purchase_date}</div>
+                                            }
                                             <div className='col-md-1 text-end cursor-pointer d-flex justify-content-evenly'>
                                                 {item.Loaner_device == "1" ?
                                                     <>
