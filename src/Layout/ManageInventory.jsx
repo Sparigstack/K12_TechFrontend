@@ -99,7 +99,7 @@ export function ManageInventory() {
         $("#AddUpdateHeader").text("Add New Inventory");
         $("#LoanerDeviceNo").prop('checked', true);
         $("#AssignDeviceToUserDiv").removeClass('d-none');
-        $("#AssignUserDeviceNo").prop('checked',true);
+        $("#AssignUserDeviceNo").prop('checked', true);
         HideLoder();
         if (Deviceid >= 1) {
             GetDeviceDetailById(Deviceid, '2', Ticketuserid);
@@ -231,11 +231,11 @@ export function ManageInventory() {
                             $("#LoanerDeviceNo").prop('checked', true);
                         }
 
-                        if(sugData.Device_user_first_name != ""){
-                            $("#AssignUserDeviceYes").prop('checked',true);
+                        if (sugData.Device_user_first_name != "") {
+                            $("#AssignUserDeviceYes").prop('checked', true);
                             $("#StudentDetailsDiv").removeClass('d-none');
-                        }else{
-                            $("#AssignUserDeviceYes").prop('checked',false);
+                        } else {
+                            $("#AssignUserDeviceYes").prop('checked', false);
                             $("#StudentDetailsDiv").addClass('d-none');
                         }
                     }
@@ -635,12 +635,14 @@ export function ManageInventory() {
                 const responseRs = JSON.parse(result);
                 var sugArray = [];
                 var i = 1;
-                if (responseRs.msg.length != 0) {
-                    setloanernorecord("");
-                    setLoanerHistory(responseRs.msg);
-                } else {
+                if (responseRs.response == "success") {
+                    if (responseRs.msg.length != 0) {
+                        setloanernorecord("");
+                        setLoanerHistory(responseRs.msg);
+                    }
+                } else{
                     sugArray.push(
-                        <div className="col-12 GridNoRecord text-center" key={i}>
+                        <div className="col-12 text-center" key={i}>
                             <label>No Record Found</label>
                         </div>
                     );
