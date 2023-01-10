@@ -23,9 +23,10 @@ import { ManageTicket } from './Layout/ManageTicket.jsx';
 import { Signup } from './Layout/Signup.jsx';
 import './JS/Connector.js';
 import './JS/Common.js';
+import { Test } from './Layout/Testing.jsx';
 function App({ msalInstance }) {
   var accesstoken = Cookies.get('accesstoken');
-  const clientId = process.env.REACT_APP_ClientId;
+  const clientId = process.env.REACT_APP_GoogleClientId;
   useEffect(() => {
     function start() {
       gapi.client.init({
@@ -61,6 +62,7 @@ function App({ msalInstance }) {
             <Route path="/register" element={<Signup />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/" element={<Login />} />
+            <Route path="/testing" element={<Test />} />
           </Routes>
         }
     </MsalProvider>
