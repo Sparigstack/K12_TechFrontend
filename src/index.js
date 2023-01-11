@@ -33,8 +33,8 @@ pca.addEventCallback(event => {
     });
     ApiPostCall("/register", raw).then((result) => {
       if (result == undefined || result == "") {
-        $("#AlertMsgs").text('Login Failed!');
-        $("#AlertMsgs").css('color', 'red');
+        $("#AlertDanger").text('Login Failed!');
+        $("#AlertDanger").css('color', 'red');
       } else {
         const responseRs = JSON.parse(result);
         if (responseRs.status == "success") {
@@ -49,11 +49,12 @@ pca.addEventCallback(event => {
           }
         }
         else {
-          $("#AlertMsgs").text('You are not a valid user to use this system, please contact Administrator!');
-          $("#AlertMsgs").css('color', 'red');
+          var vhtml = "You are not a valid user, <a href='#'>click here</a> to contact Administrator!";
+          $("#AlertDanger").text(vhtml);
+          $("#AlertDanger").css('color', 'red');
           setTimeout(function () {
-            $(".alert-danger").hide();
-            $("#AlertDangerMsg").text();
+            $("#AlertDanger").hide();
+            $("#AlertDanger").text('');
             window.location = "/";
           }, 1500);
         }

@@ -10,6 +10,7 @@ export function Login() {
     const [state, setState] = useState({});
     const cookies = new Cookies();
     const clientId = process.env.REACT_APP_GoogleClientId;
+    var vhtml = "You are not a valid user, <a href='#'>click here</a> to contact Administrator!";
     useEffect(() => {
         setState({});
     }, []);
@@ -27,12 +28,8 @@ export function Login() {
         await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {
                 HideLoder();
-                $("#AlertMsgs").text('Login Failed!');
-                $("#AlertMsgs").css('color', 'red');
-                // setTimeout(function () {
-                //     $("#AlertMsgs").hide();
-                //     $("#AlertDangerMsg").text();
-                // }, 1500);
+                $("#AlertDanger").text('Login Failed!');
+                $("#AlertDanger").css('color', 'red');
             } else {
                 const responseRs = JSON.parse(result);
                 if (responseRs.status == "success") {
@@ -40,21 +37,13 @@ export function Login() {
                     cookies.set('emailid', res.profileObj.email);
                     $("#AlertMsgs").text('Login Successfully.');
                     $("#AlertMsgs").css('color', 'green');
-                    // $(".alert-success").show();
-                    // $("#AlertMsg").text("Login Successfully.");
                     setTimeout(function () {
                         window.location = "/dashboard";
                     }, 1500);
                 }
                 else {
-                    $("#AlertMsgs").text('You are not a valid user to use this system, please contact Administrator!');
-                    $("#AlertMsgs").css('color', 'red');
-                    // $(".alert-danger").show();
-                    // $("#AlertDangerMsg").text(responseRs.status);
-                    // setTimeout(function () {
-                    //     $(".alert-danger").hide();
-                    //     $("#AlertDangerMsg").text();
-                    // }, 1500);
+                    $("#AlertDanger").text(vhtml);
+                    $("#AlertDanger").css('color', 'red');
                 }
                 HideLoder();
 
@@ -70,6 +59,7 @@ export function Login() {
                     <div className="p-4">
                         <div className="col-12 text-center">
                             <label id="AlertMsgs"></label>
+                            <label id="AlertDanger" dangerouslySetInnerHTML={{__html: vhtml}}></label>
                         </div>
                         <div className="mb-5 mt-4">
                             <img src="/Images/LoginLogo.png" className="img-fluid" alt="Logo" />
