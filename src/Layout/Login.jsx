@@ -28,6 +28,7 @@ export function Login() {
         await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {
                 HideLoder();
+                $("#AlertDanger").removeClass('d-none');
                 $("#AlertDanger").text('Login Failed!');
                 $("#AlertDanger").css('color', 'red');
             } else {
@@ -42,6 +43,7 @@ export function Login() {
                     }, 1500);
                 }
                 else {
+                    $("#AlertDanger").removeClass('d-none');
                     $("#AlertDanger").text(vhtml);
                     $("#AlertDanger").css('color', 'red');
                 }
@@ -59,7 +61,7 @@ export function Login() {
                     <div className="p-4">
                         <div className="col-12 text-center">
                             <label id="AlertMsgs"></label>
-                            <label id="AlertDanger" dangerouslySetInnerHTML={{__html: vhtml}}></label>
+                            <label id="AlertDanger" dangerouslySetInnerHTML={{__html: vhtml}} className="d-none"></label>
                         </div>
                         <div className="mb-5 mt-4">
                             <img src="/Images/LoginLogo.png" className="img-fluid" alt="Logo" />

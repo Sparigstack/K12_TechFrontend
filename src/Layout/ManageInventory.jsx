@@ -54,13 +54,18 @@ export function ManageInventory() {
     const [DeviceOS, setDeviceOS] = useState("");
     // form input fields end
 
+    var date = new Date();
+    var yr = date.getFullYear();
+    var month = (date.getMonth() + 1).toString().padStart(2, "0");
+    var day = date.getDate().toString().padStart(2, "0");
+    var newDate = yr  + '-' + month + '-' + day;
+
     useEffect(() => {
         const height = window.innerHeight;
         const navbarheight = $(".navbar").height();
         var finalHeight = height - navbarheight - 80;
         $(".GridBox").css('height', finalHeight);
         CheckUrl();
-        console.log("hjvhj")
     }, []);
     const CheckUrl = () => {
         ShowLoder();
@@ -100,6 +105,7 @@ export function ManageInventory() {
         $("#LoanerDeviceNo").prop('checked', true);
         $("#AssignDeviceToUserDiv").removeClass('d-none');
         $("#AssignUserDeviceNo").prop('checked', true);
+        setPurchaseDate(newDate);
         HideLoder();
         if (Deviceid >= 1) {
             GetDeviceDetailById(Deviceid, '2', Ticketuserid);
@@ -505,7 +511,6 @@ export function ManageInventory() {
                 IDArray: ActionArray,
                 actionid: actionid
             });
-            console.log(raw)
             await ApiPostCall("/manageInventoryAction", raw).then((result) => {
                 if (result == undefined || result == "") {
                     alert("Something went wrong");
@@ -588,8 +593,6 @@ export function ManageInventory() {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
-                console.log(responseRs)
-
                 var sugArray = [];
                 var i = 1;
                 if (responseRs.response == "success") {
@@ -834,91 +837,16 @@ export function ManageInventory() {
                         <div id='AddInventoryForm'>
                             <div className='row px-2 justify-content-between'>
                                 <div className='col-md-6 row align-items-center'>
-                                    <div className='col-md-7 FormLabel'>Manufacturer Warranty Until</div>
+                                    <div className='col-md-7 FormLabel'>Serial Number</div>
                                     <div className='col-md-5'>
-                                        <input type="date" name='ManufacturerWarrentyUntil' className="form-control" required value={ManufacturerWarrentyUntil}
-                                            onChange={(e) => setManufacturerWarrentyUntil(e.target.value)} />
+                                        <input type="text" name='serialnumber' className="form-control" required value={SerialNumber}
+                                            onChange={(e) => setSerialNumber(e.target.value)} />
                                         <span className="form-text invalid-feedback">
                                             *required
                                         </span>
                                     </div>
                                 </div>
                                 <div className='col-md-6 row align-items-center'>
-                                    <div className='col-md-7 FormLabel'>Manufacturer ADP Until</div>
-                                    <div className='col-md-5'>
-                                        <input type="date" name='ManufacturerADPUntil' className="form-control" required value={ManufacturerADPUntil}
-                                            onChange={(e) => setManufacturerADPUntil(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Third Party Extended Warranty Until</div>
-                                    <div className='col-md-5'>
-                                        <input type="date" name='ThirdPartywarrantyuntil' className="form-control" required value={ThirdPartyWarrantyUntil}
-                                            onChange={(e) => setThirdPartyWarrantyUntil(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Third Party ADP Until</div>
-                                    <div className='col-md-5'>
-                                        <input type="date" name='thirdpartyadpuntil' className="form-control" required value={ThirdPartyADPUntil}
-                                            onChange={(e) => setThirdPartyADPUntil(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Expected Retirement</div>
-                                    <div className='col-md-5'>
-                                        <input type="date" name='expectedretirement' className="form-control" required value={ExpectedRetirement}
-                                            onChange={(e) => setExpectedRetirement(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Purchase Date</div>
-                                    <div className='col-md-5'>
-                                        <input type="date" name='PurchaseDate' className="form-control" required value={PurchaseDate}
-                                            onChange={(e) => setPurchaseDate(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-12 text-center pt-2'>
-                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
-                                </div>
-                            </div>
-                            <div className='row px-2 justify-content-between'>
-                                <div className='col-md-6 row align-items-center'>
-                                    <div className='col-md-7 FormLabel'>Device Manufacturer</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='devicemanufacturer' className="form-control" required value={DeviceManufacturer}
-                                            onChange={(e) => setDeviceManufacturer(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center'>
-                                    <div className='col-md-7 FormLabel'>Device Type</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='devicetype' className="form-control" required value={Devicetype}
-                                            onChange={(e) => setDevicetype(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
                                     <div className='col-md-7 FormLabel'>Device Model</div>
                                     <div className='col-md-5'>
                                         <input type="text" name='devicemodel' className="form-control" required value={DeviceModel}
@@ -929,6 +857,27 @@ export function ManageInventory() {
                                     </div>
                                 </div>
                                 <div className='col-md-6 row align-items-center pt-2'>
+                                    <div className='col-md-7 FormLabel'>Device Manufacturer</div>
+                                    <div className='col-md-5'>
+                                        <input type="text" name='devicemanufacturer' className="form-control" required value={DeviceManufacturer}
+                                            onChange={(e) => setDeviceManufacturer(e.target.value)} />
+                                        <span className="form-text invalid-feedback">
+                                            *required
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className='col-md-6 row align-items-center pt-2'>
+                                    <div className='col-md-7 FormLabel'>Device Type</div>
+                                    <div className='col-md-5'>
+                                        <input type="text" name='devicetype' className="form-control" required value={Devicetype}
+                                            onChange={(e) => setDevicetype(e.target.value)} />
+                                        <span className="form-text invalid-feedback">
+                                            *required
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className='col-md-6 row align-items-center pt-2'>
                                     <div className='col-md-7 FormLabel'>Device MPN</div>
                                     <div className='col-md-5'>
                                         <input type="text" name='devicempn' className="form-control" required value={DeviceMPN}
@@ -938,16 +887,7 @@ export function ManageInventory() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className='col-md-6 row align-items-center pt-2'>
-                                    <div className='col-md-7 FormLabel'>Serial Number</div>
-                                    <div className='col-md-5'>
-                                        <input type="text" name='serialnumber' className="form-control" required value={SerialNumber}
-                                            onChange={(e) => setSerialNumber(e.target.value)} />
-                                        <span className="form-text invalid-feedback">
-                                            *required
-                                        </span>
-                                    </div>
-                                </div>
+
                                 <div className='col-md-6 row align-items-center pt-2'>
                                     <div className='col-md-7 FormLabel'>Asset Tag</div>
                                     <div className='col-md-5'>
@@ -992,8 +932,65 @@ export function ManageInventory() {
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                 </div>
                             </div>
+                            <div className='row px-2 justify-content-between'>
+                                <div className='col-md-6 row align-items-center '>
+                                    <div className='col-md-7 FormLabel'>Purchase Date</div>
+                                    <div className='col-md-5'>
+                                        <input type="date" id="setPurchaseDateId" name='PurchaseDate' className="form-control" required value={PurchaseDate}
+                                            onChange={(e) => setPurchaseDate(e.target.value)} />
+                                        <span className="form-text invalid-feedback">
+                                            *required
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className='col-md-6 row align-items-center '>
+                                    <div className='col-md-7 FormLabel'>Expected Retirement</div>
+                                    <div className='col-md-5'>
+                                        <input type="date" name='expectedretirement' className="form-control"  value={ExpectedRetirement}
+                                            onChange={(e) => setExpectedRetirement(e.target.value)} />
+                                      
+                                    </div>
+                                </div>
+
+                                <div className='col-md-6 row align-items-center pt-2'>
+                                    <div className='col-md-7 FormLabel'>Manufacturer Warranty Until</div>
+                                    <div className='col-md-5'>
+                                        <input type="date" name='ManufacturerWarrentyUntil' className="form-control"  value={ManufacturerWarrentyUntil}
+                                            onChange={(e) => setManufacturerWarrentyUntil(e.target.value)} />
+                                    </div>
+                                </div>
+                                <div className='col-md-6 row align-items-center pt-2'>
+                                    <div className='col-md-7 FormLabel'>Manufacturer ADP Until</div>
+                                    <div className='col-md-5'>
+                                        <input type="date" name='ManufacturerADPUntil' className="form-control" value={ManufacturerADPUntil}
+                                            onChange={(e) => setManufacturerADPUntil(e.target.value)} />
+                                        
+                                    </div>
+                                </div>
+                                <div className='col-md-6 row align-items-center pt-2'>
+                                    <div className='col-md-7 FormLabel'>Third Party Extended Warranty Until</div>
+                                    <div className='col-md-5'>
+                                        <input type="date" name='ThirdPartywarrantyuntil' className="form-control" value={ThirdPartyWarrantyUntil}
+                                            onChange={(e) => setThirdPartyWarrantyUntil(e.target.value)} />
+                                       
+                                    </div>
+                                </div>
+                                <div className='col-md-6 row align-items-center pt-2'>
+                                    <div className='col-md-7 FormLabel'>Third Party ADP Until</div>
+                                    <div className='col-md-5'>
+                                        <input type="date" name='thirdpartyadpuntil' className="form-control" value={ThirdPartyADPUntil}
+                                            onChange={(e) => setThirdPartyADPUntil(e.target.value)} />
+                                      
+                                    </div>
+                                </div>
+                                
+                                <div className='col-12 text-center pt-2'>
+                                    <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
+                                </div>
+                            </div>
+
                             <div className='row p-2 justify-content-between'>
-                                <div className='col-12 row align-items-center'>
+                                <div className='col-12 row align-items-center pt-2'>
                                     <div className='col-md-5 FormLabel'>Is this device a loaner device?</div>
                                     <div className='col-md-7 d-flex'>
                                         <div className="form-check">
@@ -1013,7 +1010,7 @@ export function ManageInventory() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className='col-12 row align-items-center d-none' id="AssignDeviceToUserDiv">
+                                <div className='col-12 row align-items-center d-none pt-3' id="AssignDeviceToUserDiv">
                                     <div className='col-md-5 FormLabel'>Do you want to assign this device to User?</div>
                                     <div className='col-md-7 d-flex'>
                                         <div className="form-check">
@@ -1035,7 +1032,7 @@ export function ManageInventory() {
                         <div className='row d-none' id="StudentDetailsDiv">
                             <h3 className='pt-3'>Student Details</h3>
                             <div className='col-md-6 row align-items-center pt-2'>
-                                <div className='col-md-7 FormLabel'>Device User FirstName</div>
+                                <div className='col-md-7 FormLabel'>Device User First Name</div>
                                 <div className='col-md-5'>
                                     <input type="text" name='firstname' className="form-control" required value={FirstName}
                                         onChange={(e) => setFirstName(e.target.value)} />
@@ -1045,7 +1042,7 @@ export function ManageInventory() {
                                 </div>
                             </div>
                             <div className='col-md-6 row align-items-center pt-2'>
-                                <div className='col-md-7 FormLabel'>Device User LastName</div>
+                                <div className='col-md-7 FormLabel'>Device User Last Name</div>
                                 <div className='col-md-5'>
                                     <input type="text" name='lastName' className="form-control" required value={LastName}
                                         onChange={(e) => setLastName(e.target.value)} />
@@ -1075,7 +1072,7 @@ export function ManageInventory() {
                                 </div>
                             </div>
                             <div className='col-md-6 row align-items-center pt-2'>
-                                <div className='col-md-7 FormLabel'>Parent Guardian Name</div>
+                                <div className='col-md-7 FormLabel'>Parent / Guardian Name</div>
                                 <div className='col-md-5'>
                                     <input type="text" name='guardianName' className="form-control" required value={ParentGuardianName}
                                         onChange={(e) => setParentGuardianName(e.target.value)} />
@@ -1085,7 +1082,7 @@ export function ManageInventory() {
                                 </div>
                             </div>
                             <div className='col-md-6 row align-items-center pt-2'>
-                                <div className='col-md-7 FormLabel'>Parent Guardian Email</div>
+                                <div className='col-md-7 FormLabel'>Parent / Guardian Email</div>
                                 <div className='col-md-5'>
                                     <input type="text" name='guardianemail' className="form-control" required value={ParentGuardianEmail}
                                         onChange={(e) => setParentGuardianEmail(e.target.value)} />
@@ -1154,31 +1151,14 @@ export function ManageInventory() {
                     </div>
                     <div id="DeviceDetailsScroll" className=" mt-3">
                         <div className='row'>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
-                                <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
+                        <div className='col-md-6 row py-1'>
+                                <div className='col-7 fw-600'>Serial Number : </div>
+                                <div className='col-5'> {DeviceDetails.Serial_number}</div>
                             </div>
                             <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Manufacturer ADP Until : </div>
-                                <div className='col-4'> {DeviceDetails.Manufacturer_ADP_until}</div>
+                                <div className='col-7 fw-600'>Device Model : </div>
+                                <div className='col-5'> {DeviceDetails.Device_model}</div>
                             </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Third Party ADP Until : </div>
-                                <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Expected Retirement : </div>
-                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Purchase Date : </div>
-                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
-                                <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
-                            </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Device Manufacturer : </div>
                                 <div className='col-5'> {DeviceDetails.Device_manufacturer}</div>
@@ -1187,18 +1167,12 @@ export function ManageInventory() {
                                 <div className='col-7 fw-600'>Device Type : </div>
                                 <div className='col-5'> {DeviceDetails.Device_type}</div>
                             </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Device Model : </div>
-                                <div className='col-5'> {DeviceDetails.Device_model}</div>
-                            </div>
+                           
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Device MPN : </div>
                                 <div className='col-5'> {DeviceDetails.Device_MPN}</div>
                             </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Serial Number : </div>
-                                <div className='col-5'> {DeviceDetails.Serial_number}</div>
-                            </div>
+                           
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Asset Tag : </div>
                                 <div className='col-5'> {DeviceDetails.Asset_tag}</div>
@@ -1214,6 +1188,31 @@ export function ManageInventory() {
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Device OS : </div>
                                 <div className='col-5'> {DeviceDetails.Device_os}</div>
+                            </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Purchase Date : </div>
+                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Expected Retirement : </div>
+                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
+                                <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Manufacturer ADP Until : </div>
+                                <div className='col-4'> {DeviceDetails.Manufacturer_ADP_until}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Third Party ADP Until : </div>
+                                <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
+                            </div>
+                            <div className='col-12 row py-1'>
+                                <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
+                                <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
                             </div>
                             <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                             <div className='col-10 row py-1'>
@@ -1237,13 +1236,17 @@ export function ManageInventory() {
                                         <div className='col-6'> {DeviceDetails.Building}</div>
                                     </div>
                                     <div className='col-md-6 row py-1'>
-                                        <div className='col-6 fw-600'>Parental Coverage : </div>
-                                        <div className='col-6'> {(DeviceDetails.Parental_coverage == 1) ?
-                                            <>Yes</> : <>No</>}</div>
+                                        <div className='col-6 fw-600'>Parent Name : </div>
+                                        <div className='col-6'> {DeviceDetails.Parent_guardian_name}</div>
                                     </div>
                                     <div className='col-md-6 row py-1'>
                                         <div className='col-6 fw-600'>Parent Contact : </div>
                                         <div className='col-6'> {DeviceDetails.Parent_phone_number}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parental Coverage : </div>
+                                        <div className='col-6'> {(DeviceDetails.Parental_coverage == 1) ?
+                                            <>Yes</> : <>No</>}</div>
                                     </div>
                                     <div className='col-md-6 row py-1'>
                                         <div className='col-6 fw-600'>Parent Email : </div>

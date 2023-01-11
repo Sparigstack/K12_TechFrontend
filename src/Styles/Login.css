@@ -18,6 +18,13 @@
     text-decoration: none;
     color: #3bbba4;
 }
+.VerticalTop {
+    position: relative;
+    width: 100%;
+    top: 200px;
+    border: 1px solid #d3c7c7;
+    border-radius: 10px;
+}
 
 .MainDiv {
     background-image: url("/public/Images/LoginBg.png");

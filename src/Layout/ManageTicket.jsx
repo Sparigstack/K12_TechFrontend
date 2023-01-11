@@ -40,6 +40,7 @@ export function ManageTicket() {
         { label: "Ticket Created By", key: "TicketCreatedBy" },
         { label: "Serial Number", key: "serialNum" },
         { label: "Ticket Status", key: "ticket_status" },
+        { label: "Device Model", key: "Device_model" },
         { label: "Building", key: "Building" },
         { label: "Notes", key: "notes" },
         { label: "Grade", key: "Grade" },
@@ -57,13 +58,13 @@ export function ManageTicket() {
     };
     useEffect(() => {
         // return () => {
-            const height = window.innerHeight;
-            const navbarheight = $(".navbar").height();
-            var finalHeight = height - navbarheight - 80;
-            $(".GridBox").css('height', finalHeight);
-            $(".GridBox").css('overflow', 'hidden');
-            ListOfTicketStatus();
-            CheckUrl();
+        const height = window.innerHeight;
+        const navbarheight = $(".navbar").height();
+        var finalHeight = height - navbarheight - 80;
+        $(".GridBox").css('height', finalHeight);
+        $(".GridBox").css('overflow', 'hidden');
+        ListOfTicketStatus();
+        CheckUrl();
         // };
     }, []);
     const CheckUrl = () => {
@@ -843,30 +844,13 @@ export function ManageTicket() {
                     <div id="DeviceDetailsScroll" className=" mt-3">
                         <div className='row'>
                             <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
-                                <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
+                                <div className='col-7 fw-600'>Serial Number : </div>
+                                <div className='col-5'> {DeviceDetails.Serial_number}</div>
                             </div>
                             <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Manufacturer ADP Until : </div>
-                                <div className='col-4'> {DeviceDetails.Manufacturer_ADP_until}</div>
+                                <div className='col-7 fw-600'>Device Model : </div>
+                                <div className='col-5'> {DeviceDetails.Device_model}</div>
                             </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Third Party ADP Until : </div>
-                                <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Expected Retirement : </div>
-                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Purchase Date : </div>
-                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
-                                <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
-                            </div>
-                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Device Manufacturer : </div>
                                 <div className='col-5'> {DeviceDetails.Device_manufacturer}</div>
@@ -875,18 +859,12 @@ export function ManageTicket() {
                                 <div className='col-7 fw-600'>Device Type : </div>
                                 <div className='col-5'> {DeviceDetails.Device_type}</div>
                             </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Device Model : </div>
-                                <div className='col-5'> {DeviceDetails.Device_model}</div>
-                            </div>
+
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Device MPN : </div>
                                 <div className='col-5'> {DeviceDetails.Device_MPN}</div>
                             </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-7 fw-600'>Serial Number : </div>
-                                <div className='col-5'> {DeviceDetails.Serial_number}</div>
-                            </div>
+
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Asset Tag : </div>
                                 <div className='col-5'> {DeviceDetails.Asset_tag}</div>
@@ -902,6 +880,31 @@ export function ManageTicket() {
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Device OS : </div>
                                 <div className='col-5'> {DeviceDetails.Device_os}</div>
+                            </div>
+                            <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Purchase Date : </div>
+                                <div className='col-4'> {DeviceDetails.Purchase_date}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Expected Retirement : </div>
+                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
+                                <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Manufacturer ADP Until : </div>
+                                <div className='col-4'> {DeviceDetails.Manufacturer_ADP_until}</div>
+                            </div>
+                            <div className='col-md-6 row py-1'>
+                                <div className='col-8 fw-600'>Third Party ADP Until : </div>
+                                <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
+                            </div>
+                            <div className='col-12 row py-1'>
+                                <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
+                                <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
                             </div>
                             <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                             <div className='col-10 row py-1'>
@@ -925,13 +928,17 @@ export function ManageTicket() {
                                         <div className='col-6'> {DeviceDetails.Building}</div>
                                     </div>
                                     <div className='col-md-6 row py-1'>
-                                        <div className='col-6 fw-600'>Parental Coverage : </div>
-                                        <div className='col-6'> {(DeviceDetails.Parental_coverage == 1) ?
-                                            <>Yes</> : <>No</>}</div>
+                                        <div className='col-6 fw-600'>Parent Name : </div>
+                                        <div className='col-6'> {DeviceDetails.Parent_guardian_name}</div>
                                     </div>
                                     <div className='col-md-6 row py-1'>
                                         <div className='col-6 fw-600'>Parent Contact : </div>
                                         <div className='col-6'> {DeviceDetails.Parent_phone_number}</div>
+                                    </div>
+                                    <div className='col-md-6 row py-1'>
+                                        <div className='col-6 fw-600'>Parental Coverage : </div>
+                                        <div className='col-6'> {(DeviceDetails.Parental_coverage == 1) ?
+                                            <>Yes</> : <>No</>}</div>
                                     </div>
                                     <div className='col-md-6 row py-1'>
                                         <div className='col-6 fw-600'>Parent Email : </div>

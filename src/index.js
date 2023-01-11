@@ -33,6 +33,7 @@ pca.addEventCallback(event => {
     });
     ApiPostCall("/register", raw).then((result) => {
       if (result == undefined || result == "") {
+        $("#AlertDanger").removeClass('d-none');
         $("#AlertDanger").text('Login Failed!');
         $("#AlertDanger").css('color', 'red');
       } else {
@@ -50,6 +51,7 @@ pca.addEventCallback(event => {
         }
         else {
           var vhtml = "You are not a valid user, <a href='#'>click here</a> to contact Administrator!";
+          $("#AlertDanger").removeClass('d-none');
           $("#AlertDanger").text(vhtml);
           $("#AlertDanger").css('color', 'red');
           setTimeout(function () {
