@@ -33,28 +33,24 @@ pca.addEventCallback(event => {
     });
     ApiPostCall("/register", raw).then((result) => {
       if (result == undefined || result == "") {
-        $(".alert-danger").show();
-        $("#AlertDangerMsg").text('Login Failed!');
-        setTimeout(function () {
-          $(".alert-danger").hide();
-          $("#AlertDangerMsg").text();
-        }, 1500);
+        $("#AlertMsgs").text('Login Failed!');
+        $("#AlertMsgs").css('color', 'red');
       } else {
         const responseRs = JSON.parse(result);
         if (responseRs.status == "success") {
           cookies.set('accesstoken', payloadData.accessToken);
           cookies.set('emailid', payloadData.account.username);
           if (responseRs.status == "success") {
-            $(".alert-success").show();
-            $("#AlertMsg").text("Login Successfully.");
+            $("#AlertMsgs").text('Login Successfully.');
+            $("#AlertMsgs").css('color', 'green');
             setTimeout(function () {
               window.location = "/dashboard";
             }, 1500);
           }
         }
         else {
-          $(".alert-danger").show();
-          $("#AlertDangerMsg").text(responseRs.status);
+          $("#AlertMsgs").text('You are not a valid user to use this system, please contact Administrator!');
+          $("#AlertMsgs").css('color', 'red');
           setTimeout(function () {
             $(".alert-danger").hide();
             $("#AlertDangerMsg").text();

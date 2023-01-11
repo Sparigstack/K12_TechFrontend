@@ -11,9 +11,7 @@ export function Login() {
     const cookies = new Cookies();
     const clientId = process.env.REACT_APP_GoogleClientId;
     useEffect(() => {
-        // return () => {
-            setState({});
-        // };
+        setState({});
     }, []);
     const onSuccess = async (res) => {
         ShowLoder();
@@ -29,32 +27,34 @@ export function Login() {
         await ApiPostCall("/register", raw).then((result) => {
             if (result == undefined || result == "") {
                 HideLoder();
-                $(".alert-danger").show();
-                $("#AlertDangerMsg").text('Login Failed!');
-                setTimeout(function () {
-                    $(".alert-danger").hide();
-                    $("#AlertDangerMsg").text();
-                }, 1500);
+                $("#AlertMsgs").text('Login Failed!');
+                $("#AlertMsgs").css('color', 'red');
+                // setTimeout(function () {
+                //     $("#AlertMsgs").hide();
+                //     $("#AlertDangerMsg").text();
+                // }, 1500);
             } else {
-                console.log(result)
                 const responseRs = JSON.parse(result);
                 if (responseRs.status == "success") {
                     cookies.set('accesstoken', accessToken);
                     cookies.set('emailid', res.profileObj.email);
-                    if (responseRs.status == "success") {
-                        $(".alert-success").show();
-                        $("#AlertMsg").text("Login Successfully.");
-                        setTimeout(function () {
-                            window.location = "/dashboard";
-                        }, 1500);
-                    }
-                } else {
-                    $(".alert-danger").show();
-                    $("#AlertDangerMsg").text(responseRs.status);
+                    $("#AlertMsgs").text('Login Successfully.');
+                    $("#AlertMsgs").css('color', 'green');
+                    // $(".alert-success").show();
+                    // $("#AlertMsg").text("Login Successfully.");
                     setTimeout(function () {
-                        $(".alert-danger").hide();
-                        $("#AlertDangerMsg").text();
+                        window.location = "/dashboard";
                     }, 1500);
+                }
+                else {
+                    $("#AlertMsgs").text('You are not a valid user to use this system, please contact Administrator!');
+                    $("#AlertMsgs").css('color', 'red');
+                    // $(".alert-danger").show();
+                    // $("#AlertDangerMsg").text(responseRs.status);
+                    // setTimeout(function () {
+                    //     $(".alert-danger").hide();
+                    //     $("#AlertDangerMsg").text();
+                    // }, 1500);
                 }
                 HideLoder();
 
@@ -67,8 +67,11 @@ export function Login() {
         <>
             <div className="position-relative MainDiv">
                 <div className="card mx-auto">
-                    <div className="px-5 pt-5">
-                        <div className="mb-5">
+                    <div className="p-4">
+                        <div className="col-12 text-center">
+                            <label id="AlertMsgs"></label>
+                        </div>
+                        <div className="mb-5 mt-4">
                             <img src="/Images/LoginLogo.png" className="img-fluid" alt="Logo" />
                         </div>
                         <div className="col-12 text-center mt-4">
@@ -88,11 +91,13 @@ export function Login() {
                         <div className="col-12 text-center">
                             <SignInMicrosoft />
                         </div>
-                        <div className="col-12 text-center pt-5 pb-1">
-                            See a demo video?<a className="ps-2 cursor-pointer" style={{ color: "rgb(30 191 162)" }} href="https://www.k12techrepairs.com/" target="_blank">Click Here</a>
-                        </div>
-                        <div className="col-12 text-center pt-1 pb-1">
-                            Need an account?<a className="ps-2 cursor-pointer" style={{ color: "rgb(30 191 162)" }} href="/register">SIGN UP</a>
+                        <div className="row">
+                            <div className="col-md-6 text-center pt-5 pb-1 font-13">
+                                See a demo video?<br /><a className="ps-2 cursor-pointer" style={{ color: "rgb(30 191 162)" }} href="https://www.k12techrepairs.com/" target="_blank">Click Here</a>
+                            </div>
+                            <div className="col-md-6 text-center pt-5 pb-1 font-13">
+                                Need an account?<br /><a className="ps-2 cursor-pointer" style={{ color: "rgb(30 191 162)" }} href="/register">SIGN UP</a>
+                            </div>
                         </div>
                     </div>
                 </div>

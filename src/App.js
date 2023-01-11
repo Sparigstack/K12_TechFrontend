@@ -44,6 +44,7 @@ function App({ msalInstance }) {
               <Route path="*" element={<ErrorPage />} />
               <Route path="/register" element={<Signup />} />
               <Route path="/logout" element={<Logout />} />
+              <Route path="/" element={<Test />} />
               <Route path="/dashboard" element={<Test />} />
               <Route path="/manage-inventory/*" element={<ManageInventory />} />
               {/* <Route path="/device-type" element={<DeviceType />} /> */}

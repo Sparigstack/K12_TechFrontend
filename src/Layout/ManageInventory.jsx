@@ -55,13 +55,12 @@ export function ManageInventory() {
     // form input fields end
 
     useEffect(() => {
-        // return () => {
-            const height = window.innerHeight;
-            const navbarheight = $(".navbar").height();
-            var finalHeight = height - navbarheight - 80;
-            $(".GridBox").css('height', finalHeight);
-            CheckUrl();
-        // };
+        const height = window.innerHeight;
+        const navbarheight = $(".navbar").height();
+        var finalHeight = height - navbarheight - 80;
+        $(".GridBox").css('height', finalHeight);
+        CheckUrl();
+        console.log("hjvhj")
     }, []);
     const CheckUrl = () => {
         ShowLoder();
@@ -107,6 +106,7 @@ export function ManageInventory() {
         }
     }
     const GetListOfDevices = async () => {
+        setIsDecommission(1);
         $("#SortBy").val(0);
         ShowLoder();
         await ApiGetCallWithoutHeaders("/getallInventories/" + schoolid + "&1").then((result) => {
@@ -116,6 +116,7 @@ export function ManageInventory() {
                 const responseRs = JSON.parse(result);
                 var sugArray = [];
                 var i = 1;
+                console.log(responseRs)
                 if (responseRs.response == "success") {
                     if (responseRs.msg.length != 0) {
                         setNorecord("");
@@ -504,6 +505,7 @@ export function ManageInventory() {
                 IDArray: ActionArray,
                 actionid: actionid
             });
+            console.log(raw)
             await ApiPostCall("/manageInventoryAction", raw).then((result) => {
                 if (result == undefined || result == "") {
                     alert("Something went wrong");
@@ -767,7 +769,7 @@ export function ManageInventory() {
                                                 <></>
                                                 :
                                                 <div className='col-md-2 text-center'>
-                                                    <input className="form-check-input CommonCheckBoxClass" deviceid={item.ID} type="checkbox" onChange={ShowActionDropDown} />
+                                                    <input className="form-check-input CommonCheckBoxClass" deviceid={item.Inventory_ID} type="checkbox" onChange={ShowActionDropDown} />
                                                 </div>
                                             }
 
@@ -801,7 +803,7 @@ export function ManageInventory() {
                                             <div className='col-md-1 text-end cursor-pointer d-flex justify-content-evenly'>
                                                 {item.Loaner_device == "1" ?
                                                     <>
-                                                        <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1', item.user_id)}></i>
+                                                        <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.Inventory_ID, '1', item.user_id)}></i>
                                                         <img src="/images/clock-history.svg" className='img-fluid LoanerHistoryIcon' onClick={(e) => ShowLoanerHistory(item.ID)} />
 
                                                     </>
