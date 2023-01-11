@@ -49,12 +49,12 @@ export function ImportExportInventory() {
     var CsvUserId = parseInt(Cookies.get('CsvUserId'));
     const fileRef = useRef();
     useEffect(() => {
-        return () => {
+        // return () => {
             const height = window.innerHeight;
             const navbarheight = $(".navbar").height();
             var finalHeight = height - navbarheight - 90;
             $(".GridBox").css('height', finalHeight);
-        };
+        // };
     }, []);
     function ImportCSV(e) {
         e.preventDefault();

@@ -6,7 +6,7 @@ export function Sidemenu() {
     const firstPath = window.location.pathname.split('/')[1];
     const FinalPath = "/" + firstPath;
     useEffect(() => {
-        return () => {
+        // return () => {
             $(".nav-toggle-icon").on("click", function () {
                 $(".wrapper").toggleClass("toggled");
             });
@@ -79,7 +79,7 @@ export function Sidemenu() {
                 }
             });
 
-        };
+        // };
     }, []);
     return (
         <>

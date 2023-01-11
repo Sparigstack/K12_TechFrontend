@@ -11,9 +11,9 @@ export function Login() {
     const cookies = new Cookies();
     const clientId = process.env.REACT_APP_GoogleClientId;
     useEffect(() => {
-        return () => {
+        // return () => {
             setState({});
-        };
+        // };
     }, []);
     const onSuccess = async (res) => {
         ShowLoder();
@@ -36,6 +36,7 @@ export function Login() {
                     $("#AlertDangerMsg").text();
                 }, 1500);
             } else {
+                console.log(result)
                 const responseRs = JSON.parse(result);
                 if (responseRs.status == "success") {
                     cookies.set('accesstoken', accessToken);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import $ from 'jquery';
 import { ShowLoder, HideLoder } from "../JS/Common";
-import { ApiGetCall } from "../JS/Connector";
+import { ApiGetCallWithoutHeaders } from "../JS/Connector";
 import { Cookies } from 'react-cookie';
 import { ApiPostCall } from "../JS/Connector";
 import { CSVLink } from "react-csv";
@@ -56,7 +56,7 @@ export function ManageTicket() {
         data: CloseTicketCsvData
     };
     useEffect(() => {
-        return () => {
+        // return () => {
             const height = window.innerHeight;
             const navbarheight = $(".navbar").height();
             var finalHeight = height - navbarheight - 80;
@@ -64,7 +64,7 @@ export function ManageTicket() {
             $(".GridBox").css('overflow', 'hidden');
             ListOfTicketStatus();
             CheckUrl();
-        };
+        // };
     }, []);
     const CheckUrl = () => {
         ShowLoder();
@@ -93,7 +93,7 @@ export function ManageTicket() {
         $("#OpenTicketDiv").addClass('d-none');
         $(".SearchBarDiv").addClass('d-none');
         ShowLoder();
-        await ApiGetCall("/allTickets/" + schoolid + "&" + userid).then((result) => {
+        await ApiGetCallWithoutHeaders("/allTickets/" + schoolid + "&" + userid).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -132,7 +132,7 @@ export function ManageTicket() {
     }
     const ListOfTicketStatus = async () => {
         ShowLoder();
-        await ApiGetCall("/getTicketStatus").then((result) => {
+        await ApiGetCallWithoutHeaders("/getTicketStatus").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -150,7 +150,7 @@ export function ManageTicket() {
         $("#OpenTicketDiv").removeClass('d-none');
         $(".SearchBarDiv").removeClass('d-none');
         ShowLoder();
-        await ApiGetCall("/openTickets/" + schoolid + "&null&null").then((result) => {
+        await ApiGetCallWithoutHeaders("/openTickets/" + schoolid + "&null&null").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -201,7 +201,7 @@ export function ManageTicket() {
         $("#CloseTicketDiv").removeClass('d-none');
         $(".SearchBarDiv").removeClass('d-none');
         ShowLoder();
-        await ApiGetCall("/closeTickets/" + schoolid + "&null&null").then((result) => {
+        await ApiGetCallWithoutHeaders("/closeTickets/" + schoolid + "&null&null").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -452,7 +452,7 @@ export function ManageTicket() {
     }
     const SortByOpenTicket = async (AsDescGrade) => {
         ShowLoder();
-        await ApiGetCall("/openTickets/" + schoolid + "&" + AsDescGrade + "&" + AsDesc).then((result) => {
+        await ApiGetCallWithoutHeaders("/openTickets/" + schoolid + "&" + AsDescGrade + "&" + AsDesc).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -484,7 +484,7 @@ export function ManageTicket() {
     }
     // const SortByCloseTicket = async (sortId) => {
     //     ShowLoder();
-    //     await ApiGetCall("/closeTickets/" + schoolid + "&" + sortId + "&" + closeAsDesc).then((result) => {
+    //     await ApiGetCallWithoutHeaders("/closeTickets/" + schoolid + "&" + sortId + "&" + closeAsDesc).then((result) => {
     //         if (result == undefined || result == "") {
     //             alert("Something went wrong");
     //         } else {
@@ -519,7 +519,7 @@ export function ManageTicket() {
         $("#SearchTicket").val("");
     }
     const ShowModal = async (UserId, ticketid) => {
-        await ApiGetCall("/fetchDeviceDetailforTicket/" + UserId + "&" + ticketid).then((result) => {
+        await ApiGetCallWithoutHeaders("/fetchDeviceDetailforTicket/" + UserId + "&" + ticketid).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {

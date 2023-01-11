@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import $ from 'jquery';
 import { ShowLoder, HideLoder } from "../JS/Common";
 import { CheckValidation } from "../JS/Common";
-import { ApiGetCall, ApiPostCall, ApiDeleteCall } from "../JS/Connector";
+import { ApiGetCallWithoutHeaders, ApiPostCall, ApiDeleteCall } from "../JS/Connector";
 export function Users() {
     var schoolid = 1;
     const [Flag, setFlag] = useState(1);
@@ -16,7 +16,7 @@ export function Users() {
     // form input fields end
 
     useEffect(() => {
-        return () => {
+        // return () => {
             const height = window.innerHeight;
             const navbarheight = $(".navbar").height();
             var finalHeight = height - navbarheight - 80;
@@ -24,11 +24,11 @@ export function Users() {
             $(".GridBox").css('overflow', 'hidden');
             GetAccessDevice();
             GetUsers();
-        };
+        // };
     }, []);
     const GetAccessDevice = async () => {
         ShowLoder();
-        await ApiGetCall("/allAccess").then((result) => {
+        await ApiGetCallWithoutHeaders("/allAccess").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -40,7 +40,7 @@ export function Users() {
     }
     const GetUsers = async () => {
         ShowLoder();
-        await ApiGetCall("/allUser").then((result) => {
+        await ApiGetCallWithoutHeaders("/allUser").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -107,7 +107,7 @@ export function Users() {
         setFlag(2);
         ShowLoder();
         $("#hdnUserId").val(UserId);
-        await ApiGetCall("/getUserById/" + UserId).then((result) => {
+        await ApiGetCallWithoutHeaders("/getUserById/" + UserId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {

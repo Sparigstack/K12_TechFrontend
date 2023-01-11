@@ -3,7 +3,7 @@ import '../Styles/SideMenu/semi-dark.css';
 import React from 'react';
 import $ from 'jquery';
 import { useEffect } from 'react';
-import { ApiGetCall } from '../JS/Connector';
+import { ApiGetCallWithoutHeaders } from '../JS/Connector';
 import { useState } from 'react';
 import { CheckValidation } from '../JS/Common';
 import { ApiPostCall } from '../JS/Connector';
@@ -55,13 +55,13 @@ export function ManageInventory() {
     // form input fields end
 
     useEffect(() => {
-        return () => {
+        // return () => {
             const height = window.innerHeight;
             const navbarheight = $(".navbar").height();
             var finalHeight = height - navbarheight - 80;
             $(".GridBox").css('height', finalHeight);
             CheckUrl();
-        };
+        // };
     }, []);
     const CheckUrl = () => {
         ShowLoder();
@@ -109,7 +109,7 @@ export function ManageInventory() {
     const GetListOfDevices = async () => {
         $("#SortBy").val(0);
         ShowLoder();
-        await ApiGetCall("/getallInventories/" + schoolid + "&1").then((result) => {
+        await ApiGetCallWithoutHeaders("/getallInventories/" + schoolid + "&1").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -140,7 +140,7 @@ export function ManageInventory() {
         if (searchString == "") {
             searchString = null;
         }
-        await ApiGetCall("/searchInventory/" + schoolid + "&" + searchString + "&" + IsDecommission).then((result) => {
+        await ApiGetCallWithoutHeaders("/searchInventory/" + schoolid + "&" + searchString + "&" + IsDecommission).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -170,7 +170,7 @@ export function ManageInventory() {
         $("#hdnTicketUserId").val(TicketUserid);
         setDeviceid(UserId);
         setTicketUserid(TicketUserid);
-        await ApiGetCall("/fetchDeviceDetails/" + UserId).then((result) => {
+        await ApiGetCallWithoutHeaders("/fetchDeviceDetails/" + UserId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -417,7 +417,7 @@ export function ManageInventory() {
     const SortByName = async () => {
         var sortbyval = $("#SortBy option:selected").val();
         ShowLoder();
-        await ApiGetCall("/sortby/" + schoolid + "&" + sortbyval + "&" + IsDecommission).then((result) => {
+        await ApiGetCallWithoutHeaders("/sortby/" + schoolid + "&" + sortbyval + "&" + IsDecommission).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -535,7 +535,7 @@ export function ManageInventory() {
         $("#SelectAllId").prop('checked', false);
         $("#SortBy").val(0);
         ShowLoder();
-        await ApiGetCall("/getallDecommission/" + schoolid).then((result) => {
+        await ApiGetCallWithoutHeaders("/getallDecommission/" + schoolid).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
@@ -581,11 +581,13 @@ export function ManageInventory() {
         $("#SelectAllId").prop('checked', false);
         $("#SortBy").val(0);
         ShowLoder();
-        await ApiGetCall("/allLonerDevice/" + schoolid + "&null").then((result) => {
+        await ApiGetCallWithoutHeaders("/allLonerDevice/" + schoolid + "&null").then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {
                 const responseRs = JSON.parse(result);
+                console.log(responseRs)
+
                 var sugArray = [];
                 var i = 1;
                 if (responseRs.response == "success") {
@@ -630,7 +632,7 @@ export function ManageInventory() {
     const ShowLoanerHistory = async (ItemId) => {
         setisStatusPopup(true);
         ShowLoder();
-        await ApiGetCall("/lonerdeviceHistory/" + ItemId).then((result) => {
+        await ApiGetCallWithoutHeaders("/lonerdeviceHistory/" + ItemId).then((result) => {
             if (result == undefined || result == "") {
                 alert("Something went wrong");
             } else {

@@ -4,7 +4,7 @@ import { ShowLoder , HideLoder } from './Common';
 const BaseUrl = process.env.REACT_APP_Base_URL;
 var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
-myHeaders.append("Access-Control-Allow-Origin", "*");
+// myHeaders.append("Access-Control-Allow-Origin", "*");
 export function ApiGetCall(endpoint) {
     var requestOptions = {
         method: "GET",
@@ -14,7 +14,7 @@ export function ApiGetCall(endpoint) {
     return fetch(`${BaseUrl}${endpoint}`, requestOptions)
         .then((response) => response.text())
         .then((result) => { return result })
-        .catch((error) => { return error });
+        .catch((error) => { console.log('from cp'); console.log(error); return error; });
 }
 export function ApiPutCall(endpoint, payload) {
     var urlencoded = payload;
@@ -83,4 +83,14 @@ export function VerifyToken(endpoint){
      
   });
   HideLoder();
+}
+export function ApiGetCallWithoutHeaders(endpoint) {
+    var requestOptions = {
+        method: "GET",
+        redirect: "follow",
+    };
+    return fetch(`${BaseUrl}${endpoint}`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => { return result })
+        .catch((error) => { console.log('from cp'); console.log(error); return error; });
 }

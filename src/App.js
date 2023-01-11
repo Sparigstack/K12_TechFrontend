@@ -7,7 +7,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useEffect } from 'react';
 import { gapi } from 'gapi-script';
-import { Temp } from './Layout/Temp';
 import Layout from './Components/Layout';
 import Cookies from 'js-cookie';
 import { ManageInventory } from './Layout/ManageInventory';
@@ -44,9 +43,8 @@ function App({ msalInstance }) {
             <Routes>
               <Route path="*" element={<ErrorPage />} />
               <Route path="/register" element={<Signup />} />
-              <Route path="/" element={<Temp />} />
               <Route path="/logout" element={<Logout />} />
-              <Route path="/dashboard" element={<Temp />} />
+              <Route path="/dashboard" element={<Test />} />
               <Route path="/manage-inventory/*" element={<ManageInventory />} />
               {/* <Route path="/device-type" element={<DeviceType />} /> */}
               {/* <Route path="/os-model" element={<OsModel />} /> */}
@@ -54,6 +52,7 @@ function App({ msalInstance }) {
               <Route path="/create-ticket" element={<CreateTicket />} />
               <Route path="/manage-tickets/*" element={<ManageTicket />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/testing" element={<Test />} />
             </Routes>
           </Layout>
           :
