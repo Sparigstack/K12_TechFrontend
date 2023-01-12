@@ -8,8 +8,8 @@ import { CSVLink } from "react-csv";
 import { Modal } from 'react-bootstrap';
 import { MMDDYYYY } from "../JS/Common";
 export function ManageTicket() {
-    const schoolid = 1;
     const cookies = new Cookies();
+    const schoolid = parseInt(cookies.get('SchoolId'));
     var CsvUserId = parseInt(cookies.get('CsvUserId'));
     const [isShow, invokeModal] = useState(false);
     const [isStatusPopup, setisStatusPopup] = useState(false);
@@ -58,11 +58,11 @@ export function ManageTicket() {
     };
     useEffect(() => {
         // return () => {
-        const height = window.innerHeight;
-        const navbarheight = $(".navbar").height();
-        var finalHeight = height - navbarheight - 80;
-        $(".GridBox").css('height', finalHeight);
-        $(".GridBox").css('overflow', 'hidden');
+        // const height = window.innerHeight;
+        // const navbarheight = $(".navbar").height();
+        // var finalHeight = height - navbarheight - 80;
+        // $(".GridBox").css('height', finalHeight);
+        // $(".GridBox").css('overflow', 'hidden');
         ListOfTicketStatus();
         CheckUrl();
         // };
@@ -637,7 +637,7 @@ export function ManageTicket() {
                         </div>
                         <div className="row mt-3" id="MainGridDiv">
                             <div className='col-md-6'>
-                                <div className="greyBox" style={{ height: '95%', overflowY: 'scroll' }}>
+                                <div className="greyBox">
                                     <div className='Header'>
                                         <b className='font-17'>list of Open Ticket</b><br />
                                         <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
@@ -665,7 +665,7 @@ export function ManageTicket() {
                                 </div>
                             </div>
                             <div className='col-md-6'>
-                                <div className="greyBox" style={{ height: '95%', overflowY: 'scroll' }}>
+                                <div className="greyBox">
                                     <div className='Header'>
                                         <b className='font-17'>list of Close Ticket</b><br />
                                         <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
@@ -733,7 +733,7 @@ export function ManageTicket() {
                                         <div className='col-md-2 text-center cursor-pointer' title="Sort by Status" onClick={(e) => SortByOpenTicket(3)}>Status<img src="/images/TicketGridIcon.svg" className="img-fluid ps-1" /></div>
                                         <div className='col-md-1'></div>
                                     </div>
-                                    <div className='scroll-330' id="myTable">
+                                    <div id="myTable">
                                         {OpenTicketList.map((item, i) => {
                                             var returData;
                                             returData = (<div className="row grid px-0 subjectName" key={i} ticketid={item.IssuedbID}>
@@ -782,8 +782,8 @@ export function ManageTicket() {
                                     </div>
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                                 </div>
-                                <div className="col-12 scroll-350">
-                                    <div className="col-12 scroll-350">
+                                <div className="col-12 ">
+                                    <div className="col-12 ">
                                         <div className='row GridHeader px-0'>
                                             <div className='col-md-2 text-center'>Student Name</div>
                                             <div className='col-md-2 text-center'>Device Model</div>
@@ -792,7 +792,7 @@ export function ManageTicket() {
                                             <div className='col-md-2 text-center'>Status</div>
                                             <div className='col-md-2'></div>
                                         </div>
-                                        <div className='scroll-330' id="CloseTicketTable">
+                                        <div  id="CloseTicketTable">
                                             {CloseTicketList.map((item, i) => {
                                                 var returData;
                                                 returData = (<div className="row grid px-0" key={i}>
@@ -817,7 +817,6 @@ export function ManageTicket() {
                                             {closeticketnorecord}
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

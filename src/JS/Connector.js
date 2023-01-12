@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import { ShowLoder , HideLoder } from './Common';
+import { ShowLoder, HideLoder } from './Common';
 const BaseUrl = process.env.REACT_APP_Base_URL;
 var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -55,34 +55,35 @@ export function ApiPostCall(endpoint, payload) {
         .then((result) => { return result })
         .catch((error) => { return error });
 }
-export function VerifyToken(endpoint){
+export function VerifyToken(endpoint) {
     var accesstoken = Cookies.get('accesstoken');
     var emailid = Cookies.get('emailid');
     ShowLoder();
     var raw = JSON.stringify({
-      email: emailid,
-      accessToken: accesstoken
+        email: emailid,
+        accessToken: accesstoken
     });
     ApiPostCall("/loginValidation", raw).then((result) => {
-      if (result == undefined || result == "") {
-          $(".alert-danger").show();
-          $("#AlertDangerMsg").text('Login Failed!');
-          setTimeout(function () {
-              $(".alert-danger").hide();
-              $("#AlertDangerMsg").text();
-          }, 1500);
-      } else {
-          const responseRs = JSON.parse(result);
-          if (responseRs.status == "success") {
-            Cookies.set('CsvUserId', responseRs.msg.id);
-            endpoint();
-          }else{
-            window.location = "/";
-          }
-      }
-     
-  });
-  HideLoder();
+        if (result == undefined || result == "") {
+            $(".alert-danger").show();
+            $("#AlertDangerMsg").text('Login Failed!');
+            setTimeout(function () {
+                $(".alert-danger").hide();
+                $("#AlertDangerMsg").text();
+            }, 1500);
+        } else {
+            const responseRs = JSON.parse(result);
+            if (responseRs.status == "success") {
+                Cookies.set('CsvUserId', responseRs.msg.id);
+                Cookies.set('SchoolId', responseRs.msg.school_id);
+                endpoint();
+            } else {
+                window.location = "/";
+            }
+        }
+
+    });
+    HideLoder();
 }
 export function ApiGetCallWithoutHeaders(endpoint) {
     var requestOptions = {

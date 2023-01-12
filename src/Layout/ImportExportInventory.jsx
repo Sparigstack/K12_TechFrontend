@@ -44,7 +44,7 @@ export function ImportExportInventory() {
         headers: headers,
         data: CsvData
     };
-    var SchoolId = 1;
+    var SchoolId = parseInt(Cookies.get('SchoolId'));
     const BaseUrl = process.env.REACT_APP_Base_URL;
     var CsvUserId = parseInt(Cookies.get('CsvUserId'));
     const fileRef = useRef();

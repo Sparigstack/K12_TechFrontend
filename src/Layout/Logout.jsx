@@ -6,6 +6,7 @@ export function Logout(){
     cookies.remove('accesstoken');
     cookies.remove('emailid');
     cookies.remove('CsvUserId');
+    cookies.remove('SchoolId');
     cookies.remove('G_AUTHUSER_H');
     instance.logoutRedirect();
   

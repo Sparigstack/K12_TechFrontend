@@ -13,8 +13,8 @@ import { ShowLoder, HideLoder } from '../JS/Common';
 import { Modal } from 'react-bootstrap';
 import { MMDDYYYY } from '../JS/Common';
 export function ManageInventory() {
-    const schoolid = 1;
     const cookies = new Cookies();
+    const schoolid = parseInt(cookies.get('SchoolId'));
     const [AllDevices, setAllDevices] = useState([]);
     const [IsDecommission, setIsDecommission] = useState(1);
     const [DeviceDetails, setDeviceDetails] = useState([]);
@@ -58,13 +58,13 @@ export function ManageInventory() {
     var yr = date.getFullYear();
     var month = (date.getMonth() + 1).toString().padStart(2, "0");
     var day = date.getDate().toString().padStart(2, "0");
-    var newDate = yr  + '-' + month + '-' + day;
+    var newDate = yr + '-' + month + '-' + day;
 
     useEffect(() => {
-        const height = window.innerHeight;
-        const navbarheight = $(".navbar").height();
-        var finalHeight = height - navbarheight - 80;
-        $(".GridBox").css('height', finalHeight);
+        // const height = window.innerHeight;
+        // const navbarheight = $(".navbar").height();
+        // var finalHeight = height - navbarheight - 80;
+        // $(".GridBox").css('height', finalHeight);
         CheckUrl();
     }, []);
     const CheckUrl = () => {
@@ -122,7 +122,6 @@ export function ManageInventory() {
                 const responseRs = JSON.parse(result);
                 var sugArray = [];
                 var i = 1;
-                console.log(responseRs)
                 if (responseRs.response == "success") {
                     if (responseRs.msg.length != 0) {
                         setNorecord("");
@@ -409,7 +408,7 @@ export function ManageInventory() {
                     }, 1500);
                 } else {
                     $(".alert-danger").show();
-                    $("#AlertDangerMsg").text(result);
+                    $("#AlertDangerMsg").text(responseRs.msg);
                     setTimeout(function () {
                         $(".alert-danger").hide();
                         $("#AlertDangerMsg").text();
@@ -727,9 +726,6 @@ export function ManageInventory() {
                                     <option value="6">Date of Purchase</option>
                                 </select>
                             </div>
-                            {/* <div className='col-md-3  px-0 pt-2'>
-                                <input className="form-check-input me-2" type="checkbox" onChange={GetDecommissionData} id="DecommissionedId" />Show Decommissioned
-                            </div> */}
                         </div>
                         <div className='row greyBox mt-3'>
                             <div className='Header row align-items-center '>
@@ -746,72 +742,73 @@ export function ManageInventory() {
                             </div>
                             <div className='mt-2'>
                                 <div className='row GridHeader mx-1 px-0'>
-                                    {Tabid != 2 ?
-                                        <div className='col-md-2 font-13 px-0 text-center'>
-                                            Select All<input className="form-check-input ms-1" id="SelectAllId" type="checkbox" onClick={SelectAllDevices} />
-                                        </div>
-                                        :
-                                        <></>
-                                    }
+                                    <div className='col-md-2 font-13 px-0 text-center'>
+                                        {Tabid != 2 ?
+                                            <span>
+                                                Select All<input className="form-check-input ms-1" id="SelectAllId" type="checkbox" onClick={SelectAllDevices} />
+                                            </span>
+
+                                            :
+                                            <></>
+                                        }
+                                    </div>
                                     <div className='col-md-2'>Device Model</div>
                                     <div className='col-md-2'>Student Name</div>
                                     <div className='col-md-1 text-center'>Grade</div>
-                                    <div className='col-md-1 text-center'>Building</div>
-                                    {Tabid != 2 ?
-                                        <div className='col-md-2 text-center'>Purchase Date</div>
-                                        :
-                                        <div className='col-md-4 text-center'>Purchase Date</div>
-                                    }
+                                    <div className='col-md-2 text-center'>Building</div>
+                                    <div className='col-md-2 text-center'>Purchase Date</div>
                                     <div className='col-md-1'></div>
                                 </div>
-                                <div className='scroll-330'>
+                                <div>
                                     {AllDevices.map((item, i) => {
                                         var returData;
                                         returData = (<div key={i} className="row grid mx-1 px-0">
-                                            {item.inventory_status == 3 ?
-                                                <></>
-                                                :
-                                                <div className='col-md-2 text-center'>
-                                                    <input className="form-check-input CommonCheckBoxClass" deviceid={item.Inventory_ID} type="checkbox" onChange={ShowActionDropDown} />
-                                                </div>
-                                            }
+                                            <div className='col-md-2 text-center'>
+                                                {Tabid == 2 ?
+                                                    <></>
+                                                    :
+                                                    <input className="form-check-input CommonCheckBoxClass" deviceid={item.ID} type="checkbox" onChange={ShowActionDropDown} />
 
+                                                }
+                                            </div>
                                             <div className='col-md-2'>{item.Device_model}</div>
                                             <div className='col-md-2'>
-                                                {item.inventory_status == 3 ?
+                                                {item.student == null ?
                                                     <>-</>
                                                     :
-                                                    item.Device_user_first_name + ' ' + item.Device_user_last_name
+                                                    item.student.Device_user_first_name + ' ' + item.student.Device_user_last_name
                                                 }
                                             </div>
                                             <div className='col-md-1 text-center'>
-                                                {item.inventory_status == 3 ?
+                                                {item.student == null ?
                                                     <>-</>
                                                     :
-                                                    item.Grade
+                                                    item.student.Grade
                                                 }
                                             </div>
-                                            <div className='col-md-1 text-center'>
-                                                {item.inventory_status == 3 ?
+                                            <div className='col-md-2 text-center'>
+                                                {item.student == null ?
                                                     <>-</>
                                                     :
-                                                    item.Building
+                                                    item.student.Building
                                                 }
                                             </div>
-                                            {item.inventory_status == 3 ?
-                                                <div className='col-md-4 text-center'>{item.Purchase_date}</div>
-                                                :
-                                                <div className='col-md-2 text-center'>{item.Purchase_date}</div>
-                                            }
+                                            <div className='col-md-2 text-center'>
+                                                {item.inventory_status == 3 ?
+                                                    item.Purchase_date
+                                                    :
+                                                    item.Purchase_date
+                                                }
+                                            </div>
                                             <div className='col-md-1 text-end cursor-pointer d-flex justify-content-evenly'>
                                                 {item.Loaner_device == "1" ?
                                                     <>
-                                                        <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.Inventory_ID, '1', item.user_id)}></i>
+                                                        <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1', item.user_id)}></i>
                                                         <img src="/images/clock-history.svg" className='img-fluid LoanerHistoryIcon' onClick={(e) => ShowLoanerHistory(item.ID)} />
 
                                                     </>
                                                     :
-                                                    <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.Inventory_ID, '1', item.user_id)}></i>
+                                                    <i class="bi bi-info-circle-fill" title="Show Details" onClick={(e) => GetDeviceDetailById(item.ID, '1', item.user_id)}></i>
                                                 }
                                             </div>
                                         </div>
@@ -946,16 +943,16 @@ export function ManageInventory() {
                                 <div className='col-md-6 row align-items-center '>
                                     <div className='col-md-7 FormLabel'>Expected Retirement</div>
                                     <div className='col-md-5'>
-                                        <input type="date" name='expectedretirement' className="form-control"  value={ExpectedRetirement}
+                                        <input type="date" name='expectedretirement' className="form-control" value={ExpectedRetirement}
                                             onChange={(e) => setExpectedRetirement(e.target.value)} />
-                                      
+
                                     </div>
                                 </div>
 
                                 <div className='col-md-6 row align-items-center pt-2'>
                                     <div className='col-md-7 FormLabel'>Manufacturer Warranty Until</div>
                                     <div className='col-md-5'>
-                                        <input type="date" name='ManufacturerWarrentyUntil' className="form-control"  value={ManufacturerWarrentyUntil}
+                                        <input type="date" name='ManufacturerWarrentyUntil' className="form-control" value={ManufacturerWarrentyUntil}
                                             onChange={(e) => setManufacturerWarrentyUntil(e.target.value)} />
                                     </div>
                                 </div>
@@ -964,7 +961,7 @@ export function ManageInventory() {
                                     <div className='col-md-5'>
                                         <input type="date" name='ManufacturerADPUntil' className="form-control" value={ManufacturerADPUntil}
                                             onChange={(e) => setManufacturerADPUntil(e.target.value)} />
-                                        
+
                                     </div>
                                 </div>
                                 <div className='col-md-6 row align-items-center pt-2'>
@@ -972,7 +969,7 @@ export function ManageInventory() {
                                     <div className='col-md-5'>
                                         <input type="date" name='ThirdPartywarrantyuntil' className="form-control" value={ThirdPartyWarrantyUntil}
                                             onChange={(e) => setThirdPartyWarrantyUntil(e.target.value)} />
-                                       
+
                                     </div>
                                 </div>
                                 <div className='col-md-6 row align-items-center pt-2'>
@@ -980,10 +977,10 @@ export function ManageInventory() {
                                     <div className='col-md-5'>
                                         <input type="date" name='thirdpartyadpuntil' className="form-control" value={ThirdPartyADPUntil}
                                             onChange={(e) => setThirdPartyADPUntil(e.target.value)} />
-                                      
+
                                     </div>
                                 </div>
-                                
+
                                 <div className='col-12 text-center pt-2'>
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100' />
                                 </div>
@@ -1151,7 +1148,7 @@ export function ManageInventory() {
                     </div>
                     <div id="DeviceDetailsScroll" className=" mt-3">
                         <div className='row'>
-                        <div className='col-md-6 row py-1'>
+                            <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Serial Number : </div>
                                 <div className='col-5'> {DeviceDetails.Serial_number}</div>
                             </div>
@@ -1167,12 +1164,12 @@ export function ManageInventory() {
                                 <div className='col-7 fw-600'>Device Type : </div>
                                 <div className='col-5'> {DeviceDetails.Device_type}</div>
                             </div>
-                           
+
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Device MPN : </div>
                                 <div className='col-5'> {DeviceDetails.Device_MPN}</div>
                             </div>
-                           
+
                             <div className='col-md-6 row py-1'>
                                 <div className='col-7 fw-600'>Asset Tag : </div>
                                 <div className='col-5'> {DeviceDetails.Asset_tag}</div>
@@ -1194,33 +1191,53 @@ export function ManageInventory() {
                                 <div className='col-8 fw-600'>Purchase Date : </div>
                                 <div className='col-4'> {DeviceDetails.Purchase_date}</div>
                             </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Expected Retirement : </div>
-                                <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
-                                <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Manufacturer ADP Until : </div>
-                                <div className='col-4'> {DeviceDetails.Manufacturer_ADP_until}</div>
-                            </div>
-                            <div className='col-md-6 row py-1'>
-                                <div className='col-8 fw-600'>Third Party ADP Until : </div>
-                                <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
-                            </div>
-                            <div className='col-12 row py-1'>
-                                <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
-                                <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
-                            </div>
+                            {DeviceDetails.Expected_retirement != null ?
+                                <div className='col-md-6 row py-1'>
+                                    <div className='col-8 fw-600'>Expected Retirement : </div>
+                                    <div className='col-4'> {DeviceDetails.Expected_retirement}</div>
+                                </div>
+                                :
+                                <></>
+                            }
+                            {DeviceDetails.Manufacturer_warranty_until != null ?
+                                <div className='col-md-6 row py-1'>
+                                    <div className='col-8 fw-600'>Manufacturer Warranty Until : </div>
+                                    <div className='col-4'>  {DeviceDetails.Manufacturer_warranty_until}</div>
+                                </div>
+                                :
+                                <></>
+                            }
+                            {DeviceDetails.Manufacturer_ADP_until != null ?
+                                <div className='col-md-6 row py-1'>
+                                    <div className='col-8 fw-600'>Manufacturer ADP Until : </div>
+                                    <div className='col-4'> {DeviceDetails.Manufacturer_ADP_until}</div>
+                                </div>
+                                :
+                                <></>
+                            }
+                            {DeviceDetails.Third_party_ADP_until != null ?
+                                <div className='col-md-6 row py-1'>
+                                    <div className='col-8 fw-600'>Third Party ADP Until : </div>
+                                    <div className='col-4'> {DeviceDetails.Third_party_ADP_until}</div>
+                                </div>
+                                :
+                                <></>
+                            }
+                            {DeviceDetails.Third_party_extended_warranty_until != null ?
+                                <div className='col-12 row py-1'>
+                                    <div className='col-6 fw-600'>Third Party Extended Warranty Until : </div>
+                                    <div className='col-6'> {DeviceDetails.Third_party_extended_warranty_until}</div>
+                                </div>
+                                :
+                                <></>
+                            }
                             <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                             <div className='col-10 row py-1'>
                                 <div className='col-4 fw-600'>Loaner Device : </div>
                                 <div className='col-8'> {(DeviceDetails.Loaner_device == 1) ?
                                     <>Yes</> : <>No</>}</div>
                             </div>
-                            {DeviceDetails.inventory_status != 3 ?
+                            {DeviceDetails.Device_user_first_name != null ?
                                 <div className='row' id="ModalStudentDiv">
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />
                                     <div className='col-md-6 row py-1'>

@@ -6,8 +6,10 @@ import { useState } from "react";
 import { getUrlParameter } from "../JS/Common";
 import { ShowSuggestionBox } from "../JS/Common";
 import { MMDDYYYY } from "../JS/Common";
+import { Cookies } from 'react-cookie';
 export function CreateTicket() {
-    var schoolid = 1;
+    const cookies = new Cookies();
+    var schoolid = parseInt(cookies.get('SchoolId'));
     const [DeviceIssues, setAllDevicesIssues] = useState([]);
     const [DeviceDeatils, setDeviceDeatils] = useState([]);
     const [Notes, setNotes] = useState("");
@@ -19,33 +21,36 @@ export function CreateTicket() {
     const [LoanerSuggestionBoxArray, setLoanerSuggestionBoxArray] = useState("");
     const [LoanerId, setLoanerId] = useState("");
     useEffect(() => {
-        // return () => {
-            var uri = window.location.toString();
-            if (uri.indexOf("?") > 0) {
-                var clean_uri = uri.substring(0, uri.indexOf("?"));
-                window.history.replaceState({}, document.title, clean_uri);
-            }
-            $("#hdnDeviceId").val(Deviceid);
-            $("#hdnUserId").val(userid);
-            const height = window.innerHeight;
-            const navbarheight = $(".navbar").height();
-            var finalHeight = height - navbarheight - 80;
-            $(".GridBox").css('height', finalHeight);
-            StoreDeviceSearchData(1);
-            var DeviceidGlobal = $("#hdnDeviceId").val();
-            if (DeviceidGlobal != "false") {
-                ShowDeviceDetails("", 2);
-            }
-        // };
+        var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
+        $("#hdnDeviceId").val(Deviceid);
+        $("#hdnUserId").val(userid);
+        const height = window.innerHeight;
+        const navbarheight = $(".navbar").height();
+        var finalHeight = height - navbarheight - 80;
+        $(".GridBox").css('height', finalHeight);
+        StoreDeviceSearchData(1);
+        var DeviceidGlobal = $("#hdnDeviceId").val();
+        if (DeviceidGlobal != "false") {
+            ShowDeviceDetails("", 2);
+        }
     }, []);
-    
+
 
     // on keyup store data in array
     const StoreDeviceSearchData = async (flag) => {
         setLoanerSuggestionBoxArray([]);
+        setSuggestionBoxArray([]);
         var searchstring = $("#SearchDeviceId").val();
         ShowLoder();
         if (searchstring == "") {
+            $(".SearchDeviceClass").css('visibility', 'hidden');
+            $(".SearchDeviceClass").css('opacity', '0');
+            $(".SearchDeviceClass").css('display', 'none');
+            flag = 1;
             searchstring = null;
         }
         await ApiGetCall("/searchInventoryCT/" + schoolid + "&" + searchstring).then((result) => {
@@ -126,11 +131,11 @@ export function CreateTicket() {
         NewJson['schoolId'] = schoolid;
         NewJson['userId'] = UserID;
         NewJson['inventoryId'] = hdnDeviceid;
-        if(assignloanerval != ""){
+        if (assignloanerval != "") {
             lonerDeviceStatus = 1;
             NewJson['lonerId'] = LoanerId;
             NewJson['lonerDeviceStatus'] = lonerDeviceStatus;
-        }else{
+        } else {
             NewJson['lonerId'] = null;
             NewJson['lonerDeviceStatus'] = 0;
         }
@@ -267,9 +272,15 @@ export function CreateTicket() {
 
     //assign a loaner suggestion box
     const StoreLoanerSearchData = async () => {
+        var searchflag = 1;
+        setLoanerSuggestionBoxArray([]);
         var searchstring = $("#AssignLoanerId").val();
         ShowLoder();
         if (searchstring == "") {
+            $(".AssignLoanerClass").css('visibility', 'hidden');
+            $(".AssignLoanerClass").css('opacity', '0');
+            $(".AssignLoanerClass").css('display', 'none');
+            searchflag = 2;
             searchstring = null;
         }
         await ApiGetCall("/allLonerDevice/" + schoolid + "&" + searchstring).then((result) => {
@@ -283,7 +294,9 @@ export function CreateTicket() {
                 var i = 1;
                 if (responseRs.response == "success") {
                     if (sugData.length != 0) {
-                        ShowSuggestionBox('AssignLoanerClass');
+                        if (searchflag == 1) {
+                            ShowSuggestionBox('AssignLoanerClass');
+                        }
                         for (var i = 0; i < sugData.length; i++) {
                             sugArray.push(
                                 <div className="row brdr-Btm font-14" key={i} loanerid={sugData[i].ID} studentname={sugData[i].Device_model} style={{ padding: "8px 15px" }} onClick={(e) => SetLoanerData(e)}>
@@ -294,6 +307,7 @@ export function CreateTicket() {
                         }
                         setLoanerSuggestionBoxArray(sugArray);
                     } else {
+                        ShowSuggestionBox('AssignLoanerClass');
                         sugArray.push(
                             <>
                                 <div className="col-12 text-center" key={i}>

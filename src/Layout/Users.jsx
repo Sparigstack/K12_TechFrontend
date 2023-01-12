@@ -3,8 +3,10 @@ import $ from 'jquery';
 import { ShowLoder, HideLoder } from "../JS/Common";
 import { CheckValidation } from "../JS/Common";
 import { ApiGetCallWithoutHeaders, ApiPostCall, ApiDeleteCall } from "../JS/Connector";
+import { Cookies } from 'react-cookie';
 export function Users() {
-    var schoolid = 1;
+    const cookies = new Cookies();
+    var schoolid = parseInt(cookies.get('SchoolId'));
     const [Flag, setFlag] = useState(1);
     const [AccessDevices, setAccessDevices] = useState([]);
     const [CurrentUsers, setCurrentUsers] = useState([]);
@@ -17,11 +19,11 @@ export function Users() {
 
     useEffect(() => {
         // return () => {
-            const height = window.innerHeight;
-            const navbarheight = $(".navbar").height();
-            var finalHeight = height - navbarheight - 80;
-            $(".GridBox").css('height', finalHeight);
-            $(".GridBox").css('overflow', 'hidden');
+            // const height = window.innerHeight;
+            // const navbarheight = $(".navbar").height();
+            // var finalHeight = height - navbarheight - 80;
+            // $(".GridBox").css('height', finalHeight);
+            // $(".GridBox").css('overflow', 'hidden');
             GetAccessDevice();
             GetUsers();
         // };
@@ -254,7 +256,7 @@ export function Users() {
                             </div>
                         </div>
                         <div className="col-md-6">
-                            <div className="greyBox" style={{ height: '75%', overflowY: 'scroll' }}>
+                            <div className="greyBox">
                                 <div>
                                     <b className='font-16 mb-0'>Current Users</b>
                                     <img src='/images/HorizontalLine.svg' className='img-fluid w-100 my-2' />

@@ -10,7 +10,6 @@ export function Login() {
     const [state, setState] = useState({});
     const cookies = new Cookies();
     const clientId = process.env.REACT_APP_GoogleClientId;
-    var vhtml = "You are not a valid user, <a href='#'>click here</a> to contact Administrator!";
     useEffect(() => {
         setState({});
     }, []);
@@ -44,7 +43,6 @@ export function Login() {
                 }
                 else {
                     $("#AlertDanger").removeClass('d-none');
-                    $("#AlertDanger").text(vhtml);
                     $("#AlertDanger").css('color', 'red');
                 }
                 HideLoder();
@@ -58,10 +56,10 @@ export function Login() {
         <>
             <div className="position-relative MainDiv">
                 <div className="card mx-auto">
-                    <div className="p-4">
+                    <div className="p-4 row">
                         <div className="col-12 text-center">
-                            <label id="AlertMsgs"></label>
-                            <label id="AlertDanger" dangerouslySetInnerHTML={{__html: vhtml}} className="d-none"></label>
+                            <label id="AlertMsgs" className="font-16"></label>
+                            <label id="AlertDanger" className="d-none font-16">You are not a valid user, <a href='#' style={{color:"red",textDecoration:"underline"}}>click here</a> to contact Administrator!</label>
                         </div>
                         <div className="mb-5 mt-4">
                             <img src="/Images/LoginLogo.png" className="img-fluid" alt="Logo" />
